@@ -1,0 +1,34 @@
+[gd_scene load_steps=2 format=3 uid="uid://b0behggxkcuaw"]
+
+[ext_resource type="Script" path="res://DirectoryPicker.gd" id="1_s1imf"]
+
+[node name="FilePicker" type="VBoxContainer"]
+anchors_preset = -1
+anchor_left = 0.00694444
+anchor_right = 0.974826
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 16.0
+offset_right = 8.0
+offset_bottom = 16.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_s1imf")
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+text = "Steam Directory"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="TextEdit" type="TextEdit" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Button" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+text = "Open..."
+
+[connection signal="pressed" from="HBoxContainer/Button" to="." method="_on_button_pressed"]
