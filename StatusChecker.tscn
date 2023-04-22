@@ -6,11 +6,10 @@
 offset_right = 1152.0
 offset_bottom = 31.0
 script = ExtResource("1_eyj1w")
-check_on_ready = null
 
 [node name="StatusEmoji" type="Label" parent="."]
 layout_mode = 2
-text = "✔"
+text = "❓"
 vertical_alignment = 2
 
 [node name="Label" type="Label" parent="."]
@@ -25,7 +24,6 @@ text = "[additional context]"
 vertical_alignment = 2
 
 [node name="Button" type="Button" parent="."]
-visible = false
 layout_mode = 2
 text = "Fix..."
 

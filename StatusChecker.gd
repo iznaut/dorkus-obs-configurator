@@ -7,7 +7,6 @@ enum StatusType {
 	ASSETS_PATH,
 }
 
-@export var check_on_ready : bool
 @export var status_type : StatusType:
 	set(new_type):
 		$Label.text = status_config[new_type].label_text
@@ -48,14 +47,10 @@ var status_config = {
 func _ready():
 	$Label.text = config.label_text
 
-	if not Engine.is_editor_hint() and check_on_ready:
+	if not Engine.is_editor_hint():
 		is_success = config.check_func.call(
 			Utility.read_config_file(config.config_file_key)
 		)
-
-	if not check_on_ready:
-		$StatusEmoji.text = "❓"
-		$Button.show()
 
 
 func fix_and_verify(new_path : String):
@@ -68,7 +63,9 @@ func fix_and_verify(new_path : String):
 
 func check_filepaths_in_json(json_contents : Dictionary):
 	for file_name in config.json_paths.keys():
-		var current_value = _find_json_path(json_contents, config.json_paths[file_name].duplicate())
+		var current_value = json_contents
+		for key in config.json_paths[file_name]:
+			current_value = current_value[key]
 
 		if not FileAccess.file_exists(current_value):
 			return false
@@ -78,30 +75,24 @@ func check_filepaths_in_json(json_contents : Dictionary):
 
 func replace_filepaths_in_json(json_contents : Dictionary, new_path : String):
 	for file_name in config.json_paths.keys():
-		_find_json_path(json_contents, config.json_paths[file_name].duplicate(), new_path + "/" + file_name)
+		_set_json_path(json_contents, config.json_paths[file_name].duplicate(), new_path + "/" + file_name)
 
 	return json_contents
 
 
-func _find_json_path(dict, keypath, value = null):
+func _set_json_path(dict, keypath, value) -> Variant:
 	var current = keypath[0]
-	if dict.has(current):
-		print(typeof(dict[current]))
-		if typeof(dict[current]) == TYPE_DICTIONARY:
-			keypath.remove(0)
-			_find_json_path(dict[current], keypath, value) # recursion happens here
-			return
-		elif typeof(dict[current]) == TYPE_ARRAY:
-			keypath.pop_front()
-			print(keypath)
-			_find_json_path(dict[current], keypath, value) # recursion happens here
-			return
-		else:
-			print(value)
-			if value:
-				dict[current] = value
-				return
-			return dict[current]
+	if typeof(dict[current]) == TYPE_DICTIONARY:
+		keypath.remove_at(0)
+		_set_json_path(dict[current], keypath, value) # recursion happens here
+		return
+	elif typeof(dict[current]) == TYPE_ARRAY:
+		keypath.remove_at(0)
+		_set_json_path(dict[current], keypath, value) # recursion happens here
+		return
+	else:
+		dict[current] = value
+		return
 
 
 func _on_button_pressed():
