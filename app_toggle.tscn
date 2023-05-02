@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://cebgjvnptsywt"]
+
+[ext_resource type="Script" path="res://app_toggle.gd" id="1_ad0xf"]
+
+[node name="AppToggle" type="CheckButton"]
+offset_right = 213.0
+offset_bottom = 31.0
+text = "[AppName] is NOT running..."
+script = ExtResource("1_ad0xf")
+
+[connection signal="toggled" from="." to="." method="_on_toggled"]
