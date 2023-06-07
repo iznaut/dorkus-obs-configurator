@@ -1,0 +1,26 @@
+[gd_scene load_steps=2 format=3 uid="uid://drllvukd0auky"]
+
+[ext_resource type="Texture2D" uid="uid://dri7sws27s5rk" path="res://Speech_bubble.png" id="1_bn34k"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 300.0
+offset_bottom = 226.0
+texture = ExtResource("1_bn34k")
+flip_h = true
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 44.0
+offset_top = 47.0
+offset_right = 244.0
+offset_bottom = 147.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "Thank you for using DorkusOBS!"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2

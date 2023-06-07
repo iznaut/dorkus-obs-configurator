@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3 uid="uid://cw554crxjkoc7"]
+
+[ext_resource type="PackedScene" uid="uid://dchkwtpr4n03l" path="res://dorkus.tscn" id="1_bb1p0"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dorkus" parent="." instance=ExtResource("1_bb1p0")]
+layout_mode = 1
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
