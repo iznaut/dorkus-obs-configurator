@@ -40,6 +40,7 @@ var status_config = {
 		"fix_func": replace_filepaths_in_json,
 	},
 }
+var recordings_path : String
 
 @onready var config = status_config[status_type]
 
@@ -47,10 +48,14 @@ var status_config = {
 func _ready():
 	$Label.text = config.label_text
 
-	if not Engine.is_editor_hint():
-		is_success = config.check_func.call(
-			Utility.read_config_file(config.config_file_key)
-		)
+	# print(Utility.read_config_file("profile"))
+
+	# print(Utility.read_config_file("profile"))
+	# if not Engine.is_editor_hint():
+	# 	check_filepath_in_ini()
+	# 	is_success = config.check_func.call(
+	# 		Utility.read_config_file(config.config_file_key)
+	# 	)
 
 
 func fix_and_verify(new_path : String):
@@ -71,6 +76,13 @@ func check_filepaths_in_json(json_contents : Dictionary):
 			return false
 	
 	return true
+
+
+# func check_filepath_in_ini():
+# 	var config_file = Utility.read_config_file(config.config_file_key)
+# 	var path = Utility.get_config_file(config.config_file_key)
+
+# 	config_file.load(path)
 
 
 func replace_filepaths_in_json(json_contents : Dictionary, new_path : String):
