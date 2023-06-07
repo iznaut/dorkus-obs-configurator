@@ -2,6 +2,7 @@
 .godot/
 
 dorkus-obs
+build
 
 .vscode
 .favorites.json

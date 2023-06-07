@@ -5,6 +5,7 @@
 [node name="AppToggle" type="CheckButton"]
 offset_right = 213.0
 offset_bottom = 31.0
+focus_mode = 0
 text = "[AppName] is NOT running..."
 script = ExtResource("1_ad0xf")
 

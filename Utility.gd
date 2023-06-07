@@ -45,3 +45,35 @@ static func write_config_file(config_key : String, new_contents : Variant):
 		file.close()
 	else:
 		new_contents.save(filepath)
+
+
+static func globalize_path(path : String) -> String:
+	path = path.replace("res://", "")
+
+	if OS.has_feature("editor"):
+		return ProjectSettings.globalize_path("res://%s" % path)
+	else:
+		return OS.get_executable_path().get_base_dir().path_join(path)
+
+
+static func get_user_config(section : String, key : String) -> String:
+	var config = ConfigFile.new()
+
+	# Load data from a file.
+	config.load("user://user.cfg")
+
+	var value = config.get_value(section, key)
+
+	# If the file didn't load, ignore it.
+	if value == null:
+		return ""
+
+	return value
+
+
+static func set_user_config(section : String, key : String, value : String) -> void:
+	var config = ConfigFile.new()
+
+	config.load("user://user.cfg")
+	config.set_value(section, key, value)
+	config.save("user://user.cfg")
