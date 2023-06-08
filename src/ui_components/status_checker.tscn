@@ -1,11 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://c36x7r08smn7g"]
+[gd_scene load_steps=2 format=3 uid="uid://olo2kx8lki4n"]
 
-[ext_resource type="Script" path="res://StatusChecker.gd" id="1_eyj1w"]
+[ext_resource type="Script" path="res://src/ui_components/status_checker.gd" id="1_o062a"]
 
 [node name="StatusChecker" type="HBoxContainer"]
 offset_right = 1152.0
 offset_bottom = 31.0
-script = ExtResource("1_eyj1w")
+script = ExtResource("1_o062a")
 
 [node name="StatusEmoji" type="Label" parent="."]
 layout_mode = 2

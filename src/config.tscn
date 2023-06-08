@@ -1,0 +1,32 @@
+[gd_scene load_steps=2 format=3 uid="uid://d0eb6lj1wlpfl"]
+
+[sub_resource type="GDScript" id="GDScript_mujj8"]
+script/source = "extends Node
+
+@export_group(\"OBS Paths\")
+@export_file(\"*.exe\") var path_to_obs_exe : String
+@export_file(\"*.ini\") var path_to_obs_profile : String
+@export_file(\"*.json\") var path_to_obs_scene : String
+
+@export_group(\"Favro\")
+@export var favro_api_url : String
+@export var favro_org_id : String
+
+var source_remaps = {
+		\"image_source\": {
+			\"file\": \"dorkus-white.png\"
+		},
+		\"input-overlay\": {
+			\"io.overlay_image\": \"game-pad.png\",
+			\"io.layout_file\": \"game-pad.json\",
+		},
+	}
+"
+
+[node name="Config" type="Node"]
+script = SubResource("GDScript_mujj8")
+path_to_obs_exe = "res://dorkus-obs/bin/64bit/obs64.exe"
+path_to_obs_profile = "res://dorkus-obs/config/obs-studio/basic/profiles/NG3_Playtest/basic.ini"
+path_to_obs_scene = "res://dorkus-obs/config/obs-studio/basic/scenes/NG3_Playtest.json"
+favro_api_url = "https://favro.com/api/v1"
+favro_org_id = "66677ef50e6be2449f09d991"

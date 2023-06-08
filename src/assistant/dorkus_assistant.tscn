@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://c12munsuibyem"]
+[gd_scene load_steps=8 format=3 uid="uid://shks817s0jup"]
 
-[ext_resource type="Script" path="res://status_window.gd" id="1_fs0nb"]
-[ext_resource type="Texture2D" uid="uid://dr67qpey05h0p" path="res://dorkus-obs/assets/dorkus-white.png" id="1_xftfd"]
-[ext_resource type="PackedScene" uid="uid://drllvukd0auky" path="res://dorkus_notification_bubble.tscn" id="3_6sf8v"]
+[ext_resource type="Script" path="res://src/assistant/dorkus_assistant.gd" id="1_e2k48"]
+[ext_resource type="Texture2D" uid="uid://betc2soaua3ye" path="res://src/assistant/dorkus_idle.png" id="2_t8fey"]
+[ext_resource type="Texture2D" uid="uid://dri7sws27s5rk" path="res://src/assistant/speech_bubble.png" id="3_6vjop"]
+[ext_resource type="Texture2D" uid="uid://c7hiyllt1lugq" path="res://src/assistant/dorkus_wave.png" id="3_l84yw"]
 
 [sub_resource type="Animation" id="Animation_4rgpt"]
 length = 0.001
@@ -48,7 +49,9 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
-script = ExtResource("1_fs0nb")
+script = ExtResource("1_e2k48")
+idle_texture = ExtResource("2_t8fey")
+wave_texture = ExtResource("3_l84yw")
 
 [node name="Window" type="Window" parent="."]
 size = Vector2i(450, 350)
@@ -59,27 +62,56 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -177.0
-offset_top = -183.0
-offset_right = 1263.0
-offset_bottom = 1398.0
+offset_left = -270.0
+offset_top = -275.0
+offset_right = 242.0
+offset_bottom = 237.0
 grow_horizontal = 0
 grow_vertical = 0
-scale = Vector2(0.1, 0.1)
-texture = ExtResource("1_xftfd")
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_t8fey")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Window/Dorkus"]
 libraries = {
 "": SubResource("AnimationLibrary_6r8xo")
 }
 
-[node name="NotificationBubble" parent="Window" instance=ExtResource("3_6sf8v")]
+[node name="NotificationBubble" type="Control" parent="Window"]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_left = 100.0
+offset_right = 100.0
+
+[node name="TextureRect" type="TextureRect" parent="Window/NotificationBubble"]
+layout_mode = 0
+offset_left = 100.0
+offset_top = 110.0
+offset_right = 298.0
+offset_bottom = 332.0
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("3_6vjop")
+
+[node name="Label" type="Label" parent="Window/NotificationBubble"]
+visible = false
+layout_mode = 0
+offset_left = 44.0
+offset_top = 47.0
+offset_right = 244.0
+offset_bottom = 147.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "Thank you for using DorkusOBS!"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
 
 [node name="Button" type="Button" parent="Window"]
-offset_left = 273.0
-offset_top = 167.0
-offset_right = 368.0
-offset_bottom = 198.0
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -95.0
+offset_bottom = 31.0
+grow_horizontal = 0
 text = "Report Bug"
 
 [connection signal="pressed" from="Window/Button" to="." method="_on_button_pressed"]

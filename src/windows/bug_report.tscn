@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://bw3wfadanvtnd"]
+[gd_scene load_steps=2 format=3 uid="uid://dl35umym0tn8b"]
 
-[ext_resource type="Script" path="res://bug_report.gd" id="1_uvfit"]
+[ext_resource type="Script" path="res://src/windows/bug_report.gd" id="1_o6dvx"]
 
 [node name="BugReport" type="Control"]
 layout_mode = 3
@@ -11,7 +11,7 @@ offset_right = -160.0
 offset_bottom = -160.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_uvfit")
+script = ExtResource("1_o6dvx")
 
 [node name="Button" type="Button" parent="."]
 layout_mode = 1

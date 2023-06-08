@@ -2,7 +2,10 @@ extends Control
 
 signal notification_requested(text)
 
-const BUG_REPORT = preload("res://bug_report.tscn")
+const BUG_REPORT = preload("res://src/windows/bug_report.tscn")
+
+@export var idle_texture : Texture
+@export var wave_texture : Texture
 
 @onready var window = $Window
 @onready var dorkus = $Window/Dorkus
@@ -23,9 +26,11 @@ func _on_replay_buffer_saved():
 
 func _on_notification_requested(text : String):
 	notif_bubble.show()
+	dorkus.texture = wave_texture
 	notif_bubble.find_child("Label").text = text
 	await get_tree().create_timer(3).timeout
 	notif_bubble.hide()
+	dorkus.texture = idle_texture
 
 
 func _on_button_pressed():

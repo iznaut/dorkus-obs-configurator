@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d28vwijn84bgt"
-path="res://.godot/imported/Speech_bubble.svg-9e56994ae3280386e5170ac263d0f4fc.ctex"
+uid="uid://c7hiyllt1lugq"
+path="res://.godot/imported/dorkus_wave.png-1924daa5d22e1ea89bbb1d5406954f1b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Speech_bubble.svg"
-dest_files=["res://.godot/imported/Speech_bubble.svg-9e56994ae3280386e5170ac263d0f4fc.ctex"]
+source_file="res://src/assistant/dorkus_wave.png"
+dest_files=["res://.godot/imported/dorkus_wave.png-1924daa5d22e1ea89bbb1d5406954f1b.ctex"]
 
 [params]
 
@@ -32,6 +32,3 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
-svg/scale=1.0
-editor/scale_with_editor_scale=false
-editor/convert_colors_with_editor_theme=false

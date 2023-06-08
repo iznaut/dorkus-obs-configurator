@@ -1,7 +1,5 @@
 extends Control
 
-const FAVRO_API_URL = "https://favro.com/api/v1"
-
 @onready var fields = find_children("", "TextEdit", true)
 
 
@@ -12,9 +10,9 @@ func _submit_to_favro(data):
 
 	var body = JSON.stringify(data)
 	var error = http_request.request(
-		FAVRO_API_URL + "/cards",
+		Config.favro_api_url + "/cards",
 		[
-			"organizationId: 66677ef50e6be2449f09d991",
+			"organizationId: " + Config.favro_org_id,
 			"Authorization: Basic " + str(Marshalls.utf8_to_base64(str(Utility.get_user_config("Auth", "FavroEmail"), ":", Utility.get_user_config("Auth", "FavroToken")))),
 			"Content-Type: application/json"
 		],
