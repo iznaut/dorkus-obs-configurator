@@ -15,7 +15,7 @@ func _submit_to_favro(data):
 		FAVRO_API_URL + "/cards",
 		[
 			"organizationId: 66677ef50e6be2449f09d991",
-			"Authorization: Basic aXp6eUBub2dvYmxpbi5jb206b0JhTlJjLVJrektOV19RX1FBSTJsSUJOcFZkNmRSeUZUZnk0WEkxYkNTbQ==",
+			"Authorization: Basic " + str(Marshalls.utf8_to_base64(str(Utility.get_user_config("Auth", "FavroEmail"), ":", Utility.get_user_config("Auth", "FavroToken")))),
 			"Content-Type: application/json"
 		],
 			HTTPClient.METHOD_POST,
