@@ -2,27 +2,16 @@ extends Node
 
 signal main_ready
 
-
-const STATUS_WINDOW := preload("res://status_window.tscn")
+const STATUS_WINDOW := preload("res://src/assistant/dorkus_assistant.tscn")
 
 var status_window : Control
-var config = {
-		"json_path": "res://dorkus-obs/config/obs-studio/basic/scenes/NG3_Playtest.json",
-		"source_mappings": {
-			"image_source": {
-				"file": "dorkus-white.png"
-			},
-			"input-overlay": {
-				"io.overlay_image": "game-pad.png",
-				"io.layout_file": "game-pad.json",
-			},
-		},
-	}
 
 @onready var obs_helper = $OBSHelper
 
 
 func _ready():
+	DisplayServer.window_set_title("Dorkus Dashboard")
+
 	fix_sources()
 	get_tree().set_auto_accept_quit(false)
 	get_viewport().set_embedding_subwindows(false)
@@ -33,6 +22,7 @@ func _ready():
 	var window = status_window.window
 
 	window = window.get_viewport()
+	window.title = "Dorkus Assistant"
 	window.always_on_top = true
 	window.transparent = true
 	window.transparent_bg = true
@@ -44,13 +34,13 @@ func _ready():
 
 
 func fix_sources():
-	var original_contents : Variant = Utility.read_json(config.json_path)
-	Utility.write_json(config.json_path, replace_filepaths_in_json(original_contents))
+	var original_contents : Variant = Utility.read_json(Config.path_to_obs_scene)
+	Utility.write_json(Config.path_to_obs_scene, replace_filepaths_in_json(original_contents))
 
 
 func replace_filepaths_in_json(json_contents : Dictionary) -> Dictionary:
-	for source_id in config.source_mappings.keys():
-		var source_map = config.source_mappings[source_id]
+	for source_id in Config.source_remaps.keys():
+		var source_map = Config.source_remaps[source_id]
 		var source_index = _get_source_index(source_id, json_contents)
 
 		for item in source_map.keys():

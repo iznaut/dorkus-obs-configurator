@@ -1,7 +1,6 @@
 extends Node
 class_name Utility
 
-
 static func read_json(filepath) -> Dictionary:
 	var file = FileAccess.open(filepath, FileAccess.READ)
 	var json = JSON.new()

@@ -1,10 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://lgblb76jw4um"]
+[gd_scene load_steps=7 format=3 uid="uid://dpjin55j01txp"]
 
-[ext_resource type="Script" path="res://Main.gd" id="1_f67ty"]
-[ext_resource type="PackedScene" uid="uid://c36x7r08smn7g" path="res://StatusChecker.tscn" id="2_oc3fy"]
-[ext_resource type="PackedScene" uid="uid://d0o7l4mbvu3b6" path="res://recording_list_item.tscn" id="3_fv5qe"]
-[ext_resource type="Script" path="res://obs_helper.gd" id="4_ci20n"]
-[ext_resource type="PackedScene" uid="uid://cebgjvnptsywt" path="res://app_toggle.tscn" id="5_goggj"]
+[ext_resource type="Script" path="res://src/main.gd" id="1_6o7q2"]
+[ext_resource type="PackedScene" uid="uid://olo2kx8lki4n" path="res://src/ui_components/status_checker.tscn" id="2_qcguf"]
+[ext_resource type="PackedScene" uid="uid://cebgjvnptsywt" path="res://src/ui_components/app_toggle.tscn" id="3_76fo2"]
+[ext_resource type="Script" path="res://src/support/obs_helper.gd" id="4_mq548"]
+[ext_resource type="PackedScene" uid="uid://d0o7l4mbvu3b6" path="res://src/ui_components/recording_list_item.tscn" id="5_vevtb"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_70utc"]
 font_size = 20
@@ -16,7 +16,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_f67ty")
+script = ExtResource("1_6o7q2")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -44,14 +44,14 @@ text = "Config Checks"
 label_settings = SubResource("LabelSettings_70utc")
 horizontal_alignment = 1
 
-[node name="SaveCheck" parent="VBoxContainer/HBoxContainer/Config" instance=ExtResource("2_oc3fy")]
+[node name="SaveCheck" parent="VBoxContainer/HBoxContainer/Config" instance=ExtResource("2_qcguf")]
 layout_mode = 2
 offset_top = 35.0
 offset_right = 318.0
 offset_bottom = 61.0
 script = null
 
-[node name="AssetsCheck" parent="VBoxContainer/HBoxContainer/Config" instance=ExtResource("2_oc3fy")]
+[node name="AssetsCheck" parent="VBoxContainer/HBoxContainer/Config" instance=ExtResource("2_qcguf")]
 layout_mode = 2
 offset_top = 65.0
 offset_right = 318.0
@@ -89,22 +89,22 @@ offset_left = -269.0
 grow_horizontal = 0
 grow_vertical = 2
 
-[node name="AppToggle" parent="VBoxContainer/ExternalApps/VBoxContainer" instance=ExtResource("5_goggj")]
+[node name="AppToggle" parent="VBoxContainer/ExternalApps/VBoxContainer" instance=ExtResource("3_76fo2")]
 layout_mode = 2
 app_title = "OBS"
 target_file = "obs64.exe"
 auto_start = true
 
-[node name="AppToggle2" parent="VBoxContainer/ExternalApps/VBoxContainer" instance=ExtResource("5_goggj")]
+[node name="AppToggle2" parent="VBoxContainer/ExternalApps/VBoxContainer" instance=ExtResource("3_76fo2")]
 layout_mode = 2
 app_title = "NG3"
 target_file = "NG3Game.exe"
 
 [node name="OBSHelper" type="CanvasLayer" parent="." node_paths=PackedStringArray("app_toggle", "recording_list")]
-script = ExtResource("4_ci20n")
+script = ExtResource("4_mq548")
 app_toggle = NodePath("../VBoxContainer/ExternalApps/VBoxContainer/AppToggle")
 recording_list = NodePath("../VBoxContainer/HBoxContainer/Actions/RecordingList")
-recording_list_item = ExtResource("3_fv5qe")
+recording_list_item = ExtResource("5_vevtb")
 
 [node name="Button" type="Button" parent="."]
 visible = false
