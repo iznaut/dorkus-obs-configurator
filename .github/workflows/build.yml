@@ -1,14 +1,9 @@
 name: Build
 
-on:
+on: 
   push:
-    branches:
-      - main
-    paths-ignore: # do not build for game-irrelvant changes
-      - ".**"
-      - "LICENSE"
-      - "ACKNOWLEDGEMENTS"
-      - "**.md"
+    tags:
+    - '*'
 
 jobs:
   build:
