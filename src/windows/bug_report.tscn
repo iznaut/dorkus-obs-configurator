@@ -1,19 +1,26 @@
-[gd_scene load_steps=2 format=3 uid="uid://dl35umym0tn8b"]
+[gd_scene load_steps=3 format=3 uid="uid://dl35umym0tn8b"]
 
 [ext_resource type="Script" path="res://src/windows/bug_report.gd" id="1_o6dvx"]
+[ext_resource type="Script" path="res://src/windows/tab_fix.gd" id="2_0umfk"]
 
-[node name="BugReport" type="Control"]
+[node name="Control" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = -160.0
-offset_bottom = -160.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_o6dvx")
 
-[node name="Button" type="Button" parent="."]
+[node name="BugReport" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Button" type="Button" parent="BugReport"]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -26,7 +33,7 @@ grow_horizontal = 0
 grow_vertical = 0
 text = "Submit"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="BugReport"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -35,49 +42,55 @@ offset_bottom = -40.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="HBoxContainer" type="HSplitContainer" parent="VBoxContainer"]
+[node name="HBoxContainer" type="HSplitContainer" parent="BugReport/VBoxContainer"]
 layout_mode = 2
 split_offset = -100
 
-[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer"]
+[node name="Label" type="Label" parent="BugReport/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Title"
 
-[node name="name" type="TextEdit" parent="VBoxContainer/HBoxContainer"]
+[node name="name" type="TextEdit" parent="BugReport/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+focus_next = NodePath("../../HBoxContainer2/detailedDescription")
+script = ExtResource("2_0umfk")
 
-[node name="HBoxContainer2" type="HSplitContainer" parent="VBoxContainer"]
+[node name="HBoxContainer2" type="HSplitContainer" parent="BugReport/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 split_offset = -100
 
-[node name="Label2" type="Label" parent="VBoxContainer/HBoxContainer2"]
+[node name="Label2" type="Label" parent="BugReport/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Description"
 
-[node name="detailedDescription" type="TextEdit" parent="VBoxContainer/HBoxContainer2"]
+[node name="detailedDescription" type="TextEdit" parent="BugReport/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
+focus_previous = NodePath("../../HBoxContainer/name")
 wrap_mode = 1
 
-[node name="HBoxContainer3" type="HSplitContainer" parent="VBoxContainer"]
+[node name="HBoxContainer3" type="HSplitContainer" parent="BugReport/VBoxContainer"]
 layout_mode = 2
 split_offset = -100
 
-[node name="Label3" type="Label" parent="VBoxContainer/HBoxContainer3"]
+[node name="Label3" type="Label" parent="BugReport/VBoxContainer/HBoxContainer3"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Attachment"
 
-[node name="FileButton" type="Button" parent="VBoxContainer/HBoxContainer3"]
+[node name="FileButton" type="Button" parent="BugReport/VBoxContainer/HBoxContainer3"]
 layout_mode = 2
 size_flags_horizontal = 2
 size_flags_vertical = 0
+disabled = true
 text = "Select File..."
 
-[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/HBoxContainer3/FileButton" to="." method="_on_file_button_pressed"]
+[connection signal="pressed" from="BugReport/Button" to="." method="_on_button_pressed"]
+[connection signal="text_changed" from="BugReport/VBoxContainer/HBoxContainer/name" to="." method="_on_input_text_changed"]
+[connection signal="text_changed" from="BugReport/VBoxContainer/HBoxContainer2/detailedDescription" to="." method="_on_input_text_changed"]
+[connection signal="pressed" from="BugReport/VBoxContainer/HBoxContainer3/FileButton" to="BugReport" method="_on_file_button_pressed"]

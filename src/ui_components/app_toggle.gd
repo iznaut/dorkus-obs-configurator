@@ -93,6 +93,11 @@ func summon_file_dialog() -> FileDialog:
 
 func _notification(what):
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
-		print(OS.kill(app_process_id))
+		if button_pressed and app_process_id != -1:
+			OS.kill(app_process_id)
+
+		print(app_process_id)
+		if app_process_id == -1:
+			OS.alert("test")
 		
 		get_tree().quit() # default behavior
