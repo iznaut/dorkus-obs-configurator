@@ -1,8 +1,9 @@
-extends Node
+extends Control
 
 signal main_ready
 
 const STATUS_WINDOW := preload("res://src/assistant/dorkus_assistant.tscn")
+const POPUP_BASE := preload("res://src/windows/popup_base.tscn")
 
 @export var app_toggle_container : NodePath
 
@@ -13,16 +14,18 @@ var status_window : Control
 
 func _ready():
 	DisplayServer.window_set_title("Dorkus Dashboard")
+	size = Vector2i(640,480)
 
 	fix_sources()
 	get_tree().set_auto_accept_quit(false)
-	# get_viewport().set_embedding_subwindows(false)
 
 	status_window = STATUS_WINDOW.instantiate()
 
 	var window = Window.new()
 	# window.hide()
-	window.size = Vector2i(640,480)
+	# window.size = Vector2i(DisplayServer.screen_get_size() + Vector2i(1, 1))
+	# window.position = DisplayServer.screen_get_position()
+	window.size = Vector2i(200,200)
 	window.add_child(status_window, true)
 	add_child(window)
 
@@ -30,15 +33,18 @@ func _ready():
 
 	window = window.get_viewport()
 	window.title = "Dorkus Assistant"
+	# window.mouse_passthrough_polygon = status_window.get_node("Polygon2D").polygon
+	
+	var res := DisplayServer.screen_get_size()
+	window.position = res - window.size + Vector2i(0, res.y / 2 + 25)
+	obs_helper.replay_buffer_saved.connect(status_window._on_replay_buffer_saved)
+	# window.unfocusable = true
 	window.always_on_top = true
 	window.transparent = true
 	window.transparent_bg = true
 	window.borderless = true
-	var res := DisplayServer.screen_get_size()
-	window.position = res - window.size + Vector2i(0, res.y / 2 - 20)
-	print(window.position)
-	obs_helper.replay_buffer_saved.connect(status_window._on_replay_buffer_saved)
 	window.show()
+
 
 
 func fix_sources():
