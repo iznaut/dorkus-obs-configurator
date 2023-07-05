@@ -96,8 +96,8 @@ func _notification(what):
 		if button_pressed and app_process_id != -1:
 			OS.kill(app_process_id)
 
-		print(app_process_id)
-		if app_process_id == -1:
-			OS.alert("test")
+		# print(app_process_id)
+		# if app_process_id == -1:
+		# 	OS.alert("test")
 		
 		get_tree().quit() # default behavior

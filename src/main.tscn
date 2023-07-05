@@ -99,6 +99,7 @@ target_file = "obs64.exe"
 auto_start = true
 
 [node name="AppToggle2" parent="VBoxContainer/ExternalApps/VBoxContainer" instance=ExtResource("3_76fo2")]
+visible = false
 layout_mode = 2
 app_title = "NG3"
 target_file = "NG3Game.exe"
