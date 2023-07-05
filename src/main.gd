@@ -4,6 +4,8 @@ signal main_ready
 
 const STATUS_WINDOW := preload("res://src/assistant/dorkus_assistant.tscn")
 
+@export var app_toggle_container : NodePath
+
 var status_window : Control
 
 @onready var obs_helper = $OBSHelper
@@ -14,12 +16,17 @@ func _ready():
 
 	fix_sources()
 	get_tree().set_auto_accept_quit(false)
-	get_viewport().set_embedding_subwindows(false)
+	# get_viewport().set_embedding_subwindows(false)
 
 	status_window = STATUS_WINDOW.instantiate()
-	add_child(status_window, true)
 
-	var window = status_window.window
+	var window = Window.new()
+	# window.hide()
+	window.size = Vector2i(640,480)
+	window.add_child(status_window, true)
+	add_child(window)
+
+	# var window = status_window.window
 
 	window = window.get_viewport()
 	window.title = "Dorkus Assistant"
@@ -28,9 +35,10 @@ func _ready():
 	window.transparent_bg = true
 	window.borderless = true
 	var res := DisplayServer.screen_get_size()
-	window.position = res - window.size + Vector2i(0, res.y / 2)
+	window.position = res - window.size + Vector2i(0, res.y / 2 - 20)
 	print(window.position)
 	obs_helper.replay_buffer_saved.connect(status_window._on_replay_buffer_saved)
+	window.show()
 
 
 func fix_sources():
@@ -83,3 +91,12 @@ func _set_json_path(dict, keypath, value) -> Variant:
 
 func _on_app_toggle_app_started():
 	pass # Replace with function body.
+
+
+# func _notification(what):
+# 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+# 		var ready_to_close := true
+
+# 		for app_toggle in get_node(app_toggle_container).get_children():
+# 			if app_toggle.app_process_id != -1:
+				

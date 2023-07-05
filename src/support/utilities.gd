@@ -47,10 +47,13 @@ static func write_config_file(config_key : String, new_contents : Variant):
 
 
 static func globalize_path(path : String) -> String:
-	path = path.replace("res://", "")
+	var is_user_path = path.contains("user://")
+	var uri = "user://" if is_user_path else "res://"
+
+	path = path.replace(uri, "")
 
 	if OS.has_feature("editor"):
-		return ProjectSettings.globalize_path("res://%s" % path)
+		return ProjectSettings.globalize_path(uri + path)
 	else:
 		return OS.get_executable_path().get_base_dir().path_join(path)
 

@@ -1,5 +1,8 @@
 extends Control
 
+signal user_submitted
+signal user_typed
+
 @onready var fields = find_children("", "TextEdit", true)
 
 
@@ -33,14 +36,15 @@ func _http_request_completed(result, response_code, headers, body):
 	print(response_code)
 
 
-
 func _on_button_pressed():
 	var data = {}
 
 	for field in fields:
 		data[field.name] = field.text
+		field.text = ""
 
 	_submit_to_favro(data)
+	user_submitted.emit()
 
 
 func _on_file_button_pressed():
@@ -57,3 +61,7 @@ func _on_file_button_pressed():
 	dialog.file_selected.connect(func(path): print(path))
 		
 	await dialog.file_selected
+
+
+func _on_input_text_changed():
+	user_typed.emit()
