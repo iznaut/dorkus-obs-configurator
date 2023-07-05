@@ -2,8 +2,8 @@ extends Control
 
 signal notification_requested(text)
 
-const BUG_REPORT = preload("res://src/windows/bug_report.tscn")
-# const POPUP = preload("res://src/windows/popup_base.tscn")
+const BUG_REPORT = preload("res://src/windows/bug_report_window.tscn")
+const POPUP = preload("res://src/windows/popup_base.tscn")
 
 enum AnimState {
 	IDLE,
@@ -21,6 +21,7 @@ enum AnimState {
 @export var button_close : String = "Close Task Window"
 
 @export_category("Assistant Config")
+@export var menu_scene : PackedScene
 @export var texture_lookup : Array[Texture]
 
 var anim_state : AnimState:
@@ -31,14 +32,24 @@ var anim_state : AnimState:
 @onready var dorkus = $CharacterGroup/Dorkus
 @onready var notif_bubble = $CharacterGroup/SpeechBubble
 @onready var bug_button = $Button
-@onready var bug_form = $BugReport
 @onready var timer = $Timer
+@onready var parent_window = get_parent()
+
+var bug_form : PopupPanel
+var open_menu : PopupMenu
 
 
 func _ready():
 	notification_requested.connect(_on_notification_requested)
 	# await get_tree().create_timer(3).timeout
 	# notif_bubble.hide()
+
+	bug_form = BUG_REPORT.instantiate()
+	parent_window.add_child.call_deferred(bug_form)
+	bug_form.about_to_popup.connect(_on_bug_report_popup)
+	bug_form.popup_hide.connect(_on_bug_report_hide)
+	bug_form.get_node("Control").user_typed.connect(_on_bug_report_user_typed)
+	bug_form.get_node("Control").user_submitted.connect(_on_bug_report_user_submitted)
 
 
 func _on_replay_buffer_saved():
@@ -58,23 +69,30 @@ func _on_notification_requested(new_anim_state : AnimState, text : String = ""):
 	anim_state = AnimState.IDLE
 
 
-func _on_button_pressed():
-	bug_form.visible = !bug_form.visible
+# func _on_button_pressed():
+# 	bug_form.visible = !bug_form.visible
 
 
-func _on_bug_report_visibility_changed():
-	if bug_form.visible:
-		bug_button.text = button_close
-		anim_state = AnimState.WRITING_UP
-	else:
-		timer.stop()
-		bug_button.text = button_open
-		anim_state = AnimState.IDLE
+func _on_bug_report_popup():
+	# bug_button.text = button_close
+	anim_state = AnimState.WRITING_UP
+
+func _on_bug_report_hide():
+	timer.stop()
+	# bug_button.text = button_open
+	anim_state = AnimState.IDLE
 
 
 func _on_dorkus_gui_input(event):
-	if event is InputEventMouseButton and event.button_index == 2:
-		OS.shell_open(Utility.globalize_path("user://user.cfg"))
+	if event is InputEventMouseButton:
+		if event.button_index == 1 and event.pressed:
+			
+			# bug_form.position = global_position
+
+			if not bug_form.visible:
+				bug_form.popup()
+		if event.button_index == 2:
+			OS.shell_open(Utility.globalize_path("user://user.cfg"))
 
 
 func _on_bug_report_user_submitted():

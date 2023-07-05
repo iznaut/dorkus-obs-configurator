@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://d3utvr4065jyw"]
+
+[ext_resource type="PackedScene" uid="uid://dl35umym0tn8b" path="res://src/windows/bug_report.tscn" id="1_qp4yw"]
+
+[node name="Window" type="PopupPanel"]
+initial_position = 2
+size = Vector2i(500, 300)
+
+[node name="Control" parent="." instance=ExtResource("1_qp4yw")]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 496.0
+offset_bottom = 296.0
+grow_horizontal = 2
+grow_vertical = 2

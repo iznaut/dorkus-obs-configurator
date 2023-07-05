@@ -1,15 +1,15 @@
 [gd_scene load_steps=14 format=3 uid="uid://shks817s0jup"]
 
 [ext_resource type="Script" path="res://src/assistant/dorkus_assistant.gd" id="1_e2k48"]
+[ext_resource type="PackedScene" uid="uid://dh02bou1qlvfm" path="res://src/windows/assistant_menu.tscn" id="2_407pk"]
 [ext_resource type="Texture2D" uid="uid://d1ksgw06gjrd5" path="res://src/assistant/T_Dorkus_Idle.png" id="2_ywmdv"]
 [ext_resource type="Texture2D" uid="uid://bgti5t7i22lgv" path="res://src/assistant/T_Dorkus_Speaking.png" id="3_7w6i2"]
 [ext_resource type="Texture2D" uid="uid://ceesgxtwuypmd" path="res://src/assistant/T_Dorkus_SubmitBug_Blank.png" id="4_64lrn"]
 [ext_resource type="Texture2D" uid="uid://6wtlqdb0owx7" path="res://src/assistant/T_Dorkus_SubmitBug.png" id="5_bijar"]
 [ext_resource type="Texture2D" uid="uid://7o1iohkadxtp" path="res://src/assistant/T_Dorkus_Writing.png" id="6_gcmcg"]
 [ext_resource type="Texture2D" uid="uid://bj1ej1it4g5mn" path="res://src/assistant/T_TextBubble.png" id="7_blt3i"]
-[ext_resource type="Texture2D" uid="uid://cpe5egje8m5h0" path="res://src/assistant/T_Dorkus_WritingDown1.png" id="7_qw64y"]
-[ext_resource type="Texture2D" uid="uid://ba7aucxpluk5o" path="res://src/assistant/T_Dorkus_WritingDown2.png" id="8_7xmnb"]
-[ext_resource type="PackedScene" uid="uid://dl35umym0tn8b" path="res://src/windows/bug_report.tscn" id="8_rb3e7"]
+[ext_resource type="Texture2D" uid="uid://bhrrpj522xcyj" path="res://src/assistant/T_Dorkus_WritingDown1.png" id="7_qw64y"]
+[ext_resource type="Texture2D" uid="uid://chwck4g268iwu" path="res://src/assistant/T_Dorkus_WritingDown2.png" id="8_7xmnb"]
 
 [sub_resource type="Animation" id="Animation_4rgpt"]
 length = 0.001
@@ -52,12 +52,11 @@ _data = {
 
 [node name="Assistant" type="Control"]
 layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+anchors_preset = 0
+offset_right = 180.0
+offset_bottom = 180.0
 script = ExtResource("1_e2k48")
+menu_scene = ExtResource("2_407pk")
 texture_lookup = Array[Texture]([ExtResource("2_ywmdv"), ExtResource("3_7w6i2"), ExtResource("4_64lrn"), ExtResource("5_bijar"), ExtResource("6_gcmcg"), ExtResource("7_qw64y"), ExtResource("8_7xmnb")])
 
 [node name="CharacterGroup" type="Control" parent="."]
@@ -69,14 +68,15 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 0
 grow_vertical = 0
+metadata/_edit_group_ = true
 
 [node name="SpeechBubble" type="TextureRect" parent="CharacterGroup"]
 visible = false
 layout_mode = 0
-offset_left = -202.0
-offset_top = -206.0
-offset_right = 987.0
-offset_bottom = 860.0
+offset_left = -200.0
+offset_top = -200.0
+offset_right = 989.0
+offset_bottom = 866.0
 scale = Vector2(0.1, 0.1)
 texture = ExtResource("7_blt3i")
 stretch_mode = 2
@@ -100,11 +100,18 @@ vertical_alignment = 1
 autowrap_mode = 2
 
 [node name="Dorkus" type="TextureRect" parent="CharacterGroup"]
-layout_mode = 0
-offset_left = -202.0
-offset_top = -206.0
-offset_right = 1846.0
-offset_bottom = 1842.0
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -200.0
+offset_top = -200.0
+offset_right = 1848.0
+offset_bottom = 1848.0
+grow_horizontal = 0
+grow_vertical = 0
 scale = Vector2(0.1, 0.1)
 texture = ExtResource("2_ywmdv")
 
@@ -114,39 +121,29 @@ libraries = {
 }
 
 [node name="Button" type="Button" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -115.0
-offset_top = -63.0
-offset_right = 31.0
-offset_bottom = -32.0
+offset_left = -68.0
+offset_top = -35.0
+offset_right = 78.0
+offset_bottom = -4.0
 grow_horizontal = 2
 grow_vertical = 0
 text = "Create Favro Task"
 
-[node name="BugReport" parent="." instance=ExtResource("8_rb3e7")]
-visible = false
-anchors_preset = 0
-anchor_right = 0.0
-anchor_bottom = 0.0
-offset_left = 70.0
-offset_top = 199.0
-offset_right = 470.0
-offset_bottom = 399.0
-grow_horizontal = 1
-grow_vertical = 1
-mouse_filter = 1
-
 [node name="Timer" type="Timer" parent="."]
 wait_time = 0.75
 
+[node name="Polygon2D" type="Polygon2D" parent="."]
+position = Vector2(-9, -11.7873)
+color = Color(1, 1, 1, 0)
+polygon = PackedVector2Array(35, 176.813, 184, 177.769, 188, 49.6988, 49, 47.7873)
+
 [connection signal="gui_input" from="CharacterGroup/Dorkus" to="." method="_on_dorkus_gui_input"]
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
-[connection signal="user_submitted" from="BugReport" to="." method="_on_bug_report_user_submitted"]
-[connection signal="user_typed" from="BugReport" to="." method="_on_bug_report_user_typed"]
-[connection signal="visibility_changed" from="BugReport" to="." method="_on_bug_report_visibility_changed"]
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

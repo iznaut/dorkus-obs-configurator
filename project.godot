@@ -21,9 +21,11 @@ Config="*res://src/config.tscn"
 
 [display]
 
-window/size/viewport_width=640
-window/size/viewport_height=480
+window/size/viewport_width=0
+window/size/viewport_height=0
 window/size/transparent=true
+window/size/window_width_override=640
+window/size/window_height_override=480
 window/subwindows/embed_subwindows=false
 window/per_pixel_transparency/allowed=true
 
