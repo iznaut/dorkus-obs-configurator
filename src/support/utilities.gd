@@ -23,6 +23,10 @@ static func read_ini(filepath : String):
 	return config
 
 
+static func does_config_exist():
+	return FileAccess.file_exists("user://user.cfg")
+
+
 static func read_config_file(config_key : String) -> Variant:
 	var paths := read_json("res://paths.json")
 	var filepath : String = paths[config_key]

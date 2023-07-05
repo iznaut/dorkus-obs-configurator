@@ -9,7 +9,7 @@
 [sub_resource type="LabelSettings" id="LabelSettings_70utc"]
 font_size = 20
 
-[node name="Node" type="Control"]
+[node name="Node" type="Control" node_paths=PackedStringArray("steam_button")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -20,6 +20,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_6o7q2")
 app_toggle_container = NodePath("VBoxContainer/ExternalApps/VBoxContainer")
+steam_button = NodePath("VBoxContainer/SteamRunButton")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -28,6 +29,21 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="SteamRunButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+text = "Run Game via Steam"
+
+[node name="BugReportButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+text = "Submit Favro Task	"
+
+[node name="RecordingsButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+text = "Open Recordings Folder"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -72,11 +88,6 @@ text = "New Recordings This Session"
 [node name="RecordingList" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/Actions"]
 layout_mode = 2
 
-[node name="RecordingsButton" type="Button" parent="VBoxContainer"]
-layout_mode = 2
-focus_mode = 0
-text = "Open Recordings Folder"
-
 [node name="ExternalApps" type="Control" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -97,12 +108,6 @@ layout_mode = 2
 app_title = "OBS"
 target_file = "obs64.exe"
 auto_start = true
-
-[node name="AppToggle2" parent="VBoxContainer/ExternalApps/VBoxContainer" instance=ExtResource("3_76fo2")]
-visible = false
-layout_mode = 2
-app_title = "NG3"
-target_file = "NG3Game.exe"
 
 [node name="OBSHelper" type="CanvasLayer" parent="." node_paths=PackedStringArray("app_toggle", "recording_list")]
 script = ExtResource("4_mq548")
@@ -130,4 +135,6 @@ offset_bottom = 127.0
 text = "test"
 uri = "steam://rungameid/897160"
 
+[connection signal="pressed" from="VBoxContainer/SteamRunButton" to="." method="_on_steam_run_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/BugReportButton" to="." method="_on_bug_report_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/RecordingsButton" to="OBSHelper" method="_on_recordings_button_pressed"]

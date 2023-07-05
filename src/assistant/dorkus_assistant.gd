@@ -3,7 +3,6 @@ extends Control
 signal notification_requested(text)
 
 const BUG_REPORT = preload("res://src/windows/bug_report_window.tscn")
-const POPUP = preload("res://src/windows/popup_base.tscn")
 
 enum AnimState {
 	IDLE,
@@ -44,12 +43,7 @@ func _ready():
 	# await get_tree().create_timer(3).timeout
 	# notif_bubble.hide()
 
-	bug_form = BUG_REPORT.instantiate()
-	parent_window.add_child.call_deferred(bug_form)
-	bug_form.about_to_popup.connect(_on_bug_report_popup)
-	bug_form.popup_hide.connect(_on_bug_report_hide)
-	bug_form.get_node("Control").user_typed.connect(_on_bug_report_user_typed)
-	bug_form.get_node("Control").user_submitted.connect(_on_bug_report_user_submitted)
+
 
 
 func _on_replay_buffer_saved():
@@ -83,20 +77,20 @@ func _on_bug_report_hide():
 	anim_state = AnimState.IDLE
 
 
-func _on_dorkus_gui_input(event):
-	if event is InputEventMouseButton:
-		if event.button_index == 1 and event.pressed:
+# func _on_dorkus_gui_input(event):
+# 	if event is InputEventMouseButton:
+# 		if event.button_index == 1 and event.pressed:
 			
-			# bug_form.position = global_position
+# 			# bug_form.position = global_position
 
-			if not bug_form.visible:
-				bug_form.popup()
-		if event.button_index == 2:
-			OS.shell_open(Utility.globalize_path("user://user.cfg"))
+# 			if not bug_form.visible:
+# 				bug_form.popup()
+# 		if event.button_index == 2:
+# 			OS.shell_open(Utility.globalize_path("user://user.cfg"))
 
 
 func _on_bug_report_user_submitted():
-	bug_form.hide()
+	# bug_form.hide()
 	notification_requested.emit(AnimState.NOTEPAD_BUG)
 
 

@@ -2,49 +2,68 @@ extends Control
 
 signal main_ready
 
-const STATUS_WINDOW := preload("res://src/assistant/dorkus_assistant.tscn")
-const POPUP_BASE := preload("res://src/windows/popup_base.tscn")
+const ASSISTANT_SCENE := preload("res://src/assistant/dorkus_assistant.tscn")
+const BUG_REPORT = preload("res://src/windows/bug_report_window.tscn")
 
 @export var app_toggle_container : NodePath
+@export var steam_button : Button
 
-var status_window : Control
+var assistant : Control
+var bug_form : PopupPanel
 
 @onready var obs_helper = $OBSHelper
 
 
 func _ready():
-	DisplayServer.window_set_title("Dorkus Dashboard")
+	if not Utility.does_config_exist():
+		var content = FileAccess.get_file_as_string("res://config_template.cfg")
+		var new_config = FileAccess.open("user://user.cfg", FileAccess.WRITE)
+		new_config.store_string(content)
+		new_config.close()
+
+	DisplayServer.window_set_title("Dorkus Assistant")
 	size = Vector2i(640,480)
 
 	fix_sources()
 	get_tree().set_auto_accept_quit(false)
 
-	status_window = STATUS_WINDOW.instantiate()
+	create_assistant()
 
-	var window = Window.new()
-	# window.hide()
-	# window.size = Vector2i(DisplayServer.screen_get_size() + Vector2i(1, 1))
-	# window.position = DisplayServer.screen_get_position()
-	window.size = Vector2i(200,200)
-	window.add_child(status_window, true)
-	add_child(window)
+	bug_form = BUG_REPORT.instantiate()
+	get_window().add_child.call_deferred(bug_form)
+	bug_form.about_to_popup.connect(assistant._on_bug_report_popup)
+	bug_form.popup_hide.connect(assistant._on_bug_report_hide)
+	bug_form.get_node("Control").user_typed.connect(assistant._on_bug_report_user_typed)
+	bug_form.get_node("Control").user_submitted.connect(_on_bug_report_user_submitted)
 
-	# var window = status_window.window
 
-	window = window.get_viewport()
-	window.title = "Dorkus Assistant"
-	# window.mouse_passthrough_polygon = status_window.get_node("Polygon2D").polygon
+func create_assistant():
+	# create window for dorkus and save reference to his node
+	var assistant_window = Window.new()
+	assistant = ASSISTANT_SCENE.instantiate()
+
+	# resize window to fit dorkus and add him to it
+	assistant_window.size = assistant.size
+	assistant_window.add_child(assistant, true)
+	add_child(assistant_window)
 	
+	# TODO - find less bad way of aligning to taskbar/screen edge
 	var res := DisplayServer.screen_get_size()
-	window.position = res - window.size + Vector2i(0, res.y / 2 + 25)
-	obs_helper.replay_buffer_saved.connect(status_window._on_replay_buffer_saved)
-	# window.unfocusable = true
-	window.always_on_top = true
-	window.transparent = true
-	window.transparent_bg = true
-	window.borderless = true
-	window.show()
+	@warning_ignore("integer_division")
+	assistant_window.position = res - assistant_window.size + Vector2i(0, res.y / 2 + 5)
 
+	# override a bunch of options for assistant window
+	assistant_window.unfocusable = true
+	assistant_window.always_on_top = true
+	assistant_window.transparent = true
+	assistant_window.transparent_bg = true
+	assistant_window.borderless = true
+	assistant_window.exclusive = true
+	assistant_window.popup_window = true
+	assistant_window.show()
+
+	# connect signals
+	obs_helper.replay_buffer_saved.connect(assistant._on_replay_buffer_saved)
 
 
 func fix_sources():
@@ -106,3 +125,28 @@ func _on_app_toggle_app_started():
 # 		for app_toggle in get_node(app_toggle_container).get_children():
 # 			if app_toggle.app_process_id != -1:
 				
+
+func _on_bug_report_button_pressed():
+	var favro_email = Utility.get_user_config("Auth", "FavroEmail")
+	var favro_token = Utility.get_user_config("Auth", "FavroToken")
+	
+	if favro_email == "" or favro_token == "":
+		OS.shell_open(Utility.globalize_path("user://user.cfg"))
+	else:
+		bug_form.popup()
+
+
+func _on_bug_report_user_submitted():
+	bug_form.hide()
+	assistant.notification_requested.emit(assistant.AnimState.NOTEPAD_BUG)
+
+
+func _on_steam_run_button_pressed():
+	var steam_app_id = Utility.get_user_config("SteamConfig", "AppID")
+
+	if steam_app_id == "":
+		OS.shell_open(Utility.globalize_path("user://user.cfg"))
+	else:
+		OS.shell_open("steam://rungameid/" + steam_app_id)
+		steam_button.disabled = true
+
