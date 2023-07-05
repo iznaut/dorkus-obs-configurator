@@ -14,11 +14,12 @@ var app_process_id : int = -1
 
 
 func _ready():
-	if Utility.get_user_config("AppPaths", app_title) == "":
-		Utility.set_user_config("AppPaths", app_title, Utility.globalize_path("res://dorkus-obs/bin/64bit/obs64.exe"))
+	app_path = Utility.globalize_path("res://dorkus-obs/bin/64bit/obs64.exe")
+# 	if Utility.get_user_config("AppPaths", app_title) == "":
+# 		Utility.set_user_config("AppPaths", app_title, Utility.globalize_path("res://dorkus-obs/bin/64bit/obs64.exe"))
 
-	text = text.replace("[AppName]", app_title)
-	app_path = Utility.get_user_config("AppPaths", app_title)
+# 	text = text.replace("[AppName]", app_title)
+# 	app_path = Utility.get_user_config("AppPaths", app_title)
 
 
 func _process(_delta):
@@ -39,7 +40,7 @@ func _on_toggled(is_newly_pressed : bool):
 	if app_path == "":
 		var dialog = summon_file_dialog()
 
-		dialog.file_selected.connect(func(path): Utility.set_user_config("AppPaths", app_title, path); app_path = path)
+		# dialog.file_selected.connect(func(path): Utility.set_user_config("AppPaths", app_title, path); app_path = path)
 		
 		await dialog.file_selected
 

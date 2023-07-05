@@ -1,6 +1,0 @@
-[gd_scene format=3 uid="uid://4b0o85mx2str"]
-
-[node name="Popup" type="Popup"]
-initial_position = 2
-title = "Dorkus Assistant"
-mode = 2

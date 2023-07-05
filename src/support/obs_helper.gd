@@ -17,7 +17,7 @@ var user_recording_path : String
 func _ready():
 	app_toggle.app_started.connect(connect_websocket)
 
-	user_recording_path = Utility.get_user_config("Cached", "RecFilePath")
+	# user_recording_path = Utility.get_user_config("Cached", "RecFilePath")
 
 
 func connect_websocket() -> void:
@@ -51,7 +51,7 @@ func _on_obs_data_recieved(data):
 			default_recording_path = data.responseData.defaultParameterValue
 			user_recording_path = data.responseData.parameterValue
 
-			Utility.set_user_config("Cached", "RecFilePath", user_recording_path)
+			# Utility.set_user_config("Cached", "RecFilePath", user_recording_path)
 	if data.has("eventType"):
 		print(data.eventType)
 
