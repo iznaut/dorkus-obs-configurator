@@ -1,7 +1,7 @@
 [gd_scene load_steps=14 format=3 uid="uid://shks817s0jup"]
 
 [ext_resource type="Script" path="res://src/assistant/dorkus_assistant.gd" id="1_e2k48"]
-[ext_resource type="PackedScene" uid="uid://dh02bou1qlvfm" path="res://src/windows/assistant_menu.tscn" id="2_407pk"]
+[ext_resource type="PackedScene" path="res://src/windows/assistant_menu.tscn" id="2_407pk"]
 [ext_resource type="Texture2D" uid="uid://d1ksgw06gjrd5" path="res://src/assistant/T_Dorkus_Idle.png" id="2_ywmdv"]
 [ext_resource type="Texture2D" uid="uid://bgti5t7i22lgv" path="res://src/assistant/T_Dorkus_Speaking.png" id="3_7w6i2"]
 [ext_resource type="Texture2D" uid="uid://ceesgxtwuypmd" path="res://src/assistant/T_Dorkus_SubmitBug_Blank.png" id="4_64lrn"]

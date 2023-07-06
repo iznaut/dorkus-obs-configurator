@@ -128,6 +128,7 @@ text = "⚙"
 
 [node name="LinkButton" type="LinkButton" parent="."]
 visible = false
+layout_mode = 0
 offset_left = 146.0
 offset_top = 87.0
 offset_right = 186.0
