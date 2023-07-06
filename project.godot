@@ -1,7 +1,7 @@
 ; Engine configuration file.
 ; It's best edited using the editor UI and not directly,
 ; since the parameters that go here are not all obvious.
-; 
+;
 ; Format:
 ;   [section] ; section goes between []
 ;   param=value ; assign values to parameters
@@ -26,8 +26,8 @@ window/size/viewport_height=0
 window/size/transparent=true
 window/size/window_width_override=640
 window/size/window_height_override=480
-window/subwindows/embed_subwindows=false
 window/per_pixel_transparency/allowed=true
+window/subwindows/embed_subwindows=false
 
 [editor_plugins]
 

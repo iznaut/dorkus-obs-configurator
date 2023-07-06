@@ -1,0 +1,149 @@
+[gd_scene load_steps=5 format=3 uid="uid://ct80nbjxhf7hw"]
+
+[ext_resource type="Texture2D" uid="uid://dcrtn3rybu08x" path="res://src/windows/T_DorkusAssist_Button.png" id="2_qj5w0"]
+[ext_resource type="Texture2D" uid="uid://b5tfjouj383e" path="res://src/windows/T_DorkusAssist_Button_Pressed.png" id="3_dbcao"]
+[ext_resource type="Texture2D" uid="uid://cd70vexjxa6nk" path="res://src/windows/T_DorkusAssist_Button_Hover.png" id="4_gqs5t"]
+[ext_resource type="FontFile" uid="uid://b5bm4jqpmlyx8" path="res://src/windows/Lemon Days.ttf" id="5_jgsx4"]
+
+[node name="AssistMenu_Main" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+
+[node name="GridContainer" type="GridContainer" parent="."]
+layout_mode = 1
+offset_right = 875.0
+offset_bottom = 832.0
+columns = 3
+
+[node name="Box1" type="VBoxContainer" parent="GridContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TextureButton1" type="TextureButton" parent="GridContainer/Box1"]
+layout_mode = 2
+texture_normal = ExtResource("2_qj5w0")
+texture_pressed = ExtResource("3_dbcao")
+texture_hover = ExtResource("4_gqs5t")
+
+[node name="Label" type="Label" parent="GridContainer/Box1"]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.470588)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/shadow_outline_size = 6
+theme_override_fonts/font = ExtResource("5_jgsx4")
+theme_override_font_sizes/font_size = 32
+text = "Launch OBS"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Box2" type="VBoxContainer" parent="GridContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TextureButton2" type="TextureButton" parent="GridContainer/Box2"]
+layout_mode = 2
+texture_normal = ExtResource("2_qj5w0")
+texture_pressed = ExtResource("3_dbcao")
+texture_hover = ExtResource("4_gqs5t")
+
+[node name="Label" type="Label" parent="GridContainer/Box2"]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.470588)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/shadow_outline_size = 6
+theme_override_fonts/font = ExtResource("5_jgsx4")
+theme_override_font_sizes/font_size = 32
+text = "Launch Game"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Box3" type="VBoxContainer" parent="GridContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TextureButton3" type="TextureButton" parent="GridContainer/Box3"]
+layout_mode = 2
+texture_normal = ExtResource("2_qj5w0")
+texture_pressed = ExtResource("3_dbcao")
+texture_hover = ExtResource("4_gqs5t")
+
+[node name="Label" type="Label" parent="GridContainer/Box3"]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.470588)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/shadow_outline_size = 6
+theme_override_fonts/font = ExtResource("5_jgsx4")
+theme_override_font_sizes/font_size = 32
+text = "Open 
+Recordings"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Box4" type="VBoxContainer" parent="GridContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TextureButton4" type="TextureButton" parent="GridContainer/Box4"]
+layout_mode = 2
+texture_normal = ExtResource("2_qj5w0")
+texture_pressed = ExtResource("3_dbcao")
+texture_hover = ExtResource("4_gqs5t")
+
+[node name="Label" type="Label" parent="GridContainer/Box4"]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.470588)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/shadow_outline_size = 6
+theme_override_fonts/font = ExtResource("5_jgsx4")
+theme_override_font_sizes/font_size = 32
+text = "Submit Bug"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Box5" type="VBoxContainer" parent="GridContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TextureButton5" type="TextureButton" parent="GridContainer/Box5"]
+layout_mode = 2
+texture_normal = ExtResource("2_qj5w0")
+texture_pressed = ExtResource("3_dbcao")
+texture_hover = ExtResource("4_gqs5t")
+
+[node name="Label" type="Label" parent="GridContainer/Box5"]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.470588)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/shadow_outline_size = 6
+theme_override_fonts/font = ExtResource("5_jgsx4")
+theme_override_font_sizes/font_size = 32
+text = "Open Bug Tracker"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Box6" type="VBoxContainer" parent="GridContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TextureButton6" type="TextureButton" parent="GridContainer/Box6"]
+layout_mode = 2
+texture_normal = ExtResource("2_qj5w0")
+texture_pressed = ExtResource("3_dbcao")
+texture_hover = ExtResource("4_gqs5t")
+
+[node name="Label" type="Label" parent="GridContainer/Box6"]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.470588)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/shadow_outline_size = 6
+theme_override_fonts/font = ExtResource("5_jgsx4")
+theme_override_font_sizes/font_size = 32
+text = "Extra"
+horizontal_alignment = 1
+autowrap_mode = 2
