@@ -1,13 +1,18 @@
-[gd_scene load_steps=7 format=3 uid="uid://1e8aw80ftv2k"]
+[gd_scene load_steps=12 format=3 uid="uid://1e8aw80ftv2k"]
 
-[ext_resource type="Script" path="res://src/windows/assist_menu_main.gd" id="1_qanq8"]
+[ext_resource type="Script" path="res://src/main.gd" id="1_61k2l"]
 [ext_resource type="Texture2D" uid="uid://emvk41phg2yu" path="res://src/windows/T_DorkusAssist_Body.png" id="2_m5qbg"]
 [ext_resource type="Texture2D" uid="uid://dpuiasj05yro3" path="res://src/windows/T_DorkusAssist_QuitButton.png" id="3_vaewv"]
 [ext_resource type="Texture2D" uid="uid://dimi4mwhkrxss" path="res://src/windows/T_DorkusAssist_QuitButton_Press.png" id="4_l1v44"]
 [ext_resource type="Texture2D" uid="uid://cr4sjljchtged" path="res://src/windows/T_DorkusAssist_QuitButton_Hover.png" id="5_thc0t"]
+[ext_resource type="Script" path="res://src/windows/close_button.gd" id="6_b5rl0"]
 [ext_resource type="PackedScene" uid="uid://dqmg6cr3yvt8i" path="res://src/windows/assist_menu_button.tscn" id="6_pvnsc"]
+[ext_resource type="PackedScene" uid="uid://cebgjvnptsywt" path="res://src/ui_components/app_toggle.tscn" id="7_ftioh"]
+[ext_resource type="Script" path="res://src/support/obs_helper.gd" id="7_xw3a0"]
+[ext_resource type="PackedScene" uid="uid://d0o7l4mbvu3b6" path="res://src/ui_components/recording_list_item.tscn" id="8_4v1ai"]
+[ext_resource type="Texture2D" uid="uid://dprnlcveik064" path="res://src/windows/T_DorkusAssist_CheckMark.png" id="8_ipceo"]
 
-[node name="AssistMenu_Main" type="Control"]
+[node name="AssistMenu_Main" type="Control" node_paths=PackedStringArray("steam_button")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -16,7 +21,8 @@ offset_right = 398.0
 offset_bottom = 339.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_qanq8")
+script = ExtResource("1_61k2l")
+steam_button = NodePath("GridContainer/MenuButton2")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 2
@@ -44,6 +50,7 @@ scale = Vector2(0.25, 0.25)
 texture_normal = ExtResource("3_vaewv")
 texture_pressed = ExtResource("4_l1v44")
 texture_hover = ExtResource("5_thc0t")
+script = ExtResource("6_b5rl0")
 
 [node name="GridContainer" type="GridContainer" parent="."]
 layout_mode = 1
@@ -63,6 +70,14 @@ metadata/_edit_group_ = true
 [node name="MenuButton" parent="GridContainer" instance=ExtResource("6_pvnsc")]
 layout_mode = 2
 label_string = "Launch OBS"
+icon_texture = ExtResource("8_ipceo")
+
+[node name="AppToggle" parent="GridContainer/MenuButton" instance=ExtResource("7_ftioh")]
+visible = false
+layout_mode = 0
+app_title = "OBS"
+target_file = "obs64.exe"
+auto_start = true
 
 [node name="MenuButton2" parent="GridContainer" instance=ExtResource("6_pvnsc")]
 layout_mode = 2
@@ -79,3 +94,13 @@ label_string = "Submit Task"
 [node name="MenuButton5" parent="GridContainer" instance=ExtResource("6_pvnsc")]
 layout_mode = 2
 label_string = "Open Favro"
+
+[node name="OBSHelper" type="CanvasLayer" parent="." node_paths=PackedStringArray("app_toggle", "recording_list")]
+script = ExtResource("7_xw3a0")
+app_toggle = NodePath("../GridContainer/MenuButton/AppToggle")
+recording_list = NodePath("../VBoxContainer/HBoxContainer/Actions/RecordingList")
+recording_list_item = ExtResource("8_4v1ai")
+
+[connection signal="pressed" from="Quit" to="Quit" method="_on_pressed"]
+[connection signal="app_started" from="GridContainer/MenuButton/AppToggle" to="GridContainer/MenuButton/AppToggle" method="_on_app_started"]
+[connection signal="app_terminated" from="GridContainer/MenuButton/AppToggle" to="GridContainer/MenuButton/AppToggle" method="_on_app_terminated"]

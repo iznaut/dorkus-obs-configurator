@@ -19,7 +19,6 @@ offset_bottom = 480.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_6o7q2")
-app_toggle_container = NodePath("VBoxContainer/ExternalApps/VBoxContainer")
 steam_button = NodePath("VBoxContainer/SteamRunButton")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]

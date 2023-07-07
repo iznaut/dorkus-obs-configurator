@@ -5,13 +5,13 @@ signal main_ready
 const ASSISTANT_SCENE := preload("res://src/assistant/dorkus_assistant.tscn")
 const BUG_REPORT = preload("res://src/windows/bug_report_window.tscn")
 
-@export var app_toggle_container : NodePath
-@export var steam_button : Button
+@export var steam_button : Control
 
 var assistant : Control
 var bug_form : PopupPanel
 
 @onready var obs_helper = $OBSHelper
+@onready var button_grid = $GridContainer
 
 
 func _ready():
@@ -21,8 +21,9 @@ func _ready():
 		new_config.store_string(content)
 		new_config.close()
 
-	DisplayServer.window_set_title("Dorkus Assistant")
-	size = Vector2i(640,480)
+	# DisplayServer.window_set_title("Dorkus Assistant")
+	# size = Vector2i(640,480)
+	get_window().transparent_bg = true
 
 	fix_sources()
 	get_tree().set_auto_accept_quit(false)
@@ -35,6 +36,9 @@ func _ready():
 	bug_form.popup_hide.connect(assistant._on_bug_report_hide)
 	bug_form.get_node("Control").user_typed.connect(assistant._on_bug_report_user_typed)
 	bug_form.get_node("Control").user_submitted.connect(_on_bug_report_user_submitted)
+
+	for menu_button in button_grid.get_children():
+		menu_button.button_pressed.connect(_on_menu_button_pressed)
 
 
 func create_assistant():
@@ -121,9 +125,6 @@ func _on_app_toggle_app_started():
 # func _notification(what):
 # 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
 # 		var ready_to_close := true
-
-# 		for app_toggle in get_node(app_toggle_container).get_children():
-# 			if app_toggle.app_process_id != -1:
 				
 
 func _on_bug_report_button_pressed():
@@ -134,6 +135,15 @@ func _on_bug_report_button_pressed():
 		OS.shell_open(Utility.globalize_path("user://user.cfg"))
 	else:
 		bug_form.popup()
+
+
+func _on_open_favro_button_pressed():
+	var favro_org_id = Utility.get_user_config("Auth", "FavroOrgId")
+	
+	if favro_org_id == "":
+		OS.shell_open(Utility.globalize_path("user://user.cfg"))
+	else:
+		OS.shell_open(Config.favro_url + "/" + Utility.get_user_config("Auth", "FavroOrgId"))
 
 
 func _on_bug_report_user_submitted():
@@ -148,5 +158,16 @@ func _on_steam_run_button_pressed():
 		OS.shell_open(Utility.globalize_path("user://user.cfg"))
 	else:
 		OS.shell_open("steam://rungameid/" + steam_app_id)
-		steam_button.disabled = true
+		steam_button.button.disabled = true
 
+
+func _on_menu_button_pressed(label : String):
+	match label:
+		"Launch Game":
+			_on_steam_run_button_pressed()
+		"Show Recordings":
+			obs_helper._on_recordings_button_pressed()
+		"Submit Task":
+			_on_bug_report_button_pressed()
+		"Open Favro":
+			_on_open_favro_button_pressed()

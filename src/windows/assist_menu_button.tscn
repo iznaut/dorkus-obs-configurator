@@ -31,6 +31,22 @@ grow_horizontal = 2
 texture_normal = ExtResource("1_iphrw")
 texture_pressed = ExtResource("2_bwygm")
 texture_hover = ExtResource("3_kt807")
+texture_disabled = ExtResource("2_bwygm")
+
+[node name="TextureRect" type="TextureRect" parent="TextureButton"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.157143
+anchor_top = 0.142857
+anchor_right = 0.871143
+anchor_bottom = 0.856857
+offset_left = 1.0
+offset_right = 1.07999
+offset_bottom = 0.0799866
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 2
+metadata/_edit_use_anchors_ = true
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 1
@@ -47,6 +63,9 @@ theme_override_constants/shadow_offset_y = 3
 theme_override_constants/shadow_outline_size = 6
 theme_override_fonts/font = ExtResource("4_1nrma")
 theme_override_font_sizes/font_size = 32
+text = "Placeholder"
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
+
+[connection signal="pressed" from="TextureButton" to="." method="_on_texture_button_pressed"]
