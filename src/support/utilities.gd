@@ -1,6 +1,7 @@
 extends Node
 class_name Utility
 
+
 static func read_json(filepath) -> Dictionary:
 	var file = FileAccess.open(filepath, FileAccess.READ)
 	var json = JSON.new()
@@ -23,8 +24,13 @@ static func read_ini(filepath : String):
 	return config
 
 
+static func get_config_path():
+	# TODO - this is hella dumb
+	return Utility.globalize_path("user://user.cfg")
+
+
 static func does_config_exist():
-	return FileAccess.file_exists("user://user.cfg")
+	return FileAccess.file_exists(get_config_path())
 
 
 static func read_config_file(config_key : String) -> Variant:
@@ -66,7 +72,7 @@ static func get_user_config(section : String, key : String) -> String:
 	var config = ConfigFile.new()
 
 	# Load data from a file.
-	config.load("user://user.cfg")
+	config.load(get_config_path())
 
 	var value = config.get_value(section, key)
 
@@ -79,7 +85,8 @@ static func get_user_config(section : String, key : String) -> String:
 
 static func set_user_config(section : String, key : String, value : String) -> void:
 	var config = ConfigFile.new()
+	var config_path = get_config_path()
 
-	config.load("user://user.cfg")
+	config.load(config_path)
 	config.set_value(section, key, value)
-	config.save("user://user.cfg")
+	config.save(config_path)

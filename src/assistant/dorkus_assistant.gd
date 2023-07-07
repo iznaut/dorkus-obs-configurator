@@ -44,8 +44,6 @@ func _ready():
 	# notif_bubble.hide()
 
 
-
-
 func _on_replay_buffer_saved():
 	notification_requested.emit(AnimState.SPEAKING, replay_saved_notification)
 	# create_tween().set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_IN).tween_property(self, "position", self.position + Vector2i(0,100), 1)
@@ -63,10 +61,6 @@ func _on_notification_requested(new_anim_state : AnimState, text : String = ""):
 	anim_state = AnimState.IDLE
 
 
-# func _on_button_pressed():
-# 	bug_form.visible = !bug_form.visible
-
-
 func _on_bug_report_popup():
 	# bug_button.text = button_close
 	anim_state = AnimState.WRITING_UP
@@ -75,18 +69,6 @@ func _on_bug_report_hide():
 	timer.stop()
 	# bug_button.text = button_open
 	anim_state = AnimState.IDLE
-
-
-# func _on_dorkus_gui_input(event):
-# 	if event is InputEventMouseButton:
-# 		if event.button_index == 1 and event.pressed:
-			
-# 			# bug_form.position = global_position
-
-# 			if not bug_form.visible:
-# 				bug_form.popup()
-# 		if event.button_index == 2:
-# 			OS.shell_open(Utility.globalize_path("user://user.cfg"))
 
 
 func _on_bug_report_user_submitted():
