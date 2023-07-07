@@ -24,9 +24,12 @@ static func read_ini(filepath : String):
 	return config
 
 
+static func get_working_dir():
+	return ProjectSettings.globalize_path("res://") if OS.has_feature("editor") else OS.get_executable_path().get_base_dir()
+
+
 static func get_config_path():
-	# TODO - this is hella dumb
-	return Utility.globalize_path("user://user.cfg")
+	return get_working_dir().path_join("config.ini")
 
 
 static func does_config_exist():
@@ -65,7 +68,10 @@ static func globalize_path(path : String) -> String:
 	if OS.has_feature("editor"):
 		return ProjectSettings.globalize_path(uri + path)
 	else:
-		return OS.get_executable_path().get_base_dir().path_join(path)
+		if is_user_path:
+			return path
+		else:
+			return OS.get_executable_path().get_base_dir().path_join(path)
 
 
 static func get_user_config(section : String, key : String) -> String:

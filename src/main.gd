@@ -16,7 +16,7 @@ var bug_form : PopupPanel
 
 func _ready():
 	if not Utility.does_config_exist():
-		var content = FileAccess.get_file_as_string("res://config_template.cfg")
+		var content = FileAccess.get_file_as_string("res://config_template.ini")
 		var new_config = FileAccess.open(Utility.get_config_path(), FileAccess.WRITE)
 		new_config.store_string(content)
 		new_config.close()
