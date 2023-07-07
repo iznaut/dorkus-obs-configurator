@@ -33,7 +33,13 @@ jobs:
         
       - name: Unzip DorkusOBS to build folder
         run: unzip dorkus-obs.zip -d ./build
-
+        
+      - name: move exe to build folder root
+        run: mv ./build/Windows Desktop/Dorkus Assist.exe ./build/Dorkus Assist.exe
+      
+      - name: move exe to build folder root
+        run: rmdir ./build/Windows Desktop
+  
       - name: deploy windows build
         uses: KikimoraGames/itch-publish@v0.0.3
         with:
