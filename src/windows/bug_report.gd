@@ -15,7 +15,7 @@ func _submit_to_favro(data):
 	var error = http_request.request(
 		Config.favro_api_url + "/cards",
 		[
-			"organizationId: " + Config.favro_org_id,
+			"organizationId: " + Utility.get_user_config("Auth", "FavroOrgId"),
 			"Authorization: Basic " + str(Marshalls.utf8_to_base64(str(Utility.get_user_config("Auth", "FavroEmail"), ":", Utility.get_user_config("Auth", "FavroToken")))),
 			"Content-Type: application/json"
 		],
