@@ -17,7 +17,7 @@ var bug_form : PopupPanel
 func _ready():
 	if not Utility.does_config_exist():
 		var content = FileAccess.get_file_as_string("res://config_template.cfg")
-		var new_config = FileAccess.open("user://user.cfg", FileAccess.WRITE)
+		var new_config = FileAccess.open(Utility.get_config_path(), FileAccess.WRITE)
 		new_config.store_string(content)
 		new_config.close()
 
@@ -132,7 +132,7 @@ func _on_bug_report_button_pressed():
 	var favro_token = Utility.get_user_config("Auth", "FavroToken")
 	
 	if favro_email == "" or favro_token == "":
-		OS.shell_open(Utility.globalize_path("user://user.cfg"))
+		OS.shell_open(Utility.get_config_path())
 	else:
 		bug_form.popup()
 
@@ -141,7 +141,7 @@ func _on_open_favro_button_pressed():
 	var favro_org_id = Utility.get_user_config("Auth", "FavroOrgId")
 	
 	if favro_org_id == "":
-		OS.shell_open(Utility.globalize_path("user://user.cfg"))
+		OS.shell_open(Utility.get_config_path())
 	else:
 		OS.shell_open(Config.favro_url + "/" + Utility.get_user_config("Auth", "FavroOrgId"))
 
@@ -155,7 +155,7 @@ func _on_steam_run_button_pressed():
 	var steam_app_id = Utility.get_user_config("SteamConfig", "AppID")
 
 	if steam_app_id == "":
-		OS.shell_open(Utility.globalize_path("user://user.cfg"))
+		OS.shell_open(Utility.get_config_path())
 	else:
 		OS.shell_open("steam://rungameid/" + steam_app_id)
 		steam_button.button.disabled = true
