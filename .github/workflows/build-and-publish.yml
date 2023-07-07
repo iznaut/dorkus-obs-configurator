@@ -35,7 +35,7 @@ jobs:
         run: unzip dorkus-obs.zip -d ./build
         
       - name: move exe to build folder root
-        run: mv ./build/Windows Desktop/DorkusAssist.exe ./build/
+        run: mv "./build/Windows Desktop/DorkusAssist.exe" ./build/
       
       - name: delete folder
         run: rmdir "./build/Windows Desktop"
