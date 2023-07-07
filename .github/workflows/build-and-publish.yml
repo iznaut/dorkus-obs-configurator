@@ -36,3 +36,4 @@ jobs:
           itchUsername: iznaut
           itchGameId: dorkus-playtest-assistant
           buildChannel: win
+          buildNumber: 0.1
