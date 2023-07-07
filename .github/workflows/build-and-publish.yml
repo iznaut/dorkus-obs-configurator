@@ -28,11 +28,14 @@ jobs:
           archive_output: true
           use_godot_3: false
 
+      - name: Download a file
+        run: curl https://github.com/nogoblin/dorkus-obs/releases/download/1.0/dorkus-obs.zip -o ./build
+
       - name: deploy windows build
         uses: KikimoraGames/itch-publish@v0.0.3
         with:
           butlerApiKey: ${{secrets.ITCH_API_KEY}}
-          gameData: ./build/Windows Desktop.zip
+          gameData: ./build
           itchUsername: iznaut
           itchGameId: dorkus-playtest-assistant
           buildChannel: win
