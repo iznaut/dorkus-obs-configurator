@@ -3,6 +3,7 @@
 
 dorkus-obs
 build
+config.ini
 
 .vscode
 .favorites.json
