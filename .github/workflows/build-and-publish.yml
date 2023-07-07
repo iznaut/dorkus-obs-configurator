@@ -28,8 +28,11 @@ jobs:
           archive_output: true
           use_godot_3: false
 
-      - name: Download a file
-        run: curl https://github.com/nogoblin/dorkus-obs/releases/download/1.0/dorkus-obs.zip -o ./build
+      - name: Download DorkusOBS
+        run: curl https://github.com/nogoblin/dorkus-obs/releases/download/1.0/dorkus-obs.zip -o ./dorkus-obs.zip
+        
+      - name: Unzip DorkusOBS to build folder
+        run: unzip ./dorkus-obs.zip -d ./build
 
       - name: deploy windows build
         uses: KikimoraGames/itch-publish@v0.0.3
