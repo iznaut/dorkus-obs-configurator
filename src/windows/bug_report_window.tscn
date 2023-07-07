@@ -5,7 +5,6 @@
 [node name="Window" type="PopupPanel"]
 initial_position = 2
 size = Vector2i(500, 300)
-visible = true
 
 [node name="Control" parent="." instance=ExtResource("1_qp4yw")]
 offset_left = 4.0

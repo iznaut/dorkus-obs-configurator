@@ -102,3 +102,12 @@ func _notification(what):
 		# 	OS.alert("test")
 		
 		get_tree().quit() # default behavior
+
+
+func _on_app_started():
+	get_parent().button.disabled = true
+
+
+func _on_app_terminated():
+	get_parent().button.disabled = false
+
