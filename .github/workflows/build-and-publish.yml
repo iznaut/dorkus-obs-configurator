@@ -1,20 +1,24 @@
-name: Build
+name: Build and Publish
 
-on: 
+on:
   push:
-    tags:
-    - '*'
+    branches:
+      - main
+    paths-ignore: # do not build for game-irrelvant changes
+      - ".**"
+      - "LICENSE"
+      - "ACKNOWLEDGEMENTS"
+      - "**.md"
 
 jobs:
-  build:
-    name: Build App
+  build_game:
+    name: Build and Publish Game
     runs-on: ubuntu-latest
     steps:
       - name: checkout latest code
         uses: actions/checkout@v3
 
       - name: export with Godot Engine
-        id: export
         uses: firebelley/godot-export@v5.0.0
         with:
           godot_executable_download_url: https://downloads.tuxfamily.org/godotengine/4.0.2/Godot_v4.0.2-stable_linux.x86_64.zip
@@ -23,9 +27,12 @@ jobs:
           relative_export_path: ./build
           archive_output: true
           use_godot_3: false
-      - name: create release
-        uses: ncipollo/release-action@v1.12.0
+
+      - name: deploy windows build
+        uses: KikimoraGames/itch-publish@v0.0.3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          generateReleaseNotes: true
-          artifacts: ${{ steps.export.outputs.archive_directory }}/*
+          butlerApiKey: ${{secrets.ITCH_API_KEY}}
+          gameData: ./build/Windows Desktop.zip
+          itchUsername: iznaut
+          itchGameId: dorkus-playtest-assistant
+          buildChannel: win
