@@ -8,45 +8,56 @@ on:
     paths-ignore: # do not build for game-irrelvant changes
       - ".**"
       - "LICENSE"
-      - "ACKNOWLEDGEMENTS"
       - "**.md"
 
+env:
+  GODOT_VERSION: 4.1-stable
+  EXPORT_DIR: DPA-Win
+  ITCH_USERNAME: iznaut
+  ITCH_GAME_ID: dorkus-playtest-assistant
+
 jobs:
-  build_game:
-    name: Build and Publish Game
+  build:
+    name: Export Godot Project
     runs-on: ubuntu-latest
     steps:
       - name: checkout latest code
         uses: actions/checkout@v3
 
       - name: export with Godot Engine
-        uses: firebelley/godot-export@v5.0.0
+        uses: firebelley/godot-export@v5.2.0
         with:
-          godot_executable_download_url: https://downloads.tuxfamily.org/godotengine/4.0.2/Godot_v4.0.2-stable_linux.x86_64.zip
-          godot_export_templates_download_url: https://downloads.tuxfamily.org/godotengine/4.0.2/Godot_v4.0.2-stable_export_templates.tpz
+          godot_executable_download_url: https://github.com/godotengine/godot/releases/download/${{ env.GODOT_VERSION }}/Godot_v${{ env.GODOT_VERSION }}_linux.x86_64.zip
+          godot_export_templates_download_url: https://github.com/godotengine/godot/releases/download/${{ env.GODOT_VERSION }}/Godot_v${{ env.GODOT_VERSION }}_export_templates.tpz
           relative_project_path: ./
-          relative_export_path: ./build
-          archive_output: false
-          use_godot_3: false
+          relative_export_path: ./$EXPORT_DIR
+          cache: true
+
+  include_obs:
+    name: Add DorkusOBS to export
+    runs-on: ubuntu-latest
+    steps:
+      - id: dobs
+        uses: pozetroninc/github-action-get-latest-release@master
+        with:
+          repository: nogoblin/dorkus-obs
 
       - name: Download DorkusOBS
-        run: wget https://github.com/nogoblin/dorkus-obs/releases/download/1.0/dorkus-obs.zip
+        run: wget https://github.com/nogoblin/dorkus-obs/releases/download/${{ steps.dobs.outputs.release }}/dorkus-obs.zip
         
       - name: Unzip DorkusOBS to build folder
-        run: unzip dorkus-obs.zip -d ./build
-        
-      - name: move exe to build folder root
-        run: mv "./build/Windows Desktop/DorkusAssist.exe" ./build/
-      
-      - name: delete folder
-        run: rmdir "./build/Windows Desktop"
-  
-      - name: deploy windows build
+        run: unzip dorkus-obs.zip -d ./$EXPORT_DIR
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to itch.io (Windows)
         uses: KikimoraGames/itch-publish@v0.0.3
         with:
-          butlerApiKey: ${{secrets.ITCH_API_KEY}}
-          gameData: ./build
-          itchUsername: iznaut
-          itchGameId: dorkus-playtest-assistant
+          butlerApiKey: ${{ secrets.ITCH_API_KEY }}
+          gameData: ./$EXPORT_DIR
+          itchUsername: $ITCH_USERNAME
+          itchGameId: $ITCH_GAME_ID
           buildChannel: win
           buildNumber: 0.1.1
