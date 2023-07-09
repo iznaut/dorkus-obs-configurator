@@ -118,10 +118,9 @@ layout_mode = 2
 label_string = "Open Favro"
 icon_texture = ExtResource("13_ojtcl")
 
-[node name="OBSHelper" type="CanvasLayer" parent="." node_paths=PackedStringArray("app_toggle", "recording_list")]
+[node name="OBSHelper" type="CanvasLayer" parent="." node_paths=PackedStringArray("app_toggle")]
 script = ExtResource("7_xw3a0")
 app_toggle = NodePath("../GridContainer/MenuButton/AppToggle")
-recording_list = NodePath("../VBoxContainer/HBoxContainer/Actions/RecordingList")
 recording_list_item = ExtResource("8_4v1ai")
 
 [connection signal="pressed" from="Quit" to="Quit" method="_on_pressed"]

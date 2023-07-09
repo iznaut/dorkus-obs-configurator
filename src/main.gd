@@ -25,7 +25,8 @@ func _ready():
 	# size = Vector2i(640,480)
 	get_window().transparent_bg = true
 
-	fix_sources()
+	if DirAccess.dir_exists_absolute("res://dorkus-obs"):
+		fix_sources()
 	get_tree().set_auto_accept_quit(false)
 
 	create_assistant()
