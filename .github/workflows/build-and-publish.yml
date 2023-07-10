@@ -43,11 +43,19 @@ jobs:
         with:
           repository: nogoblin/dorkus-obs
 
+      - name: Cache DorkusOBS
+        id: cache-dobs
+        uses: actions/cache@v3
+        with:
+          path: dorkus-obs.zip
+          key: ${{ runner.os }}-dobs
+
       - name: Download DorkusOBS
+        if: steps.cache-dobs.outputs.cache-hit != 'true'
         run: wget https://github.com/nogoblin/dorkus-obs/releases/download/${{ steps.dobs.outputs.release }}/dorkus-obs.zip
         
       - name: Unzip DorkusOBS to build folder
-        run: unzip dorkus-obs.zip -d ./$EXPORT_DIR
+        run: unzip dorkus-obs.zip -d $EXPORT_DIR
 
   deploy:
     name: Deploy to itch.io
