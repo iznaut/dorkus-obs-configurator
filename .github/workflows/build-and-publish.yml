@@ -12,7 +12,7 @@ on:
 
 env:
   GODOT_VERSION: 4.1-stable
-  EXPORT_DIR: DPA-Win
+  EXPORT_DIR: ./DPA-Win
   ITCH_USERNAME: iznaut
   ITCH_GAME_ID: dorkus-playtest-assistant
 
@@ -30,7 +30,7 @@ jobs:
           godot_executable_download_url: https://github.com/godotengine/godot/releases/download/${{ env.GODOT_VERSION }}/Godot_v${{ env.GODOT_VERSION }}_linux.x86_64.zip
           godot_export_templates_download_url: https://github.com/godotengine/godot/releases/download/${{ env.GODOT_VERSION }}/Godot_v${{ env.GODOT_VERSION }}_export_templates.tpz
           relative_project_path: ./
-          relative_export_path: ./$EXPORT_DIR
+          relative_export_path: ${{ env.EXPORT_DIR }}
           cache: true
 
   include_obs:
@@ -50,15 +50,15 @@ jobs:
         run: unzip dorkus-obs.zip -d ./$EXPORT_DIR
 
   deploy:
-    name: Deploy
+    name: Deploy to itch.io
     runs-on: ubuntu-latest
     needs: include_obs
     steps:
-      - name: Deploy to itch.io (Windows)
+      - name: Deploy (Windows)
         uses: KikimoraGames/itch-publish@v0.0.3
         with:
           butlerApiKey: ${{ secrets.ITCH_API_KEY }}
-          gameData: ./${{ env.EXPORT_DIR }}
+          gameData: ${{ env.EXPORT_DIR }}
           itchUsername: ${{ env.ITCH_USERNAME }}
           itchGameId: ${{ env.ITCH_GAME_ID }}
           buildChannel: win
