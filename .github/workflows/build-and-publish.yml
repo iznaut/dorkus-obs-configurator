@@ -12,7 +12,6 @@ on:
 
 env:
   GODOT_VERSION: 4.1-stable
-  EXPORT_DIR: ./DPA-Win
   ITCH_USERNAME: iznaut
   ITCH_GAME_ID: dorkus-playtest-assistant
 
@@ -30,19 +29,9 @@ jobs:
           godot_executable_download_url: https://github.com/godotengine/godot/releases/download/${{ env.GODOT_VERSION }}/Godot_v${{ env.GODOT_VERSION }}_linux.x86_64.zip
           godot_export_templates_download_url: https://github.com/godotengine/godot/releases/download/${{ env.GODOT_VERSION }}/Godot_v${{ env.GODOT_VERSION }}_export_templates.tpz
           relative_project_path: ./
-          relative_export_path: ${{ env.EXPORT_DIR }}
+          relative_export_path: ./build
           cache: true
-      
-      - uses: actions/upload-artifact@v3
-        with:
-          name: payload
-          path: ${{ env.EXPORT_DIR }}
 
-  include_obs:
-    name: Add DorkusOBS to export
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
       - id: dobs
         uses: pozetroninc/github-action-get-latest-release@master
         with:
@@ -53,31 +42,20 @@ jobs:
         uses: actions/cache@v3
         with:
           path: dorkus-obs.zip
-          key: ${{ runner.os }}-dobs
+          key: dobs-${{ steps.dobs.outputs.release }}
 
       - name: Download DorkusOBS
         if: steps.cache-dobs.outputs.cache-hit != 'true'
         run: wget https://github.com/nogoblin/dorkus-obs/releases/download/${{ steps.dobs.outputs.release }}/dorkus-obs.zip
-        
+
       - name: Unzip DorkusOBS to build folder
-        run: unzip dorkus-obs.zip -d $EXPORT_DIR
-
-  deploy:
-    name: Deploy to itch.io
-    runs-on: ubuntu-latest
-    needs: include_obs
-    steps:
-      - uses: actions/checkout@v2
-
-      - uses: actions/download-artifact@v3
-        with:
-          name: payload
+        run: unzip dorkus-obs.zip -d ./build/win  
 
       - name: Deploy (Windows)
         uses: KikimoraGames/itch-publish@v0.0.3
         with:
           butlerApiKey: ${{ secrets.ITCH_API_KEY }}
-          gameData: ${{ env.EXPORT_DIR }}
+          gameData: ./build/win
           itchUsername: ${{ env.ITCH_USERNAME }}
           itchGameId: ${{ env.ITCH_GAME_ID }}
           buildChannel: win
