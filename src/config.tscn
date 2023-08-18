@@ -4,6 +4,3 @@
 
 [node name="Config" type="Node"]
 script = ExtResource("1_23yfv")
-path_to_obs_exe = "res://dorkus-obs/bin/64bit/obs64.exe"
-path_to_obs_profile = "res://dorkus-obs/config/obs-studio/basic/profiles/NG3_Playtest/basic.ini"
-path_to_obs_scene = "res://dorkus-obs/config/obs-studio/basic/scenes/NG3_Playtest.json"

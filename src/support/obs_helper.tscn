@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://u1ysda3d26k7"]
+
+[ext_resource type="Script" path="res://src/support/obs_helper.gd" id="1_k8cen"]
+[ext_resource type="PackedScene" uid="uid://d0o7l4mbvu3b6" path="res://src/ui_components/recording_list_item.tscn" id="2_c5dmg"]
+
+[node name="OBSHelper" type="CanvasLayer" node_paths=PackedStringArray("app_toggle")]
+script = ExtResource("1_k8cen")
+app_toggle = NodePath("")
+recording_list_item = ExtResource("2_c5dmg")
+
+[connection signal="connection_opened" from="." to="." method="_on_connection_opened"]

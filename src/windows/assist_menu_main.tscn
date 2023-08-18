@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://1e8aw80ftv2k"]
+[gd_scene load_steps=14 format=3 uid="uid://1e8aw80ftv2k"]
 
 [ext_resource type="Script" path="res://src/main.gd" id="1_61k2l"]
 [ext_resource type="Texture2D" uid="uid://emvk41phg2yu" path="res://src/windows/T_DorkusAssist_Body.png" id="2_m5qbg"]
@@ -8,9 +8,6 @@
 [ext_resource type="Texture2D" uid="uid://cr4sjljchtged" path="res://src/windows/T_DorkusAssist_QuitButton_Hover.png" id="5_thc0t"]
 [ext_resource type="Script" path="res://src/windows/close_button.gd" id="6_b5rl0"]
 [ext_resource type="PackedScene" uid="uid://dqmg6cr3yvt8i" path="res://src/windows/assist_menu_button.tscn" id="6_pvnsc"]
-[ext_resource type="PackedScene" uid="uid://cebgjvnptsywt" path="res://src/ui_components/app_toggle.tscn" id="7_ftioh"]
-[ext_resource type="Script" path="res://src/support/obs_helper.gd" id="7_xw3a0"]
-[ext_resource type="PackedScene" uid="uid://d0o7l4mbvu3b6" path="res://src/ui_components/recording_list_item.tscn" id="8_4v1ai"]
 [ext_resource type="Texture2D" uid="uid://bc24xsr10vnwu" path="res://src/windows/Buttons/T_Button_OBS.png" id="8_bf2kf"]
 [ext_resource type="Texture2D" uid="uid://ea0nimqqh1jh" path="res://src/windows/Buttons/T_Button_Unreal.png" id="10_d5d8m"]
 [ext_resource type="Texture2D" uid="uid://c0c5ekr8en10r" path="res://src/windows/Buttons/T_Button_Folder.png" id="11_crekv"]
@@ -66,9 +63,11 @@ offset_right = -214.0
 offset_bottom = 459.0
 grow_horizontal = 0
 scale = Vector2(0.25, 0.25)
+disabled = true
 texture_normal = ExtResource("3_vaewv")
 texture_pressed = ExtResource("4_l1v44")
 texture_hover = ExtResource("5_thc0t")
+texture_disabled = ExtResource("4_l1v44")
 script = ExtResource("6_b5rl0")
 
 [node name="GridContainer" type="GridContainer" parent="."]
@@ -91,13 +90,6 @@ layout_mode = 2
 label_string = "Launch OBS"
 icon_texture = ExtResource("8_bf2kf")
 
-[node name="AppToggle" parent="GridContainer/MenuButton" instance=ExtResource("7_ftioh")]
-visible = false
-layout_mode = 0
-app_title = "OBS"
-target_file = "obs64.exe"
-auto_start = true
-
 [node name="MenuButton2" parent="GridContainer" instance=ExtResource("6_pvnsc")]
 layout_mode = 2
 label_string = "Launch Game"
@@ -118,11 +110,4 @@ layout_mode = 2
 label_string = "Open Favro"
 icon_texture = ExtResource("13_ojtcl")
 
-[node name="OBSHelper" type="CanvasLayer" parent="." node_paths=PackedStringArray("app_toggle")]
-script = ExtResource("7_xw3a0")
-app_toggle = NodePath("../GridContainer/MenuButton/AppToggle")
-recording_list_item = ExtResource("8_4v1ai")
-
 [connection signal="pressed" from="Quit" to="Quit" method="_on_pressed"]
-[connection signal="app_started" from="GridContainer/MenuButton/AppToggle" to="GridContainer/MenuButton/AppToggle" method="_on_app_started"]
-[connection signal="app_terminated" from="GridContainer/MenuButton/AppToggle" to="GridContainer/MenuButton/AppToggle" method="_on_app_terminated"]

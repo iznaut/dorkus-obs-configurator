@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://dosk1ovqjxh6e"]
+
+[ext_resource type="Script" path="res://src/support/unreal_helper.gd" id="1_6omv7"]
+
+[node name="UnrealHelper" type="Node"]
+script = ExtResource("1_6omv7")
+
+[connection signal="message_received" from="." to="." method="_on_message_received"]
