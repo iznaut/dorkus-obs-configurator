@@ -96,3 +96,60 @@ static func set_user_config(section : String, key : String, value : String) -> v
 	config.load(config_path)
 	config.set_value(section, key, value)
 	config.save(config_path)
+
+
+static func get_json_index(source_id : String, json_contents : Dictionary) -> int:
+	var index := 0
+
+	for source in json_contents.sources:
+		if source.id == source_id:
+			return index
+
+		index += 1
+	
+	return -1
+
+
+static func set_json_path(dict, keypath, value) -> Variant:
+	var current = keypath[0]
+	if typeof(dict[current]) == TYPE_DICTIONARY:
+		keypath.remove_at(0)
+		set_json_path(dict[current], keypath, value) # recursion happens here
+		return
+	elif typeof(dict[current]) == TYPE_ARRAY:
+		keypath.remove_at(0)
+		set_json_path(dict[current], keypath, value) # recursion happens here
+		return
+	else:
+		dict[current] = value
+		return
+
+
+static func replace_filepaths_in_json(json_contents : Dictionary, remaps) -> Dictionary:
+	for id in remaps.keys():
+		var map = remaps[id]
+		var index = get_json_index(id, json_contents)
+
+		for item in map.keys():
+			var keypath = ["sources", index, "settings", item]
+			var new_filepath = Config.obs_root + "assets/" + map[item]
+
+			assert(FileAccess.file_exists(new_filepath), "Could not find %s at expected path" % map[item])
+
+			set_json_path(json_contents, keypath, new_filepath)
+
+	return json_contents
+
+
+static func start_process(app_path, target_file) -> int:
+		var output = []
+
+		OS.execute(
+			"PowerShell.exe",
+			[
+				"%s \"%s\" \"%s\"" % [Utility.globalize_path("res://start_process.ps1"), Config.obs_exe, Config.obs_exe.get_base_dir()]
+			],
+			output
+		)
+
+		return output[0].replace("\\r\\n", "") as int

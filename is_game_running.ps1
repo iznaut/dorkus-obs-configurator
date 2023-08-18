@@ -1,1 +1,0 @@
-return Get-Process NG3Game
