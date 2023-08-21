@@ -59,4 +59,3 @@ jobs:
           itchUsername: ${{ env.ITCH_USERNAME }}
           itchGameId: ${{ env.ITCH_GAME_ID }}
           buildChannel: win
-          buildNumber: 0.1.1
