@@ -3,7 +3,7 @@ extends CanvasLayer
 
 signal app_started
 signal connection_opened
-signal replay_buffer_saved
+signal recording_saved(filepath)
 
 const ObsWebsocket: GDScript = preload("res://addons/obs-websocket-gd/obs_websocket.gd")
 
@@ -80,26 +80,32 @@ func _on_obs_data_recieved(data):
 
 			# Utility.set_user_config("Cached", "RecFilePath", user_recording_path)
 	if data.has("eventType"):
-		# print(data.eventType)
+		var type = data.eventType
+		var record_state_just_changed = false
+		var new_recording_filepath = ""
 
-		if data.eventType == "ReplayBufferSaved":
-			replay_buffer_saved.emit()
+		# print(data.eventData)
 
-			var new_list_item = recording_list_item.instantiate()
-			var new_filepath = data.eventData.savedReplayPath
-
-			# var dir_access = DirAccess.new()
-			var dir = DirAccess.open(user_recording_path)
-			var renamed_filepath = new_filepath.replace("Replay", "NG3")
-			dir.rename(new_filepath.get_file(), renamed_filepath.get_file())
-
-			new_list_item.get_node("Link").uri = renamed_filepath
-			new_list_item.get_node("Link").text = renamed_filepath.get_file()
-
-			recording_list.add_child(new_list_item)
-
-		if data.eventType == "RecordStateChanged":
+		if type == "RecordStateChanged":
 			output_state = data.eventData.outputState
+			record_state_just_changed = true
+
+		if type == "ReplayBufferSaved":
+			# print(data.eventData)
+			# var new_filepath = data.eventData.savedReplayPath
+			# var dir = DirAccess.open(user_recording_path)
+			new_recording_filepath = data.eventData.savedReplayPath
+
+			# var renamed_filepath = new_filepath.replace("Replay", "NG3")
+			# dir.rename(new_filepath.get_file(), renamed_filepath.get_file())
+
+		if record_state_just_changed and output_state == "OBS_WEBSOCKET_OUTPUT_STOPPED":
+			new_recording_filepath = data.eventData.outputPath
+		
+		if new_recording_filepath != "":
+			recording_saved.emit(new_recording_filepath)
+
+
 
 
 # func _on_obs_connecting():

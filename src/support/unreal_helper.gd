@@ -48,7 +48,13 @@ func _process(_delta):
 			print("WebSocket closed with code: %d, reason %s. Clean: %s" % [code, reason, code != -1])
 			set_process(false) # Stop processing.
 
-			connection_closed.emit()
+			if code == -1 and connection_initialized:
+				connection_closed.emit()
+				socket = WebSocketPeer.new()
+				set_process(true)
+				request_connection()
+
+			connection_initialized = false
 
 
 func _on_message_received(data : Variant):

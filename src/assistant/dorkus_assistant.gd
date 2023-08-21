@@ -49,7 +49,7 @@ func _ready():
 	parent_window.show()
 
 	# connect signals
-	OBSHelper.replay_buffer_saved.connect(_on_replay_buffer_saved)
+	# OBSHelper.recording_saved.connect(_on_replay_buffer_saved)
 
 
 func _on_replay_buffer_saved():

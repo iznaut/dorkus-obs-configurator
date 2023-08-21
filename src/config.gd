@@ -20,7 +20,7 @@ var obs_scene : String :
 	get:
 		return obs_root + "config/obs-studio/basic/scenes/NG3_Playtest.json"
 
-var unreal_ws_port : int = 38273
+var unreal_ws_port : int = 30020
 var unreal_preset : String = "DorkusAssist"
 
 var favro_url = "https://favro.com/organization"
