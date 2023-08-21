@@ -49,21 +49,6 @@ func create_assistant():
 	assistant_window.size = assistant.size
 	assistant_window.add_child(assistant, true)
 	add_child(assistant_window)
-	
-	# # TODO - find less bad way of aligning to taskbar/screen edge
-	# var res := DisplayServer.screen_get_size()
-	# @warning_ignore("integer_division")
-	# assistant_window.position = res - assistant_window.size + Vector2i(0, res.y / 2 + 5)
-
-	# # override a bunch of options for assistant window
-	# assistant_window.unfocusable = true
-	# assistant_window.always_on_top = true
-	# assistant_window.transparent = true
-	# assistant_window.transparent_bg = true
-	# assistant_window.borderless = true
-	# assistant_window.exclusive = true
-	# assistant_window.popup_window = true
-	# assistant_window.show()
 
 	# # connect signals
 	# obs_helper.replay_buffer_saved.connect(assistant._on_replay_buffer_saved)
@@ -72,12 +57,25 @@ func create_assistant():
 func _on_obs_connected():
 	print("obs connected")
 	UnrealHelper.connection_opened.connect(_on_unreal_connected)
+	UnrealHelper.connection_closed.connect(_on_unreal_disconnected)
 	UnrealHelper.request_connection()
 	$Quit.disabled = false
 
+	OBSHelper.recording_saved.connect(_on_obs_recording_saved)
+
 
 func _on_unreal_connected():
+	print("unreal connected, recording started")
 	OBSHelper.obs_websocket.send_command("StartRecord")
+
+
+func _on_unreal_disconnected():
+	print("unreal disconnected, stopping record")
+	OBSHelper.obs_websocket.send_command("StopRecord")
+
+
+func _on_obs_recording_saved(filepath):
+	print(Utility.upload_file_to_frameio(filepath))
 
 
 func _on_app_toggle_app_started():

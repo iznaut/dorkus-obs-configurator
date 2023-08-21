@@ -153,3 +153,20 @@ static func start_process(app_path, target_file) -> int:
 		)
 
 		return output[0].replace("\\r\\n", "") as int
+
+
+static func upload_file_to_frameio(filepath):
+		var output = []
+
+		OS.execute(
+			"python3",
+			[
+				Utility.globalize_path("res://support/frameio_upload.py"),
+				get_user_config("Frameio", "FrameioToken"),
+				get_user_config("Frameio", "FrameioProject"),
+				filepath,
+			],
+			output
+		)
+
+		return JSON.parse_string(output[0])
