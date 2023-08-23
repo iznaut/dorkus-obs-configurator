@@ -18,10 +18,6 @@ boot_splash/fullsize=false
 boot_splash/use_filter=false
 config/icon="res://icon.png"
 
-[autoload]
-
-Config="*res://src/config.tscn"
-
 [display]
 
 window/size/viewport_width=180

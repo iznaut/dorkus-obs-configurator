@@ -6,8 +6,15 @@ signal connection_opened
 signal connection_closed
 signal data_received(data)
 
+enum LogLevel {
+	DISABLED,
+	STATE_ONLY,
+	VERBOSE
+}
+
 @export var host : String = "127.0.0.1"
 @export var port : int = 445
+@export var log_level : LogLevel = LogLevel.DISABLED
 
 var socket
 var state : WebSocketPeer.State
@@ -21,21 +28,20 @@ func _ready():
 	get_tree().set_auto_accept_quit(false)
 
 	# logging
-	connection_opened.connect(
-		func():	
-			print("%s Connected Successfully" % name)
-	)
-	connection_closed.connect(
-		func():	
-			print("%s Connection Closed" % name)
-	)
-	data_received.connect(
-		func(data):	
-			print("%s Recieved Data" % name)
-
-			if Config.verbose_websocket_logging:
+	if log_level == LogLevel.STATE_ONLY:
+		connection_opened.connect(
+			func():	
+				print("%s Connected Successfully" % name)
+		)
+		connection_closed.connect(
+			func():	
+				print("%s Connection Closed" % name)
+		)
+	if log_level == LogLevel.VERBOSE:
+		data_received.connect(
+			func(data): 
 				print(data)
-	)
+		)
 
 
 func request_connection() -> void:

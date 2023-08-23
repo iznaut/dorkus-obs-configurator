@@ -12,8 +12,10 @@ script = ExtResource("1_t58ty")
 
 [node name="OBSHelper" parent="." node_paths=PackedStringArray("helper_to_sync") instance=ExtResource("4_1i3de")]
 helper_to_sync = NodePath("../UnrealHelper")
-frame_io_autoupload = true
+upload_on_recording_saved = true
 port = 4455
+log_level = 1
 
 [node name="UnrealHelper" parent="." instance=ExtResource("4_uo6k7")]
 port = 30020
+log_level = 1
