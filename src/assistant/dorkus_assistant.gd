@@ -18,6 +18,7 @@ enum AnimState {
 
 @export_category("Assistant Config")
 @export var texture_lookup : Array[Texture]
+@export var context_menu_scene : PackedScene
 
 var anim_state : AnimState:
 	set(new_state):
@@ -27,7 +28,7 @@ var anim_state : AnimState:
 @onready var dorkus = $CharacterGroup/Dorkus
 @onready var notif_bubble = $CharacterGroup/SpeechBubble
 @onready var timer = $Timer
-@onready var parent_window = get_parent()
+@onready var parent_window = get_window()
 
 
 func _ready():
@@ -36,7 +37,7 @@ func _ready():
 	# TODO - find less bad way of aligning to taskbar/screen edge
 	var res := DisplayServer.screen_get_size()
 	@warning_ignore("integer_division")
-	parent_window.position = res - parent_window.size + Vector2i(0, res.y / 2 + 5)
+	parent_window.position = res - parent_window.size + Vector2i(0, res.y / 2 - 20)
 
 	# override a bunch of options for assistant window
 	parent_window.unfocusable = true
@@ -45,8 +46,15 @@ func _ready():
 	parent_window.transparent_bg = true
 	parent_window.borderless = true
 	parent_window.exclusive = true
-	parent_window.popup_window = true
 	parent_window.show()
+
+	# parent_window.window_input.connect(
+	# 	func(event):
+	# 		if event is InputEventMouseButton and event.button_index == 2:
+	# 			var menu = context_menu_scene.instantiate()
+	# 			menu.get_window()
+	# 			parent_window.add_child(menu)
+	# )
 
 	# connect signals
 	# OBSHelper.recording_saved.connect(_on_replay_buffer_saved)
