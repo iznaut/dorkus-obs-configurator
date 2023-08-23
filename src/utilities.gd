@@ -36,29 +36,6 @@ static func does_config_exist():
 	return FileAccess.file_exists(get_config_path())
 
 
-static func read_config_file(config_key : String) -> Variant:
-	var paths := read_json("res://paths.json")
-	var filepath : String = paths[config_key]
-
-	if filepath.get_file().get_extension() == "json":
-		return read_json(filepath)
-	else:
-		return read_ini(filepath)
-
-
-static func write_config_file(config_key : String, new_contents : Variant):
-	var paths := read_json("res://paths.json")
-	var filepath : String = paths[config_key]
-
-	if filepath.get_file().get_extension() == "json" and new_contents is Dictionary:
-		var file = FileAccess.open(filepath, FileAccess.WRITE)
-		new_contents = JSON.stringify(new_contents)
-		file.store_string(new_contents)
-		file.close()
-	else:
-		new_contents.save(filepath)
-
-
 static func globalize_path(path : String) -> String:
 	var is_user_path = path.contains("user://")
 	var uri = "user://" if is_user_path else "res://"
@@ -141,13 +118,13 @@ static func replace_filepaths_in_json(json_contents : Dictionary, remaps) -> Dic
 	return json_contents
 
 
-static func start_process(app_path, target_file) -> int:
+static func start_process(app_path) -> int:
 		var output = []
 
 		OS.execute(
 			"PowerShell.exe",
 			[
-				"%s \"%s\" \"%s\"" % [Utility.globalize_path("res://start_process.ps1"), Config.obs_exe, Config.obs_exe.get_base_dir()]
+				"%s \"%s\" \"%s\"" % [Utility.globalize_path("res://support/start_process.ps1"), app_path, app_path.get_base_dir()]
 			],
 			output
 		)
@@ -170,3 +147,10 @@ static func upload_file_to_frameio(filepath):
 		)
 
 		return JSON.parse_string(output[0])
+
+
+static func find_by_class(node: Node, className : String, result : Array) -> void:
+	if node.is_class(className):
+		result.push_back(node)
+	for child in node.get_children():
+		find_by_class(child, className, result)

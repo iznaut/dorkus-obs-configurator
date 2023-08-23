@@ -1,6 +1,6 @@
 [gd_scene load_steps=14 format=3 uid="uid://1e8aw80ftv2k"]
 
-[ext_resource type="Script" path="res://src/main.gd" id="1_61k2l"]
+[ext_resource type="Script" path="res://src/windows/assist_menu_main.gd" id="1_jjsyw"]
 [ext_resource type="Texture2D" uid="uid://emvk41phg2yu" path="res://src/windows/T_DorkusAssist_Body.png" id="2_m5qbg"]
 [ext_resource type="Texture2D" uid="uid://ovtuab0ty7yj" path="res://src/windows/T_DorkusAssist_Box.png" id="3_ncec6"]
 [ext_resource type="Texture2D" uid="uid://dpuiasj05yro3" path="res://src/windows/T_DorkusAssist_QuitButton.png" id="3_vaewv"]
@@ -14,7 +14,7 @@
 [ext_resource type="Texture2D" uid="uid://b5asfd02ys0dm" path="res://src/windows/Buttons/T_Button_Bug.png" id="12_jcxae"]
 [ext_resource type="Texture2D" uid="uid://bt4tsjw1thj37" path="res://src/windows/Buttons/T_Button_Favro.png" id="13_ojtcl"]
 
-[node name="AssistMenu_Main" type="Control" node_paths=PackedStringArray("steam_button")]
+[node name="AssistMenu_Main" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -23,8 +23,7 @@ offset_right = 398.0
 offset_bottom = 339.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_61k2l")
-steam_button = NodePath("GridContainer/MenuButton2")
+script = ExtResource("1_jjsyw")
 
 [node name="DorkusBase" type="TextureRect" parent="."]
 layout_mode = 2

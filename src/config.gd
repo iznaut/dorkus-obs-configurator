@@ -1,6 +1,8 @@
 extends Node
 
 
+@export var verbose_websocket_logging : bool = false
+
 var obs_root : String :
 	get:
 		var target = "dorkus-obs/"
