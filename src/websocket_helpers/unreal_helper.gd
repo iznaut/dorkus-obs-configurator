@@ -1,6 +1,10 @@
 extends WebsocketHelper
 
+
+@export var remote_preset : String = "DorkusAssist"
+
 var has_opened : bool = false
+
 
 func _process(_delta):
 	state = socket.get_ready_state()
@@ -14,7 +18,7 @@ func _process(_delta):
 					{
 						"MessageName": "preset.register",
 						"Parameters": {
-							"PresetName": Config.unreal_preset
+							"PresetName": remote_preset
 						}
 					}
 				)

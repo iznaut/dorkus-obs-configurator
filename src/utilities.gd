@@ -102,14 +102,14 @@ static func set_json_path(dict, keypath, value) -> Variant:
 		return
 
 
-static func replace_filepaths_in_json(json_contents : Dictionary, remaps) -> Dictionary:
+static func replace_filepaths_in_json(root_dir : String, json_contents : Dictionary, remaps) -> Dictionary:
 	for id in remaps.keys():
 		var map = remaps[id]
 		var index = get_json_index(id, json_contents)
 
 		for item in map.keys():
 			var keypath = ["sources", index, "settings", item]
-			var new_filepath = Config.obs_root + "assets/" + map[item]
+			var new_filepath = root_dir + "assets/" + map[item]
 
 			assert(FileAccess.file_exists(new_filepath), "Could not find %s at expected path" % map[item])
 
@@ -139,8 +139,8 @@ static func upload_file_to_frameio(filepath):
 			"python3",
 			[
 				Utility.globalize_path("res://support/frameio_upload.py"),
-				get_user_config("Frameio", "FrameioToken"),
-				get_user_config("Frameio", "FrameioProject"),
+				get_user_config("Frameio", "Token"),
+				get_user_config("Frameio", "ProjectID"),
 				filepath,
 			],
 			output
