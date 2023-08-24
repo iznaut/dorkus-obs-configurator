@@ -8,6 +8,13 @@ func _ready():
 		new_config.store_string(content)
 		new_config.close()
 
+	# TODO python script workaround
+	if not FileAccess.file_exists("user://frameio_upload.py"):
+		var frameio_python = FileAccess.get_file_as_string("res://support/frameio_upload.py")
+		var python_script = FileAccess.open("user://frameio_upload.py", FileAccess.WRITE)
+		python_script.store_string(frameio_python)
+		python_script.close()
+
 
 # TODO i just kinda gave up here lmao
 func _notification(what):

@@ -36,21 +36,6 @@ static func does_config_exist():
 	return FileAccess.file_exists(get_config_path())
 
 
-static func globalize_path(path : String) -> String:
-	var is_user_path = path.contains("user://")
-	var uri = "user://" if is_user_path else "res://"
-
-	path = path.replace(uri, "")
-
-	if OS.has_feature("editor"):
-		return ProjectSettings.globalize_path(uri + path)
-	else:
-		if is_user_path:
-			return path
-		else:
-			return OS.get_executable_path().get_base_dir().path_join(path)
-
-
 static func get_user_config(section : String, key : String) -> String:
 	var config = ConfigFile.new()
 
@@ -121,7 +106,7 @@ static func replace_filepaths_in_json(root_dir : String, json_contents : Diction
 static func start_process(app_path) -> int:
 		var output = []
 		var params = [
-				"%s \"%s\" \"%s\"" % [Utility.globalize_path("res://support/start_process.ps1"), app_path, app_path.get_base_dir()]
+				"$process = Start-Process %s -WorkingDirectory %s -PassThru; return $process.Id" % [app_path, app_path.get_base_dir()]
 			]
 
 		OS.execute(
@@ -135,15 +120,16 @@ static func start_process(app_path) -> int:
 
 static func upload_file_to_frameio(filepath):
 		var output = []
-
-		OS.execute(
-			"python3",
-			[
-				Utility.globalize_path("res://support/frameio_upload.py"),
+		var params = [
+				ProjectSettings.globalize_path("user://frameio_upload.py"),
 				get_user_config("Frameio", "Token"),
 				get_user_config("Frameio", "ProjectID"),
 				filepath,
-			],
+			]
+
+		OS.execute(
+			"python3",
+			params,
 			output
 		)
 

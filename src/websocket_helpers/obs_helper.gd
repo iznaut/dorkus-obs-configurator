@@ -17,7 +17,7 @@ var obs_root : String :
 
 		# use /build if running in editor
 		if OS.has_feature("editor"):
-			target = "build".path_join(target)
+			target = "build/win".path_join(target)
 
 		return Utility.get_working_dir().path_join(target)
 var relative_paths : Dictionary = {
