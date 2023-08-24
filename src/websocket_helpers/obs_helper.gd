@@ -13,13 +13,13 @@ const ObsWebsocket: GDScript = preload("res://addons/obs-websocket-gd/obs_websoc
 
 var obs_root : String :
 	get:
-		var target = "dorkus-obs/"
+		var target = "dorkus-obs"
 
 		# use /build if running in editor
 		if OS.has_feature("editor"):
-			return Utility.get_working_dir() + "build/" + target
+			target = "build".path_join(target)
 
-		return Utility.globalize_path("res://" + target)
+		return Utility.get_working_dir().path_join(target)
 var relative_paths : Dictionary = {
 	"executable": "bin/64bit/obs64.exe",
 	"profile": "config/obs-studio/basic/profiles/Default/basic.ini",
@@ -44,12 +44,12 @@ func _ready():
 	super()
 	
 	# workaround for OBS not allowing relative source filepaths
-	var scenes_json_filepath = obs_root + relative_paths["scenes"]
+	var scenes_json_filepath = obs_root.path_join(relative_paths["scenes"])
 	var original_contents : Variant = Utility.read_json(scenes_json_filepath)
 	Utility.write_json(scenes_json_filepath, Utility.replace_filepaths_in_json(obs_root, original_contents, source_remaps))
 
 	# start OBS and connect to websocket server
-	var exe_filepath = obs_root + relative_paths["executable"]
+	var exe_filepath = obs_root.path_join(relative_paths["executable"])
 	assert(FileAccess.file_exists(exe_filepath), "Could not find OBS executable at expected path")
 	app_process_id = Utility.start_process(exe_filepath)
 	request_connection()
