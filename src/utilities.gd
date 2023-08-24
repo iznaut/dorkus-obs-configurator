@@ -109,7 +109,7 @@ static func replace_filepaths_in_json(root_dir : String, json_contents : Diction
 
 		for item in map.keys():
 			var keypath = ["sources", index, "settings", item]
-			var new_filepath = root_dir.path_join("assets").path_join(map[item])
+			var new_filepath = root_dir.path_join("config/assets").path_join(map[item])
 
 			assert(FileAccess.file_exists(new_filepath), "Could not find %s at expected path" % map[item])
 
@@ -129,8 +129,6 @@ static func start_process(app_path) -> int:
 			params,
 			output
 		)
-
-		print(params)
 
 		return output[0].replace("\\r\\n", "") as int
 
