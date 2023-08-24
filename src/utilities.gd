@@ -121,14 +121,13 @@ static func start_process(app_path) -> int:
 static func upload_file_to_frameio(filepath):
 		var output = []
 		var params = [
-				ProjectSettings.globalize_path("user://frameio_upload.py"),
 				get_user_config("Frameio", "Token"),
 				get_user_config("Frameio", "ProjectID"),
 				filepath,
 			]
 
 		OS.execute(
-			"python3",
+			ProjectSettings.globalize_path("user://frameio_upload.exe"),
 			params,
 			output
 		)
