@@ -122,7 +122,7 @@ static func upload_file_to_frameio(filepath):
 		var output = []
 		var params = [
 				get_user_config("Frameio", "Token"),
-				get_user_config("Frameio", "ProjectID"),
+				get_user_config("Frameio", "RootAssetID"),
 				filepath,
 			]
 
