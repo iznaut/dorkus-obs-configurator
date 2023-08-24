@@ -34,10 +34,8 @@ var anim_state : AnimState:
 func _ready():
 	notification_requested.connect(_on_notification_requested)
 
-	# TODO - find less bad way of aligning to taskbar/screen edge
-	var res := DisplayServer.screen_get_size()
 	@warning_ignore("integer_division")
-	parent_window.position = res - parent_window.size + Vector2i(0, res.y / 2 - 20)
+	parent_window.position = DisplayServer.screen_get_usable_rect().end - parent_window.size
 
 	# override a bunch of options for assistant window
 	parent_window.unfocusable = true
