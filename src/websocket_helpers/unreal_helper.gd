@@ -44,8 +44,9 @@ func _process(_delta):
 			has_opened = false
 
 		# wait a bit before trying again
-		await get_tree().create_timer(5).timeout
+		if not is_closing:
+			await get_tree().create_timer(5).timeout
 
-		request_connection()
+			request_connection()
 
 	last_state = state

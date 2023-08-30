@@ -20,12 +20,11 @@ var socket
 var state : WebSocketPeer.State
 var last_state : WebSocketPeer.State
 var app_process_id : int = -1
+var is_closing : bool = false
 
 
 func _ready():
 	set_process(false)
-	# disable normal quit behavior so we can safely handle app close first
-	get_tree().set_auto_accept_quit(false)
 
 	# logging
 	if log_level == LogLevel.STATE_ONLY:
@@ -51,4 +50,6 @@ func request_connection() -> void:
 
 
 func _on_close_request():
-	pass
+	print("websocket close requested")
+	is_closing = true
+	state = WebSocketPeer.STATE_CLOSED

@@ -10,12 +10,28 @@ script = ExtResource("1_t58ty")
 
 [node name="Assistant" parent="." instance=ExtResource("2_ln7lj")]
 
-[node name="OBSHelper" parent="." node_paths=PackedStringArray("helper_to_sync") instance=ExtResource("4_1i3de")]
+[node name="Button" type="Button" parent="."]
+process_mode = 3
+process_thread_group = 2
+process_thread_group_order = -1
+process_thread_messages = 0
+offset_left = 151.0
+offset_top = 6.0
+offset_right = 169.0
+offset_bottom = 37.0
+scale = Vector2(1.34971, 0.787353)
+text = "X"
+
+[node name="WebsocketHelpers" type="Node" parent="."]
+
+[node name="OBSHelper" parent="WebsocketHelpers" node_paths=PackedStringArray("helper_to_sync") instance=ExtResource("4_1i3de")]
 helper_to_sync = NodePath("../UnrealHelper")
 upload_on_recording_saved = true
 port = 4455
 log_level = 1
 
-[node name="UnrealHelper" parent="." instance=ExtResource("4_uo6k7")]
+[node name="UnrealHelper" parent="WebsocketHelpers" instance=ExtResource("4_uo6k7")]
 port = 30020
 log_level = 1
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
