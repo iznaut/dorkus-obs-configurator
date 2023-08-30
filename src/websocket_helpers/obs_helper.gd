@@ -35,9 +35,9 @@ var source_remaps = {
 		},
 	}
 var output_state : String = ""
-var ready_to_close : bool:
+var is_recording : bool:
 	get:
-		return output_state in ["OBS_WEBSOCKET_OUTPUT_STOPPED", ""]
+		return not output_state in ["OBS_WEBSOCKET_OUTPUT_STOPPED", ""]
 
 
 func _ready():
@@ -131,4 +131,20 @@ func _on_obs_data_recieved(data):
 
 
 func _on_close_request():
-	send_command("StopRecord")
+	print("obs close requested")
+	# if app is running
+	if app_process_id != -1:
+		if is_recording:
+			recording_saved.connect(
+				func(_filepath):
+					OS.kill(app_process_id)
+
+					get_tree().quit()
+			)
+			send_command("StopRecord")
+			print("stopping record")
+			return
+		else:
+			OS.kill(app_process_id)
+
+	get_tree().quit()
