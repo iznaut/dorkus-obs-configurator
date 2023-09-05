@@ -6,15 +6,15 @@
 [ext_resource type="PackedScene" path="res://src/websocket_helpers/unreal_helper.tscn" id="4_uo6k7"]
 
 [node name="Main" type="Node"]
+process_thread_group = 1
+process_thread_group_order = 0
+process_thread_messages = 1
 script = ExtResource("1_t58ty")
 
 [node name="Assistant" parent="." instance=ExtResource("2_ln7lj")]
 
 [node name="Button" type="Button" parent="."]
-process_mode = 3
-process_thread_group = 2
-process_thread_group_order = -1
-process_thread_messages = 0
+visible = false
 offset_left = 151.0
 offset_top = 6.0
 offset_right = 169.0
@@ -33,5 +33,3 @@ log_level = 1
 [node name="UnrealHelper" parent="WebsocketHelpers" instance=ExtResource("4_uo6k7")]
 port = 30020
 log_level = 1
-
-[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

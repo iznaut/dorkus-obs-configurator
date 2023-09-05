@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://1e8aw80ftv2k"]
+[gd_scene load_steps=13 format=3 uid="uid://1e8aw80ftv2k"]
 
 [ext_resource type="Script" path="res://src/windows/assist_menu_main.gd" id="1_jjsyw"]
 [ext_resource type="Texture2D" uid="uid://emvk41phg2yu" path="res://src/windows/T_DorkusAssist_Body.png" id="2_m5qbg"]
@@ -6,7 +6,6 @@
 [ext_resource type="Texture2D" uid="uid://dpuiasj05yro3" path="res://src/windows/T_DorkusAssist_QuitButton.png" id="3_vaewv"]
 [ext_resource type="Texture2D" uid="uid://dimi4mwhkrxss" path="res://src/windows/T_DorkusAssist_QuitButton_Press.png" id="4_l1v44"]
 [ext_resource type="Texture2D" uid="uid://cr4sjljchtged" path="res://src/windows/T_DorkusAssist_QuitButton_Hover.png" id="5_thc0t"]
-[ext_resource type="Script" path="res://src/windows/close_button.gd" id="6_b5rl0"]
 [ext_resource type="PackedScene" uid="uid://dqmg6cr3yvt8i" path="res://src/windows/assist_menu_button.tscn" id="6_pvnsc"]
 [ext_resource type="Texture2D" uid="uid://bc24xsr10vnwu" path="res://src/windows/Buttons/T_Button_OBS.png" id="8_bf2kf"]
 [ext_resource type="Texture2D" uid="uid://ea0nimqqh1jh" path="res://src/windows/Buttons/T_Button_Unreal.png" id="10_d5d8m"]
@@ -67,7 +66,6 @@ texture_normal = ExtResource("3_vaewv")
 texture_pressed = ExtResource("4_l1v44")
 texture_hover = ExtResource("5_thc0t")
 texture_disabled = ExtResource("4_l1v44")
-script = ExtResource("6_b5rl0")
 
 [node name="GridContainer" type="GridContainer" parent="."]
 layout_mode = 1
