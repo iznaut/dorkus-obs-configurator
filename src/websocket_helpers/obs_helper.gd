@@ -130,21 +130,22 @@ func _on_obs_data_recieved(data):
 			recording_saved.emit(new_recording_filepath)
 
 
-func _on_close_request():
-	print("obs close requested")
-	# if app is running
-	if app_process_id != -1:
-		if is_recording:
-			recording_saved.connect(
-				func(_filepath):
-					OS.kill(app_process_id)
+func _notification(what):
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		print("obs close requested")
+		# if app is running
+		if app_process_id != -1:
+			if is_recording:
+				recording_saved.connect(
+					func(_filepath):
+						OS.kill(app_process_id)
 
-					get_tree().quit()
-			)
-			send_command("StopRecord")
-			print("stopping record")
-			return
-		else:
-			OS.kill(app_process_id)
+						get_tree().quit()
+				)
+				send_command("StopRecord")
+				print("stopping record")
+				return
+			else:
+				OS.kill(app_process_id)
 
-	get_tree().quit()
+		get_tree().quit()

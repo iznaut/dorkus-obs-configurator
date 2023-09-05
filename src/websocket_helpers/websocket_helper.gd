@@ -49,7 +49,8 @@ func request_connection() -> void:
 	socket.connect_to_url("ws://%s:%s" % [host, port])
 
 
-func _on_close_request():
-	print("websocket close requested")
-	is_closing = true
-	state = WebSocketPeer.STATE_CLOSED
+func _notification(what):
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		print("websocket close requested")
+		is_closing = true
+		state = WebSocketPeer.STATE_CLOSED
