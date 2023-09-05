@@ -26,6 +26,7 @@ text = "X"
 
 [node name="OBSHelper" parent="WebsocketHelpers" node_paths=PackedStringArray("helper_to_sync") instance=ExtResource("4_1i3de")]
 helper_to_sync = NodePath("../UnrealHelper")
+close_on_recording_saved = true
 upload_on_recording_saved = true
 port = 4455
 log_level = 1
