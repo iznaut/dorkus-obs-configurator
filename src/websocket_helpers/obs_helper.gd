@@ -7,6 +7,7 @@ const ObsWebsocket: GDScript = preload("res://addons/obs-websocket-gd/obs_websoc
 
 @export_category("Auto-Record")
 @export var helper_to_sync : WebsocketHelper
+@export var close_on_recording_saved : bool
 
 @export_category("Frame.io Integration")
 @export var upload_on_recording_saved : bool
@@ -128,6 +129,9 @@ func _on_obs_data_recieved(data):
 				Utility.upload_file_to_frameio(new_recording_filepath)
 
 			recording_saved.emit(new_recording_filepath)
+
+			if close_on_recording_saved:
+				get_window().propagate_notification(NOTIFICATION_WM_CLOSE_REQUEST)
 
 
 func _notification(what):
