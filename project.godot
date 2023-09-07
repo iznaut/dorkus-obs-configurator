@@ -18,13 +18,19 @@ boot_splash/fullsize=false
 boot_splash/use_filter=false
 config/icon="res://icon.png"
 
+[autoload]
+
+SignalBus="*res://src/assistant/signal_bus.tscn"
+
 [display]
 
-window/size/viewport_width=180
-window/size/viewport_height=180
+window/size/viewport_width=200
+window/size/viewport_height=200
 window/size/resizable=false
 window/size/borderless=true
+window/size/always_on_top=true
 window/size/transparent=true
+window/size/no_focus=true
 window/subwindows/embed_subwindows=false
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
