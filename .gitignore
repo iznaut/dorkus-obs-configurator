@@ -1,7 +1,16 @@
 # Godot 4+ specific ignores
 .godot/
 
-dorkus-obs
+# ignore all obs stuff except scene/profile config
+obs/bin
+obs/data
+obs/obs-plugins
+obs/config/obs-studio/crashes
+obs/config/obs-studio/logs
+obs/config/obs-studio/plugin_config
+obs/config/obs-studio/profiler_data
+obs/config/obs-studio/updates
+
 build
 config.ini
 

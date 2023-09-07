@@ -52,5 +52,9 @@ func _http_request_completed(result, _response_code, _headers, _body):
 		output,
 		true, true
 	)
+
+	var dir = DirAccess.open("res://")
+	dir.remove("obs.zip")
+	dir.close()
 	
 	download_complete.emit()
