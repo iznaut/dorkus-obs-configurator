@@ -33,25 +33,6 @@ jobs:
           cache: true
           export_debug: true
 
-      - id: dobs
-        uses: pozetroninc/github-action-get-latest-release@master
-        with:
-          repository: nogoblin/dorkus-obs
-
-      - name: Cache DorkusOBS
-        id: cache-dobs
-        uses: actions/cache@v3
-        with:
-          path: dorkus-obs.zip
-          key: dobs-${{ steps.dobs.outputs.release }}
-
-      - name: Download DorkusOBS
-        if: steps.cache-dobs.outputs.cache-hit != 'true'
-        run: wget https://github.com/nogoblin/dorkus-obs/releases/download/${{ steps.dobs.outputs.release }}/dorkus-obs.zip
-
-      - name: Unzip DorkusOBS to build folder
-        run: unzip dorkus-obs.zip -d ./build/win  
-
       - name: Deploy (Windows)
         uses: KikimoraGames/itch-publish@v0.0.3
         with:

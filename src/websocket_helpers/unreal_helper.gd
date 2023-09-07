@@ -25,6 +25,8 @@ func _process(_delta):
 			)
 
 			connection_opened.emit()
+			%Label2.show()
+			%Label2.text = "Unreal connected!"
 			has_opened = true
 
 		while socket.get_available_packet_count():
@@ -41,6 +43,7 @@ func _process(_delta):
 
 		if has_opened:
 			connection_closed.emit()
+			%Label2.text = "Unreal disconnected."
 			has_opened = false
 
 		# wait a bit before trying again

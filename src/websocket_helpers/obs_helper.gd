@@ -3,7 +3,7 @@ extends WebsocketHelper
 
 signal recording_saved(filepath)
 
-const ObsWebsocket: GDScript = preload("res://addons/obs-websocket-gd/obs_websocket.gd")
+const OBS_WEBSOCKET: GDScript = preload("res://addons/obs-websocket-gd/obs_websocket.gd")
 
 @export_category("Auto-Record")
 @export var helper_to_sync : WebsocketHelper
@@ -12,19 +12,10 @@ const ObsWebsocket: GDScript = preload("res://addons/obs-websocket-gd/obs_websoc
 @export_category("Frame.io Integration")
 @export var upload_on_recording_saved : bool
 
-var obs_root : String :
-	get:
-		var target = "dorkus-obs"
-
-		# use /build if running in editor
-		if OS.has_feature("editor"):
-			target = "build/win".path_join(target)
-
-		return Utility.get_working_dir().path_join(target)
-var relative_paths : Dictionary = {
-	"executable": "bin/64bit/obs64.exe",
-	"profile": "config/obs-studio/basic/profiles/Default/basic.ini",
-	"scenes": "config/obs-studio/basic/scenes/Unreal_Engine.json"
+var exe_filepath : String = Utility.get_working_dir().path_join("obs/bin/64bit/obs64.exe")
+var config_paths : Dictionary = {
+	"profile": "res://obs/config/obs-studio/basic/profiles/Default/basic.ini",
+	"scenes": "res://obs/config/obs-studio/basic/scenes/Unreal_Engine.json"
 }
 var source_remaps = {
 		"image_source": {
@@ -43,21 +34,27 @@ var is_recording : bool:
 
 func _ready():
 	super()
+
+	if not FileAccess.file_exists(exe_filepath):
+		%Label.text = "Downloading OBS..."
+		%ProgressBar.start_download()
+
+		await %ProgressBar.download_complete
 	
 	# workaround for OBS not allowing relative source filepaths
-	var scenes_json_filepath = obs_root.path_join(relative_paths["scenes"])
+	var scenes_json_filepath = config_paths["scenes"]
 	var original_contents : Variant = Utility.read_json(scenes_json_filepath)
-	Utility.write_json(scenes_json_filepath, Utility.replace_filepaths_in_json(obs_root, original_contents, source_remaps))
+	Utility.write_json(scenes_json_filepath, Utility.replace_filepaths_in_json(Utility.get_working_dir().path_join("obs"), original_contents, source_remaps))
 
-	# start OBS and connect to websocket server
-	var exe_filepath = obs_root.path_join(relative_paths["executable"])
+	# # start OBS and connect to websocket server
 	assert(FileAccess.file_exists(exe_filepath), "Could not find OBS executable at expected path")
 	app_process_id = Utility.start_process(exe_filepath)
 	request_connection()
 
 
 func request_connection() -> void:
-	socket = ObsWebsocket.new()
+	%Label.text = "OBS connecting..."
+	socket = OBS_WEBSOCKET.new()
 	add_child(socket)
 
 	# bind plugin signals to Helper class signals
@@ -66,6 +63,7 @@ func request_connection() -> void:
 			send_command("GetProfileParameter", {"parameterCategory": "AdvOut","parameterName": "RecFilePath"})
 			send_command("StartReplayBuffer")
 			connection_opened.emit()
+			%Label.text = "OBS connected!"
 
 			if helper_to_sync:
 				helper_to_sync.request_connection()
@@ -139,6 +137,7 @@ func _notification(what):
 		print("obs close requested")
 		# if app is running
 		if app_process_id != -1:
+			%Label.text = "OBS closing..."
 			if is_recording:
 				recording_saved.connect(
 					func(_filepath):
