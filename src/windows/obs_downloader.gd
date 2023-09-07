@@ -39,7 +39,6 @@ func _http_request_completed(result, _response_code, _headers, _body):
 		return
 	remove_child(http)
 
-	%Label.text = "Extracting OBS..."
 	hide()
 
 	var output = []
@@ -58,3 +57,4 @@ func _http_request_completed(result, _response_code, _headers, _body):
 	dir.close()
 	
 	download_complete.emit()
+	SignalBus.state_update_requested.emit(AssistState.AppState.OBS_DOWNLOADED)

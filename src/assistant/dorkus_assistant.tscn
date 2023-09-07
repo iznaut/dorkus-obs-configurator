@@ -1,15 +1,71 @@
-[gd_scene load_steps=14 format=3 uid="uid://shks817s0jup"]
+[gd_scene load_steps=22 format=3 uid="uid://shks817s0jup"]
 
 [ext_resource type="Script" path="res://src/assistant/dorkus_assistant.gd" id="1_e2k48"]
+[ext_resource type="Texture2D" uid="uid://d0app373et80y" path="res://src/assistant/T_Dorkus_Recording_01.png" id="2_4n2g4"]
+[ext_resource type="Script" path="res://src/assistant/assistant_state.gd" id="2_q1frl"]
 [ext_resource type="Texture2D" uid="uid://d1ksgw06gjrd5" path="res://src/assistant/T_Dorkus_Idle.png" id="2_ywmdv"]
-[ext_resource type="Texture2D" uid="uid://bgti5t7i22lgv" path="res://src/assistant/T_Dorkus_Speaking.png" id="3_7w6i2"]
-[ext_resource type="Texture2D" uid="uid://ceesgxtwuypmd" path="res://src/assistant/T_Dorkus_SubmitBug_Blank.png" id="4_64lrn"]
-[ext_resource type="Texture2D" uid="uid://6wtlqdb0owx7" path="res://src/assistant/T_Dorkus_SubmitBug.png" id="5_bijar"]
-[ext_resource type="Texture2D" uid="uid://7o1iohkadxtp" path="res://src/assistant/T_Dorkus_Writing.png" id="6_gcmcg"]
+[ext_resource type="Texture2D" uid="uid://dt3r0nvgw5nuh" path="res://src/assistant/T_Dorkus_Recording_02.png" id="3_eymwa"]
+[ext_resource type="Texture2D" uid="uid://c7hiyllt1lugq" path="res://src/assistant/dorkus_wave.png" id="6_g2rvc"]
+[ext_resource type="Texture2D" uid="uid://bhrrpj522xcyj" path="res://src/assistant/T_Dorkus_WritingDown1.png" id="7_7yj3k"]
 [ext_resource type="Texture2D" uid="uid://bj1ej1it4g5mn" path="res://src/assistant/T_TextBubble.png" id="7_blt3i"]
-[ext_resource type="Texture2D" uid="uid://bhrrpj522xcyj" path="res://src/assistant/T_Dorkus_WritingDown1.png" id="7_qw64y"]
-[ext_resource type="Texture2D" uid="uid://chwck4g268iwu" path="res://src/assistant/T_Dorkus_WritingDown2.png" id="8_7xmnb"]
-[ext_resource type="PackedScene" uid="uid://dh02bou1qlvfm" path="res://src/windows/assistant_menu.tscn" id="10_xmk5f"]
+[ext_resource type="Texture2D" uid="uid://chwck4g268iwu" path="res://src/assistant/T_Dorkus_WritingDown2.png" id="8_6n60u"]
+[ext_resource type="Texture2D" uid="uid://bgti5t7i22lgv" path="res://src/assistant/T_Dorkus_Speaking.png" id="9_a1bh7"]
+
+[sub_resource type="Resource" id="Resource_v17uw"]
+script = ExtResource("2_q1frl")
+app_state = 0
+message = ""
+frames = Array[Texture2D]([ExtResource("2_ywmdv")])
+idle_on_timeout = false
+
+[sub_resource type="Resource" id="Resource_cdv77"]
+script = ExtResource("2_q1frl")
+app_state = 3
+message = "OBS connected!"
+frames = Array[Texture2D]([ExtResource("6_g2rvc")])
+idle_on_timeout = true
+
+[sub_resource type="Resource" id="Resource_rhggd"]
+script = ExtResource("2_q1frl")
+app_state = 6
+message = "Recording stopped!"
+frames = Array[Texture2D]([ExtResource("6_g2rvc")])
+idle_on_timeout = true
+
+[sub_resource type="Resource" id="Resource_oyrgx"]
+script = ExtResource("2_q1frl")
+app_state = 10
+message = "Uploading..."
+frames = Array[Texture2D]([ExtResource("7_7yj3k"), ExtResource("8_6n60u")])
+idle_on_timeout = false
+
+[sub_resource type="Resource" id="Resource_avo31"]
+script = ExtResource("2_q1frl")
+app_state = 11
+message = "Upload successful!"
+frames = Array[Texture2D]([ExtResource("9_a1bh7")])
+idle_on_timeout = true
+
+[sub_resource type="Resource" id="Resource_t3yqs"]
+script = ExtResource("2_q1frl")
+app_state = 1
+message = "Downloading OBS..."
+frames = Array[Texture2D]([ExtResource("7_7yj3k"), ExtResource("8_6n60u")])
+idle_on_timeout = false
+
+[sub_resource type="Resource" id="Resource_2jkyv"]
+script = ExtResource("2_q1frl")
+app_state = 2
+message = "Download success!"
+frames = Array[Texture2D]([ExtResource("6_g2rvc")])
+idle_on_timeout = true
+
+[sub_resource type="Resource" id="Resource_krkos"]
+script = ExtResource("2_q1frl")
+app_state = 5
+message = "Recording started!"
+frames = Array[Texture2D]([ExtResource("2_4n2g4"), ExtResource("3_eymwa")])
+idle_on_timeout = false
 
 [sub_resource type="Animation" id="Animation_4rgpt"]
 length = 0.001
@@ -57,14 +113,13 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -180.0
-offset_top = -180.0
+offset_left = -200.0
+offset_top = -200.0
 grow_horizontal = 0
 grow_vertical = 0
 mouse_filter = 1
 script = ExtResource("1_e2k48")
-texture_lookup = Array[Texture]([ExtResource("2_ywmdv"), ExtResource("3_7w6i2"), ExtResource("4_64lrn"), ExtResource("5_bijar"), ExtResource("6_gcmcg"), ExtResource("7_qw64y"), ExtResource("8_7xmnb")])
-context_menu_scene = ExtResource("10_xmk5f")
+states = Array[ExtResource("2_q1frl")]([SubResource("Resource_v17uw"), SubResource("Resource_cdv77"), SubResource("Resource_rhggd"), SubResource("Resource_oyrgx"), SubResource("Resource_avo31"), SubResource("Resource_t3yqs"), SubResource("Resource_2jkyv"), SubResource("Resource_krkos")])
 
 [node name="CharacterGroup" type="Control" parent="."]
 layout_mode = 1
@@ -77,6 +132,27 @@ grow_horizontal = 0
 grow_vertical = 0
 mouse_filter = 1
 metadata/_edit_group_ = true
+
+[node name="Dorkus" type="TextureRect" parent="CharacterGroup"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -200.0
+offset_top = -200.0
+offset_right = 1848.0
+offset_bottom = 1848.0
+grow_horizontal = 0
+grow_vertical = 0
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("2_ywmdv")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="CharacterGroup/Dorkus"]
+libraries = {
+"": SubResource("AnimationLibrary_6r8xo")
+}
 
 [node name="SpeechBubble" type="TextureRect" parent="CharacterGroup"]
 visible = false
@@ -100,35 +176,14 @@ offset_right = 20.0
 offset_bottom = -110.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_font_sizes/font_size = 200
+theme_override_font_sizes/font_size = 150
 text = "Clip
 saved!"
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="Dorkus" type="TextureRect" parent="CharacterGroup"]
-layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -200.0
-offset_top = -200.0
-offset_right = 1848.0
-offset_bottom = 1848.0
-grow_horizontal = 0
-grow_vertical = 0
-scale = Vector2(0.1, 0.1)
-texture = ExtResource("2_ywmdv")
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="CharacterGroup/Dorkus"]
-libraries = {
-"": SubResource("AnimationLibrary_6r8xo")
-}
-
 [node name="Timer" type="Timer" parent="."]
-wait_time = 0.75
+autostart = true
 
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
