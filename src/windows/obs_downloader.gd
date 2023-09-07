@@ -54,7 +54,6 @@ func _http_request_completed(result, _response_code, _headers, _body):
 
 	var dir = DirAccess.open("res://")
 	dir.remove("obs.zip")
-	dir.close()
 	
 	download_complete.emit()
 	SignalBus.state_update_requested.emit(AssistState.AppState.OBS_DOWNLOADED)
