@@ -36,7 +36,6 @@ func _ready():
 	super()
 
 	if not FileAccess.file_exists(exe_filepath):
-		%Label.text = "Downloading OBS..."
 		%ProgressBar.start_download()
 
 		await %ProgressBar.download_complete
@@ -53,7 +52,6 @@ func _ready():
 
 
 func request_connection() -> void:
-	%Label.text = "OBS connecting..."
 	socket = OBS_WEBSOCKET.new()
 	add_child(socket)
 
@@ -63,7 +61,7 @@ func request_connection() -> void:
 			send_command("GetProfileParameter", {"parameterCategory": "AdvOut","parameterName": "RecFilePath"})
 			send_command("StartReplayBuffer")
 			connection_opened.emit()
-			%Label.text = "OBS connected!"
+			SignalBus.state_update_requested.emit(AssistState.AppState.OBS_CONNECTED)
 
 			if helper_to_sync:
 				helper_to_sync.request_connection()
@@ -85,10 +83,12 @@ func request_connection() -> void:
 	helper_to_sync.connection_opened.connect(
 		func():
 			send_command("StartRecord")
+			SignalBus.state_update_requested.emit(AssistState.AppState.OBS_RECORDING_STARTED)
 	)
 	helper_to_sync.connection_closed.connect(
 		func():
 			send_command("StopRecord")
+			SignalBus.state_update_requested.emit(AssistState.AppState.OBS_RECORDING_STOPPED)
 	)
 
 	set_process(true)
@@ -137,7 +137,6 @@ func _notification(what):
 		print("obs close requested")
 		# if app is running
 		if app_process_id != -1:
-			%Label.text = "OBS closing..."
 			if is_recording:
 				recording_saved.connect(
 					func(_filepath):
