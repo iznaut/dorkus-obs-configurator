@@ -12,10 +12,11 @@ const OBS_WEBSOCKET: GDScript = preload("res://addons/obs-websocket-gd/obs_webso
 @export_category("Frame.io Integration")
 @export var upload_on_recording_saved : bool
 
-var exe_filepath : String = Utility.get_working_dir().path_join("obs/bin/64bit/obs64.exe")
+var obs_root = Utility.get_working_dir().path_join("obs")
+var exe_filepath : String = obs_root.path_join("bin/64bit/obs64.exe")
 var config_paths : Dictionary = {
-	"profile": "res://obs/config/obs-studio/basic/profiles/Default/basic.ini",
-	"scenes": "res://obs/config/obs-studio/basic/scenes/Unreal_Engine.json"
+	"profile": obs_root.path_join("config/obs-studio/basic/profiles/Default/basic.ini"),
+	"scene": obs_root.path_join("config/obs-studio/basic/scenes/Unreal_Engine.json"),
 }
 var source_remaps = {
 		"image_source": {
@@ -35,17 +36,36 @@ var is_recording : bool:
 func _ready():
 	super()
 
+	# disable normal quit behavior so we can safely handle app close first
+	get_tree().set_auto_accept_quit(false)
+
+	# create user config file if missing
+	if not FileAccess.file_exists(Utility.get_user_config_path()):
+		var content = FileAccess.get_file_as_string("res://support/config_template.ini")
+		var new_file = FileAccess.open(Utility.get_working_dir().path_join("config.ini"), FileAccess.WRITE)
+		new_file.store_string(content)
+		new_file.close()
+
+	# copy default obs config if missing
+	if not DirAccess.dir_exists_absolute(obs_root):
+		Utility.copy_directory_recursively("res://support/obs/", Utility.get_working_dir().path_join("obs"))
+
+	# copy frame.io helper script if needed
+	if upload_on_recording_saved and not FileAccess.file_exists("user://frameio_upload.exe"):
+		DirAccess.copy_absolute("res://support/frameio_upload.exe", "user://frameio_upload.exe")
+
+	# download obs if missing
 	if not FileAccess.file_exists(exe_filepath):
 		%ProgressBar.start_download()
 
 		await %ProgressBar.download_complete
 	
 	# workaround for OBS not allowing relative source filepaths
-	var scenes_json_filepath = config_paths["scenes"]
-	var original_contents : Variant = Utility.read_json(scenes_json_filepath)
-	Utility.write_json(scenes_json_filepath, Utility.replace_filepaths_in_json(Utility.get_working_dir().path_join("obs"), original_contents, source_remaps))
+	var scene_json_filepath = config_paths["scene"]
+	var original_contents : Variant = Utility.read_json(scene_json_filepath)
+	Utility.write_json(scene_json_filepath, Utility.replace_filepaths_in_json(obs_root, original_contents, source_remaps))
 
-	# # start OBS and connect to websocket server
+	# start OBS and connect to websocket server
 	assert(FileAccess.file_exists(exe_filepath), "Could not find OBS executable at expected path")
 	app_process_id = Utility.start_process(exe_filepath)
 	request_connection()
@@ -61,7 +81,7 @@ func request_connection() -> void:
 			send_command("GetProfileParameter", {"parameterCategory": "AdvOut","parameterName": "RecFilePath"})
 			send_command("StartReplayBuffer")
 			connection_opened.emit()
-			SignalBus.state_update_requested.emit(AssistState.AppState.OBS_CONNECTED)
+			SignalBus.state_update_requested.emit("obs_connected")
 
 			if helper_to_sync:
 				helper_to_sync.request_connection()
@@ -83,12 +103,12 @@ func request_connection() -> void:
 	helper_to_sync.connection_opened.connect(
 		func():
 			send_command("StartRecord")
-			SignalBus.state_update_requested.emit(AssistState.AppState.OBS_RECORDING_STARTED)
+			SignalBus.state_update_requested.emit("obs_recording_started") # TODO need to go on obs updates so it works in app too
 	)
 	helper_to_sync.connection_closed.connect(
 		func():
 			send_command("StopRecord")
-			SignalBus.state_update_requested.emit(AssistState.AppState.OBS_RECORDING_STOPPED)
+			SignalBus.state_update_requested.emit("obs_recording_stopped")
 	)
 
 	set_process(true)

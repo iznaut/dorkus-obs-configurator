@@ -25,22 +25,18 @@ static func read_ini(filepath : String):
 
 
 static func get_working_dir() -> String:
-	return ProjectSettings.globalize_path("res://") if OS.has_feature("editor") else OS.get_executable_path().get_base_dir()
+	return ProjectSettings.globalize_path("res://build/win") if OS.has_feature("editor") else OS.get_executable_path().get_base_dir()
 
 
-static func get_config_path():
+static func get_user_config_path() -> String:
 	return get_working_dir().path_join("config.ini")
-
-
-static func does_config_exist():
-	return FileAccess.file_exists(get_config_path())
 
 
 static func get_user_config(section : String, key : String) -> String:
 	var config = ConfigFile.new()
 
 	# Load data from a file.
-	config.load(get_config_path())
+	config.load(get_user_config_path())
 
 	var value = config.get_value(section, key)
 
@@ -53,7 +49,7 @@ static func get_user_config(section : String, key : String) -> String:
 
 static func set_user_config(section : String, key : String, value : String) -> void:
 	var config = ConfigFile.new()
-	var config_path = get_config_path()
+	var config_path = get_user_config_path()
 
 	config.load(config_path)
 	config.set_value(section, key, value)
@@ -140,3 +136,27 @@ static func find_by_class(node: Node, className : String, result : Array) -> voi
 		result.push_back(node)
 	for child in node.get_children():
 		find_by_class(child, className, result)
+
+
+static func copy_directory_recursively(p_from : String, p_to : String) -> void:
+	if not DirAccess.dir_exists_absolute(p_to):
+		DirAccess.make_dir_recursive_absolute(p_to)
+	
+	var dir = DirAccess.open(p_from)
+
+	if dir:
+		dir.list_dir_begin()
+		var file_name = dir.get_next()
+		while (file_name != "" && file_name != "." && file_name != ".."):
+			if dir.current_is_dir():
+				copy_directory_recursively(p_from.path_join(file_name), p_to.path_join(file_name))
+			else:
+				dir.copy(p_from.path_join(file_name), p_to.path_join(file_name))
+			file_name = dir.get_next()
+	else:
+		push_warning("Error copying " + p_from + " to " + p_to)
+
+
+static func create_gdignore(dir_to_ignore : String):
+	var new_file = FileAccess.open(dir_to_ignore.path_join(".gdignore"), FileAccess.WRITE)
+	new_file.close()

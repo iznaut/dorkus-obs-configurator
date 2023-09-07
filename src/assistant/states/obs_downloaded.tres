@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="AssistState" load_steps=2 format=3 uid="uid://ibsf25evn07"]
+
+[ext_resource type="Script" path="res://src/assistant/assistant_state.gd" id="2_v5fki"]
+
+[resource]
+script = ExtResource("2_v5fki")
+message = "Download success!"
+frames = Array[Texture2D]([])
