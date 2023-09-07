@@ -1,14 +1,12 @@
-[gd_scene load_steps=5 format=3 uid="uid://btdu0dq3jvvbx"]
+[gd_scene load_steps=6 format=3 uid="uid://btdu0dq3jvvbx"]
 
 [ext_resource type="Script" path="res://src/main.gd" id="1_t58ty"]
 [ext_resource type="PackedScene" uid="uid://shks817s0jup" path="res://src/assistant/dorkus_assistant.tscn" id="2_ln7lj"]
 [ext_resource type="PackedScene" path="res://src/websocket_helpers/obs_helper.tscn" id="4_1i3de"]
 [ext_resource type="PackedScene" path="res://src/websocket_helpers/unreal_helper.tscn" id="4_uo6k7"]
+[ext_resource type="Script" path="res://src/windows/obs_downloader.gd" id="5_kybdy"]
 
 [node name="Main" type="Node"]
-process_thread_group = 1
-process_thread_group_order = 0
-process_thread_messages = 1
 script = ExtResource("1_t58ty")
 
 [node name="Assistant" parent="." instance=ExtResource("2_ln7lj")]
@@ -34,3 +32,26 @@ log_level = 1
 [node name="UnrealHelper" parent="WebsocketHelpers" instance=ExtResource("4_uo6k7")]
 port = 30020
 log_level = 1
+
+[node name="Control" type="VBoxContainer" parent="."]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 160.0
+offset_bottom = 65.0
+
+[node name="Label" type="Label" parent="Control"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Starting OBS..."
+
+[node name="Label2" type="Label" parent="Control"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+text = "Unreal not connected."
+
+[node name="ProgressBar" type="ProgressBar" parent="Control"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+script = ExtResource("5_kybdy")
