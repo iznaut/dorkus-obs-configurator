@@ -20,8 +20,8 @@
             "settings": {
                 "io.controller_id": "Generic Xinput gamepad 0",
                 "io.input_source": "This computer",
-                "io.layout_file": "game-pad.json",
-                "io.overlay_image": "game-pad.png"
+                "io.layout_file": "C:/Repos/dorkus-obs-configurator/obs/config/assets/game-pad.json",
+                "io.overlay_image": "C:/Repos/dorkus-obs-configurator/obs/config/assets/game-pad.png"
             },
             "mixers": 0,
             "sync": 0,
@@ -443,7 +443,7 @@
             "id": "image_source",
             "versioned_id": "image_source",
             "settings": {
-                "file": "dorkus-white.png",
+                "file": "C:/Repos/dorkus-obs-configurator/obs/config/assets/dorkus-white.png",
                 "unload": false,
                 "linear_alpha": false
             },

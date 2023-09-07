@@ -1,13 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://btdu0dq3jvvbx"]
+[gd_scene load_steps=5 format=3 uid="uid://btdu0dq3jvvbx"]
 
-[ext_resource type="Script" path="res://src/main.gd" id="1_t58ty"]
 [ext_resource type="PackedScene" uid="uid://shks817s0jup" path="res://src/assistant/dorkus_assistant.tscn" id="2_ln7lj"]
 [ext_resource type="PackedScene" path="res://src/websocket_helpers/obs_helper.tscn" id="4_1i3de"]
 [ext_resource type="PackedScene" path="res://src/websocket_helpers/unreal_helper.tscn" id="4_uo6k7"]
 [ext_resource type="Script" path="res://src/windows/obs_downloader.gd" id="5_kybdy"]
 
 [node name="Main" type="Node"]
-script = ExtResource("1_t58ty")
 
 [node name="Assistant" parent="." instance=ExtResource("2_ln7lj")]
 

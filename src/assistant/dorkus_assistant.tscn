@@ -1,71 +1,9 @@
-[gd_scene load_steps=22 format=3 uid="uid://shks817s0jup"]
+[gd_scene load_steps=8 format=3 uid="uid://shks817s0jup"]
 
 [ext_resource type="Script" path="res://src/assistant/dorkus_assistant.gd" id="1_e2k48"]
-[ext_resource type="Texture2D" uid="uid://d0app373et80y" path="res://src/assistant/T_Dorkus_Recording_01.png" id="2_4n2g4"]
-[ext_resource type="Script" path="res://src/assistant/assistant_state.gd" id="2_q1frl"]
 [ext_resource type="Texture2D" uid="uid://d1ksgw06gjrd5" path="res://src/assistant/T_Dorkus_Idle.png" id="2_ywmdv"]
-[ext_resource type="Texture2D" uid="uid://dt3r0nvgw5nuh" path="res://src/assistant/T_Dorkus_Recording_02.png" id="3_eymwa"]
-[ext_resource type="Texture2D" uid="uid://c7hiyllt1lugq" path="res://src/assistant/dorkus_wave.png" id="6_g2rvc"]
-[ext_resource type="Texture2D" uid="uid://bhrrpj522xcyj" path="res://src/assistant/T_Dorkus_WritingDown1.png" id="7_7yj3k"]
 [ext_resource type="Texture2D" uid="uid://bj1ej1it4g5mn" path="res://src/assistant/T_TextBubble.png" id="7_blt3i"]
-[ext_resource type="Texture2D" uid="uid://chwck4g268iwu" path="res://src/assistant/T_Dorkus_WritingDown2.png" id="8_6n60u"]
 [ext_resource type="Texture2D" uid="uid://bgti5t7i22lgv" path="res://src/assistant/T_Dorkus_Speaking.png" id="9_a1bh7"]
-
-[sub_resource type="Resource" id="Resource_v17uw"]
-script = ExtResource("2_q1frl")
-app_state = 0
-message = ""
-frames = Array[Texture2D]([ExtResource("2_ywmdv")])
-idle_on_timeout = false
-
-[sub_resource type="Resource" id="Resource_cdv77"]
-script = ExtResource("2_q1frl")
-app_state = 3
-message = "OBS connected!"
-frames = Array[Texture2D]([ExtResource("6_g2rvc")])
-idle_on_timeout = true
-
-[sub_resource type="Resource" id="Resource_rhggd"]
-script = ExtResource("2_q1frl")
-app_state = 6
-message = "Recording stopped!"
-frames = Array[Texture2D]([ExtResource("6_g2rvc")])
-idle_on_timeout = true
-
-[sub_resource type="Resource" id="Resource_oyrgx"]
-script = ExtResource("2_q1frl")
-app_state = 10
-message = "Uploading..."
-frames = Array[Texture2D]([ExtResource("7_7yj3k"), ExtResource("8_6n60u")])
-idle_on_timeout = false
-
-[sub_resource type="Resource" id="Resource_avo31"]
-script = ExtResource("2_q1frl")
-app_state = 11
-message = "Upload successful!"
-frames = Array[Texture2D]([ExtResource("9_a1bh7")])
-idle_on_timeout = true
-
-[sub_resource type="Resource" id="Resource_t3yqs"]
-script = ExtResource("2_q1frl")
-app_state = 1
-message = "Downloading OBS..."
-frames = Array[Texture2D]([ExtResource("7_7yj3k"), ExtResource("8_6n60u")])
-idle_on_timeout = false
-
-[sub_resource type="Resource" id="Resource_2jkyv"]
-script = ExtResource("2_q1frl")
-app_state = 2
-message = "Download success!"
-frames = Array[Texture2D]([ExtResource("6_g2rvc")])
-idle_on_timeout = true
-
-[sub_resource type="Resource" id="Resource_krkos"]
-script = ExtResource("2_q1frl")
-app_state = 5
-message = "Recording started!"
-frames = Array[Texture2D]([ExtResource("2_4n2g4"), ExtResource("3_eymwa")])
-idle_on_timeout = false
 
 [sub_resource type="Animation" id="Animation_4rgpt"]
 length = 0.001
@@ -119,7 +57,8 @@ grow_horizontal = 0
 grow_vertical = 0
 mouse_filter = 1
 script = ExtResource("1_e2k48")
-states = Array[ExtResource("2_q1frl")]([SubResource("Resource_v17uw"), SubResource("Resource_cdv77"), SubResource("Resource_rhggd"), SubResource("Resource_oyrgx"), SubResource("Resource_avo31"), SubResource("Resource_t3yqs"), SubResource("Resource_2jkyv"), SubResource("Resource_krkos")])
+default_idle_frame = ExtResource("2_ywmdv")
+default_notification_frame = ExtResource("9_a1bh7")
 
 [node name="CharacterGroup" type="Control" parent="."]
 layout_mode = 1
@@ -170,15 +109,14 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 20.0
-offset_top = -110.0
-offset_right = 20.0
-offset_bottom = -110.0
+offset_left = 220.0
+offset_top = 220.0
+offset_right = -179.0
+offset_bottom = -396.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 150
-text = "Clip
-saved!"
+text = "Setting up..."
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2

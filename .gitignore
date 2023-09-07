@@ -1,17 +1,13 @@
 # Godot 4+ specific ignores
 .godot/
 
-# ignore all obs stuff except scene/profile config
-obs/bin
-obs/data
-obs/obs-plugins
-obs/config/obs-studio/crashes
-obs/config/obs-studio/logs
-obs/config/obs-studio/plugin_config
-obs/config/obs-studio/profiler_data
-obs/config/obs-studio/updates
+# ignore all obs stuff
+obs/
+# except default config
+!support/obs
 
 build
+!build/.gdignore
 config.ini
 
 .vscode

@@ -25,7 +25,7 @@ func _process(_delta):
 			)
 
 			connection_opened.emit()
-			SignalBus.state_update_requested.emit(AssistState.AppState.UNREAL_CONNECTED)
+			# SignalBus.state_update_requested.emit("unreal_connected")
 			has_opened = true
 
 		while socket.get_available_packet_count():
@@ -42,7 +42,7 @@ func _process(_delta):
 
 		if has_opened:
 			connection_closed.emit()
-			SignalBus.state_update_requested.emit(AssistState.AppState.UNREAL_DISCONNECTED)
+			# SignalBus.state_update_requested.emit("unreal_disconnected")
 			has_opened = false
 
 		# wait a bit before trying again
