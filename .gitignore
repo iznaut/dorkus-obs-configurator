@@ -5,6 +5,8 @@
 obs/
 # except default config
 !support/obs
+# let this build on release
+frameio_upload.exe
 
 build
 !build/.gdignore

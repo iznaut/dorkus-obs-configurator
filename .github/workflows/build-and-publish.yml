@@ -23,6 +23,16 @@ jobs:
       - name: checkout latest code
         uses: actions/checkout@v3
 
+      - name: package python script to exe
+        uses: JackMcKew/pyinstaller-action-windows@v0.1.2
+        with:
+          path: ./support/obs
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: frameio-upload-exe
+          path: ./support/obs/dist/frameio_upload.exe
+
       - name: export with Godot Engine
         uses: firebelley/godot-export@v5.2.0
         with:
@@ -32,7 +42,7 @@ jobs:
           relative_export_path: ./build
           cache: true
           export_debug: true
-
+            
       - name: Deploy (Windows)
         uses: KikimoraGames/itch-publish@v0.0.3
         with:
