@@ -112,7 +112,7 @@ static func upload_file_to_frameio(filepath):
 	]
 
 	# use precompiled script exe if shipping build
-	var upload_script = Utility.get_working_dir().path_join("obs/dist/frameio_upload.exe")
+	var upload_script = Utility.get_working_dir().path_join("obs/dist/windows/frameio_upload.exe")
 
 	# use python script if in editor
 	if OS.has_feature("editor"):

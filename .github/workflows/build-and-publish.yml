@@ -28,11 +28,6 @@ jobs:
         with:
           path: ./support/obs
 
-      - uses: actions/upload-artifact@v3
-        with:
-          name: frameio-upload-exe
-          path: ./support/obs/dist/frameio_upload.exe
-
       - name: export with Godot Engine
         uses: firebelley/godot-export@v5.2.0
         with:
