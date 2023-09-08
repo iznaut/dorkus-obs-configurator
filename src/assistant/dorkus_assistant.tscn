@@ -1,48 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://shks817s0jup"]
+[gd_scene load_steps=5 format=3 uid="uid://shks817s0jup"]
 
 [ext_resource type="Script" path="res://src/assistant/dorkus_assistant.gd" id="1_e2k48"]
 [ext_resource type="Texture2D" uid="uid://d1ksgw06gjrd5" path="res://src/assistant/T_Dorkus_Idle.png" id="2_ywmdv"]
 [ext_resource type="Texture2D" uid="uid://bj1ej1it4g5mn" path="res://src/assistant/T_TextBubble.png" id="7_blt3i"]
 [ext_resource type="Texture2D" uid="uid://bgti5t7i22lgv" path="res://src/assistant/T_Dorkus_Speaking.png" id="9_a1bh7"]
-
-[sub_resource type="Animation" id="Animation_4rgpt"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:rotation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.0]
-}
-
-[sub_resource type="Animation" id="Animation_u0hmk"]
-resource_name = "running"
-length = 0.75
-loop_mode = 2
-step = 0.025
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:rotation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.75),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [-0.785398, 0.785398]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_6r8xo"]
-_data = {
-"RESET": SubResource("Animation_4rgpt"),
-"running": SubResource("Animation_u0hmk")
-}
 
 [node name="Assistant" type="Control"]
 layout_mode = 3
@@ -87,11 +48,6 @@ grow_horizontal = 0
 grow_vertical = 0
 scale = Vector2(0.1, 0.1)
 texture = ExtResource("2_ywmdv")
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="CharacterGroup/Dorkus"]
-libraries = {
-"": SubResource("AnimationLibrary_6r8xo")
-}
 
 [node name="SpeechBubble" type="TextureRect" parent="CharacterGroup"]
 visible = false

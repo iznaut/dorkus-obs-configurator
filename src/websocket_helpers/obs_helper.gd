@@ -48,11 +48,7 @@ func _ready():
 
 	# copy default obs config if missing
 	if not DirAccess.dir_exists_absolute(obs_root):
-		Utility.copy_directory_recursively("res://support/obs/", Utility.get_working_dir().path_join("obs"))
-
-	# copy frame.io helper script if needed
-	if upload_on_recording_saved and not FileAccess.file_exists("user://frameio_upload.exe"):
-		DirAccess.copy_absolute("res://support/frameio_upload.exe", "user://frameio_upload.exe")
+		Utility.copy_directory_recursively("res://support/obs/", obs_root)
 
 	# download obs if missing
 	if not FileAccess.file_exists(exe_filepath):
@@ -148,8 +144,8 @@ func _on_obs_data_recieved(data):
 
 			recording_saved.emit(new_recording_filepath)
 
-			if close_on_recording_saved:
-				get_window().propagate_notification(NOTIFICATION_WM_CLOSE_REQUEST)
+			# if close_on_recording_saved:
+			# 	get_window().propagate_notification(NOTIFICATION_WM_CLOSE_REQUEST)
 
 
 func _notification(what):

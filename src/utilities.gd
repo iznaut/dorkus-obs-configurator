@@ -47,15 +47,6 @@ static func get_user_config(section : String, key : String) -> String:
 	return value
 
 
-static func set_user_config(section : String, key : String, value : String) -> void:
-	var config = ConfigFile.new()
-	var config_path = get_user_config_path()
-
-	config.load(config_path)
-	config.set_value(section, key, value)
-	config.save(config_path)
-
-
 static func get_json_index(source_id : String, json_contents : Dictionary) -> int:
 	var index := 0
 
@@ -100,42 +91,41 @@ static func replace_filepaths_in_json(root_dir : String, json_contents : Diction
 
 
 static func start_process(app_path) -> int:
-		var output = []
-		var params = [
-				"$process = Start-Process %s -WorkingDirectory %s -PassThru; return $process.Id" % [app_path, app_path.get_base_dir()]
-			]
+	var output = []
+	var params = [
+		"$process = Start-Process %s -WorkingDirectory %s -PassThru;" % [app_path, app_path.get_base_dir()],
+		"return $process.Id"
+	]
 
-		OS.execute(
-			"PowerShell.exe",
-			params,
-			output
-		)
+	OS.execute("PowerShell.exe", params, output)
 
-		return output[0].replace("\\r\\n", "") as int
+	# return process id
+	return output[0].replace("\\r\\n", "") as int
 
 
 static func upload_file_to_frameio(filepath):
-		var output = []
-		var params = [
-				get_user_config("Frameio", "Token"),
-				get_user_config("Frameio", "RootAssetID"),
-				filepath,
-			]
+	var output = []
+	var params = [
+		get_user_config("Frameio", "Token"),
+		get_user_config("Frameio", "RootAssetID"),
+		filepath,
+	]
 
-		OS.execute(
-			ProjectSettings.globalize_path("user://frameio_upload.exe"),
-			params,
-			output
-		)
+	# use precompiled script exe if shipping build
+	var upload_script = Utility.get_working_dir().path_join("obs/dist/frameio_upload.exe")
 
-		return JSON.parse_string(output[0])
+	# use python script if in editor
+	if OS.has_feature("editor"):
+		upload_script = "python"
+		params.push_front(ProjectSettings.globalize_path("res://src/frameio_upload.py"))
 
+	OS.execute(upload_script, params, output, true, false)
 
-static func find_by_class(node: Node, className : String, result : Array) -> void:
-	if node.is_class(className):
-		result.push_back(node)
-	for child in node.get_children():
-		find_by_class(child, className, result)
+	var result = JSON.parse_string(output[0])
+
+	print(output)
+
+	return result
 
 
 static func copy_directory_recursively(p_from : String, p_to : String) -> void:
