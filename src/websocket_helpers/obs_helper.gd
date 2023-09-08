@@ -30,7 +30,7 @@ var source_remaps = {
 var output_state : String = ""
 var is_recording : bool:
 	get:
-		return not output_state in ["OBS_WEBSOCKET_OUTPUT_STOPPED", ""]
+		return output_state == "OBS_WEBSOCKET_OUTPUT_STARTED"
 
 
 func _ready():
@@ -78,6 +78,11 @@ func request_connection() -> void:
 			send_command("StartReplayBuffer")
 			connection_opened.emit()
 			SignalBus.state_update_requested.emit("obs_connected")
+			SignalBus.obs_command_requested.connect(send_command)
+			SignalBus.obs_state_requested.connect(
+				func():
+					SignalBus.obs_state_reported.emit(is_recording)
+			)
 
 			if helper_to_sync:
 				helper_to_sync.request_connection()
@@ -99,12 +104,10 @@ func request_connection() -> void:
 	helper_to_sync.connection_opened.connect(
 		func():
 			send_command("StartRecord")
-			SignalBus.state_update_requested.emit("obs_recording_started") # TODO need to go on obs updates so it works in app too
 	)
 	helper_to_sync.connection_closed.connect(
 		func():
 			send_command("StopRecord")
-			SignalBus.state_update_requested.emit("obs_recording_stopped")
 	)
 
 	set_process(true)
@@ -132,6 +135,13 @@ func _on_obs_data_recieved(data):
 			output_state = data.eventData.outputState
 			record_state_just_changed = true
 
+			SignalBus.obs_state_reported.emit(is_recording)
+
+			if output_state == "OBS_WEBSOCKET_OUTPUT_STARTED":
+				SignalBus.state_update_requested.emit("obs_recording_started")
+			if output_state == "OBS_WEBSOCKET_OUTPUT_STOPPED":
+				SignalBus.state_update_requested.emit("obs_recording_stopped")
+
 		if type == "ReplayBufferSaved":
 			new_recording_filepath = data.eventData.savedReplayPath
 
@@ -144,8 +154,8 @@ func _on_obs_data_recieved(data):
 
 			recording_saved.emit(new_recording_filepath)
 
-			# if close_on_recording_saved:
-			# 	get_window().propagate_notification(NOTIFICATION_WM_CLOSE_REQUEST)
+			if close_on_recording_saved:
+				get_window().propagate_notification(NOTIFICATION_WM_CLOSE_REQUEST)
 
 
 func _notification(what):
