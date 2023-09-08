@@ -1,6 +1,12 @@
 extends Control
 
 
+enum MenuItem {
+	START_STOP_RECORDING = 0,
+	OPEN_RECORDING_FOLDER = 2,
+	CLOSE = 4,
+}
+
 signal notification_requested(new_state : AssistState)
 
 const STATE_DIR = "res://src/assistant/states/"
@@ -10,6 +16,7 @@ const STATE_DIR = "res://src/assistant/states/"
 
 var current_state_data : AssistState
 var current_frame_index : int
+var record_state_change_requested : bool
 
 @onready var dorkus = $CharacterGroup/Dorkus
 @onready var notif_bubble = $CharacterGroup/SpeechBubble
@@ -23,6 +30,7 @@ func _ready():
 	parent_window.position = DisplayServer.screen_get_usable_rect().end - parent_window.size
 	parent_window.transparent_bg = true
 
+	SignalBus.obs_state_reported.connect(_update_menu_recording_status)
 	SignalBus.state_update_requested.connect(_update_state)
 	SignalBus.state_update_requested.emit("starting_up")
 
@@ -32,6 +40,8 @@ func _update_state(new_state_name : String):
 		dorkus.texture = default_idle_frame
 		current_state_data = null
 		return
+	if new_state_name == "obs_connected":
+		$PopupMenu.set_item_disabled(MenuItem.START_STOP_RECORDING, false)
 
 	current_state_data = load(STATE_DIR.path_join("%s.tres" % new_state_name))
 
@@ -69,3 +79,31 @@ func _on_timer_timeout():
 		dorkus.texture = current_state_data.frames[current_frame_index]
 
 	timer.start()
+
+
+func _on_gui_input(event:InputEvent):
+	if event is InputEventMouseButton and event.button_index == 2 and event.pressed:
+		$PopupMenu.visible = !$PopupMenu.visible
+
+
+func _on_popup_menu_id_pressed(id:int):
+	match id:
+		MenuItem.START_STOP_RECORDING:
+			record_state_change_requested = true
+			SignalBus.obs_state_requested.emit()
+		MenuItem.CLOSE:
+			get_window().propagate_notification(NOTIFICATION_WM_CLOSE_REQUEST)
+
+
+func _update_menu_recording_status(is_recording : bool):
+	var status_str = "Stop" if is_recording else "Start"
+
+	if record_state_change_requested:
+		status_str = "Start" if not is_recording else "Stop"
+		SignalBus.obs_command_requested.emit("%sRecord" % status_str)
+		record_state_change_requested = false
+
+	$PopupMenu.set_item_text(
+		MenuItem.START_STOP_RECORDING,
+		"%s Recording" % status_str
+	)

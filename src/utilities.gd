@@ -117,7 +117,7 @@ static func upload_file_to_frameio(filepath):
 	# use python script if in editor
 	if OS.has_feature("editor"):
 		upload_script = "python"
-		params.push_front(ProjectSettings.globalize_path("res://src/frameio_upload.py"))
+		params.push_front(ProjectSettings.globalize_path("res://support/obs/frameio_upload.py"))
 
 	OS.execute(upload_script, params, output, true, false)
 

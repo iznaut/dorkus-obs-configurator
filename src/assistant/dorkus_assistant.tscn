@@ -80,4 +80,25 @@ autowrap_mode = 2
 [node name="Timer" type="Timer" parent="."]
 autostart = true
 
+[node name="PopupMenu" type="PopupMenu" parent="."]
+size = Vector2i(213, 120)
+visible = true
+allow_search = false
+item_count = 5
+item_0/text = "Start Recording"
+item_0/id = 0
+item_0/disabled = true
+item_1/text = ""
+item_1/id = 1
+item_1/separator = true
+item_2/text = "Open Recording Folder"
+item_2/id = 2
+item_3/text = ""
+item_3/id = 3
+item_3/separator = true
+item_4/text = "Close Dorkus & OBS"
+item_4/id = 4
+
+[connection signal="gui_input" from="." to="." method="_on_gui_input"]
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[connection signal="id_pressed" from="PopupMenu" to="." method="_on_popup_menu_id_pressed"]
