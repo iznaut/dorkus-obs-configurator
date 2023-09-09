@@ -92,7 +92,6 @@ func _start_obs() -> void:
 
 
 func _request_connection() -> void:
-	# bind plugin signals to Helper class signals
 	connection_authenticated.connect(
 		func():
 			send_command("StartReplayBuffer")
@@ -100,15 +99,11 @@ func _request_connection() -> void:
 			# let other nodes know we've connected
 			SignalBus.state_updated.emit("obs_connected")
 
-			# accept commands send to signal bus
+			# accept commands sent to signal bus
 			SignalBus.obs_command_requested.connect(send_command)
 
 			if helper_to_sync:
 				helper_to_sync.request_connection()
-	)
-	connection_closed.connect(
-		func():
-			connection_closed.emit()
 	)
 	data_received.connect(_on_obs_data_recieved)
 
