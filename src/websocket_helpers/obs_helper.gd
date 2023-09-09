@@ -134,6 +134,8 @@ func _on_obs_data_recieved(data):
 	elif data is Event:
 		var event_type = data["event_type"]
 		var event_data = data["event_data"]
+
+		output_state = event_data.outputState
 		
 		# TODO cleanup - map obs states and dorkus states
 		match event_type:
