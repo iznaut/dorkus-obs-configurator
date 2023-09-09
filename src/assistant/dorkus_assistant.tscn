@@ -82,7 +82,6 @@ autostart = true
 
 [node name="PopupMenu" type="PopupMenu" parent="."]
 size = Vector2i(213, 120)
-visible = true
 allow_search = false
 item_count = 5
 item_0/text = "Start Recording"
@@ -93,10 +92,11 @@ item_1/id = 1
 item_1/separator = true
 item_2/text = "Open Recording Folder"
 item_2/id = 2
+item_2/disabled = true
 item_3/text = ""
 item_3/id = 3
 item_3/separator = true
-item_4/text = "Close Dorkus & OBS"
+item_4/text = "Close Dorkus Assist"
 item_4/id = 4
 
 [connection signal="gui_input" from="." to="." method="_on_gui_input"]

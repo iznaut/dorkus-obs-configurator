@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="AssistState" load_steps=4 format=3 uid="uid://bww1l0fjfhyjd"]
+
+[ext_resource type="Script" path="res://src/assistant/assistant_state.gd" id="1_1cpek"]
+[ext_resource type="Texture2D" uid="uid://bhrrpj522xcyj" path="res://src/assistant/T_Dorkus_WritingDown1.png" id="1_e0n12"]
+[ext_resource type="Texture2D" uid="uid://chwck4g268iwu" path="res://src/assistant/T_Dorkus_WritingDown2.png" id="2_cprsx"]
+
+[resource]
+script = ExtResource("1_1cpek")
+message = "Stopping..."
+timeout = 0.0
+frames = Array[Texture2D]([ExtResource("1_e0n12"), ExtResource("2_cprsx")])
+delay = 0.5

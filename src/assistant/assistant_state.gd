@@ -11,9 +11,9 @@ class_name AssistState
 @export var delay : float = 0.5
 
 
-func has_frames():
+func has_frames() -> bool:
     return frames.size() > 0
 
 
-func is_animated():
+func is_animated() -> bool:
     return frames.size() > 1
