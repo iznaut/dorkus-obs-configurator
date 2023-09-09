@@ -90,44 +90,6 @@ static func replace_filepaths_in_json(root_dir : String, json_contents : Diction
 	return json_contents
 
 
-static func start_process(app_path) -> int:
-	var output = []
-	var params = [
-		"$process = Start-Process %s -WorkingDirectory %s -PassThru;" % [app_path, app_path.get_base_dir()],
-		"return $process.Id"
-	]
-
-	OS.execute("PowerShell.exe", params, output)
-
-	# return process id
-	return output[0].replace("\\r\\n", "") as int
-
-
-static func upload_file_to_frameio(filepath):
-	var output = []
-	var params = [
-		get_user_config("Frameio", "Token"),
-		get_user_config("Frameio", "RootAssetID"),
-		filepath,
-	]
-
-	# use precompiled script exe if shipping build
-	var upload_script = Utility.get_working_dir().path_join("obs/dist/windows/frameio_upload.exe")
-
-	# use python script if in editor
-	if OS.has_feature("editor"):
-		upload_script = "python"
-		params.push_front(ProjectSettings.globalize_path("res://support/obs/frameio_upload.py"))
-
-	OS.execute(upload_script, params, output, true, false)
-
-	var result = JSON.parse_string(output[0])
-
-	print(output)
-
-	return result
-
-
 static func copy_directory_recursively(p_from : String, p_to : String) -> void:
 	if not DirAccess.dir_exists_absolute(p_to):
 		DirAccess.make_dir_recursive_absolute(p_to)

@@ -20,7 +20,7 @@ func _process(_delta):
 
 func start_download():
 	download(obs_download_url, download_path)
-	SignalBus.state_update_requested.emit("obs_downloading")
+	SignalBus.state_updated.emit("obs_downloading")
 	show()
 
 
@@ -64,4 +64,4 @@ func _http_request_completed(result, _response_code, _headers, _body):
 	Utility.create_gdignore(Utility.get_working_dir().path_join("obs"))
 	
 	download_complete.emit()
-	SignalBus.state_update_requested.emit("obs_downloaded")
+	SignalBus.state_updated.emit("obs_downloaded")

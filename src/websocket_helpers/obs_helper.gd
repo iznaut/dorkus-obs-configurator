@@ -1,9 +1,18 @@
-extends WebsocketHelper
+extends "res://addons/obs-websocket-gd/obs_websocket.gd"
 
 
 signal recording_saved(filepath)
+signal obs_opened(pid)
 
-const OBS_WEBSOCKET: GDScript = preload("res://addons/obs-websocket-gd/obs_websocket.gd")
+const SOURCE_REMAPS = {
+		"image_source": {
+			"file": "dorkus-white.png"
+		},
+		"input-overlay": {
+			"io.overlay_image": "game-pad.png",
+			"io.layout_file": "game-pad.json",
+		},
+	}
 
 @export_category("Auto-Record")
 @export var helper_to_sync : WebsocketHelper
@@ -18,19 +27,8 @@ var config_paths : Dictionary = {
 	"profile": obs_root.path_join("config/obs-studio/basic/profiles/Default/basic.ini"),
 	"scene": obs_root.path_join("config/obs-studio/basic/scenes/Unreal_Engine.json"),
 }
-var source_remaps = {
-		"image_source": {
-			"file": "dorkus-white.png"
-		},
-		"input-overlay": {
-			"io.overlay_image": "game-pad.png",
-			"io.layout_file": "game-pad.json",
-		},
-	}
 var output_state : String = ""
-var is_recording : bool:
-	get:
-		return output_state == "OBS_WEBSOCKET_OUTPUT_STARTED"
+var obs_process_id : int
 
 
 func _ready():
@@ -59,46 +57,60 @@ func _ready():
 	# workaround for OBS not allowing relative source filepaths
 	var scene_json_filepath = config_paths["scene"]
 	var original_contents : Variant = Utility.read_json(scene_json_filepath)
-	Utility.write_json(scene_json_filepath, Utility.replace_filepaths_in_json(obs_root, original_contents, source_remaps))
+
+	Utility.write_json(
+		scene_json_filepath,
+		Utility.replace_filepaths_in_json(
+			obs_root,
+			original_contents,
+			SOURCE_REMAPS
+		)
+	)
 
 	# start OBS and connect to websocket server
 	assert(FileAccess.file_exists(exe_filepath), "Could not find OBS executable at expected path")
-	app_process_id = Utility.start_process(exe_filepath)
-	request_connection()
+	
+	_start_obs()
+	_request_connection()
 
 
-func request_connection() -> void:
-	socket = OBS_WEBSOCKET.new()
-	add_child(socket)
+func _start_obs() -> void:
+	var output = []
+	var params = [
+		"$process = Start-Process %s -WorkingDirectory %s -PassThru;" % [exe_filepath, exe_filepath.get_base_dir()],
+		"return $process.Id"
+	]
 
-	# bind plugin signals to Helper class signals
-	socket.connection_authenticated.connect(
+	var obs_open_thread = Thread.new()
+	obs_open_thread.start(
 		func():
-			send_command("GetProfileParameter", {"parameterCategory": "AdvOut","parameterName": "RecFilePath"})
+			OS.execute("PowerShell.exe", params, output)
+			return output[0].replace("\\r\\n", "") as int
+	)
+
+	obs_process_id = obs_open_thread.wait_to_finish()
+
+
+func _request_connection() -> void:
+	# bind plugin signals to Helper class signals
+	connection_authenticated.connect(
+		func():
 			send_command("StartReplayBuffer")
-			connection_opened.emit()
-			SignalBus.state_update_requested.emit("obs_connected")
+
+			# let other nodes know we've connected
+			SignalBus.state_updated.emit("obs_connected")
+
+			# accept commands send to signal bus
 			SignalBus.obs_command_requested.connect(send_command)
-			SignalBus.obs_state_requested.connect(
-				func():
-					SignalBus.obs_state_reported.emit(is_recording)
-			)
 
 			if helper_to_sync:
 				helper_to_sync.request_connection()
 	)
-	socket.connection_closed.connect(
+	connection_closed.connect(
 		func():
 			connection_closed.emit()
 	)
-	socket.data_received.connect(
-		func(data):
-			data = JSON.parse_string(data.get_as_json()).d
-
-			_on_obs_data_recieved(data)
-
-			data_received.emit(data)
-	)
+	data_received.connect(_on_obs_data_recieved)
 
 	# bind sync'd helper for auto recording start/stop
 	helper_to_sync.connection_opened.connect(
@@ -111,62 +123,85 @@ func request_connection() -> void:
 	)
 
 	set_process(true)
-	socket.establish_connection()
-
-
-# pass through to plugin function
-func send_command(command: String, data: Dictionary = {}) -> void:
-	assert(socket != null, "OBS Websocket not initialized")
-	socket.send_command(command, data)
+	establish_connection()
 
 
 func _on_obs_data_recieved(data):
-	# handle request responses
-	# if data.has("requestType"):
-		# print(data.requestType)
-
-	# handle event messages
-	if data.has("eventType"):
-		var type = data.eventType
-		var record_state_just_changed = false
-		var new_recording_filepath = ""
-
-		if type == "RecordStateChanged":
-			output_state = data.eventData.outputState
-			record_state_just_changed = true
-
-			SignalBus.obs_state_reported.emit(is_recording)
-
-			if output_state == "OBS_WEBSOCKET_OUTPUT_STARTED":
-				SignalBus.state_update_requested.emit("obs_recording_started")
-			if output_state == "OBS_WEBSOCKET_OUTPUT_STOPPED":
-				SignalBus.state_update_requested.emit("obs_recording_stopped")
-
-		if type == "ReplayBufferSaved":
-			new_recording_filepath = data.eventData.savedReplayPath
-
-		if record_state_just_changed and output_state == "OBS_WEBSOCKET_OUTPUT_STOPPED":
-			new_recording_filepath = data.eventData.outputPath
+	print(data)
+	
+	if data is RequestResponse:
+		var request_type = data["request_type"]
+		var response_data = data["response_data"]
 		
-		if new_recording_filepath != "":
-			if upload_on_recording_saved:
-				Utility.upload_file_to_frameio(new_recording_filepath)
+		match request_type:
+			"GetProfileParameter":
+				OS.shell_open(response_data.parameterValue)
+	elif data is Event:
+		var event_type = data["event_type"]
+		var event_data = data["event_data"]
+		
+		# TODO cleanup - map obs states and dorkus states
+		match event_type:
+			"RecordStateChanged":
+				match event_data.outputState:
+					"OBS_WEBSOCKET_OUTPUT_STARTED":
+						SignalBus.state_updated.emit("obs_recording_started")
+					"OBS_WEBSOCKET_OUTPUT_STOPPING":
+						SignalBus.state_updated.emit("obs_recording_stopping")
+					"OBS_WEBSOCKET_OUTPUT_STOPPED":
+						var new_recording_filepath = event_data.outputPath
+						
+						SignalBus.state_updated.emit("obs_recording_saved")
+						await get_tree().create_timer(1).timeout
 
-			recording_saved.emit(new_recording_filepath)
+						if upload_on_recording_saved:
+							var is_upload_successful = _upload_file_to_frameio(new_recording_filepath)
+							SignalBus.state_updated.emit("frameio_upload_%s" % "succeeded" if is_upload_successful else "failed")
+							await get_tree().create_timer(1).timeout
 
-			if close_on_recording_saved:
-				get_window().propagate_notification(NOTIFICATION_WM_CLOSE_REQUEST)
+						if close_on_recording_saved:
+							get_window().propagate_notification(NOTIFICATION_WM_CLOSE_REQUEST)
+
+						recording_saved.emit(new_recording_filepath)
+			"ReplayBufferSaved":
+				var _new_buffer_filepath = event_data.savedReplayPath
+				SignalBus.state_updated.emit("obs_recording_saved")
+
+
+func _upload_file_to_frameio(filepath) -> bool:
+	var output = []
+	var params = [
+		Utility.get_user_config("Frameio", "Token"),
+		Utility.get_user_config("Frameio", "RootAssetID"),
+		filepath,
+	]
+
+	# use precompiled script exe if shipping build
+	var upload_script = Utility.get_working_dir().path_join("obs/dist/windows/frameio_upload.exe")
+
+	# use python script if in editor
+	if OS.has_feature("editor"):
+		upload_script = "python"
+		params.push_front(ProjectSettings.globalize_path("res://support/obs/frameio_upload.py"))
+
+	OS.execute(upload_script, params, output, true, false)
+
+	var result = JSON.parse_string(output[0])
+
+	print(output)
+
+	return result != null
 
 
 func _notification(what):
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
 		print("obs close requested")
 		# if app is running
-		if app_process_id != -1:
-			if is_recording:
+		if obs_process_id != -1:
+			if output_state == "OBS_WEBSOCKET_OUTPUT_STARTED":
 				recording_saved.connect(
 					func(_filepath):
-						OS.kill(app_process_id)
+						OS.kill(obs_process_id)
 
 						get_tree().quit()
 				)
@@ -174,6 +209,6 @@ func _notification(what):
 				print("stopping record")
 				return
 			else:
-				OS.kill(app_process_id)
+				OS.kill(obs_process_id)
 
 		get_tree().quit()
