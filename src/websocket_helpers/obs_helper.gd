@@ -153,7 +153,7 @@ func _on_obs_data_recieved(data):
 
 						if upload_on_recording_saved:
 							var is_upload_successful = _upload_file_to_frameio(new_recording_filepath)
-							SignalBus.state_updated.emit("frameio_upload_%s" % "succeeded" if is_upload_successful else "failed")
+							SignalBus.state_updated.emit("frameio_upload_%s" % ("succeeded" if is_upload_successful else "failed"))
 							await get_tree().create_timer(1).timeout
 
 						if close_on_recording_saved:
