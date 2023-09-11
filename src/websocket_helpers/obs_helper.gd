@@ -177,9 +177,11 @@ func _upload_file_to_frameio(filepath) -> bool:
 	var upload_script = Utility.get_working_dir().path_join("obs/dist/windows/frameio_upload.exe")
 
 	# use python script if in editor
-	if OS.has_feature("editor"):
+	if not OS.has_feature("template"):
 		upload_script = "python"
 		params.push_front(ProjectSettings.globalize_path("res://support/obs/frameio_upload.py"))
+
+	print("running %s" % upload_script)
 
 	OS.execute(upload_script, params, output, true, false)
 
