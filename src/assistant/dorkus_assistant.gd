@@ -47,7 +47,7 @@ func _update_state(new_state_name : String):
 			MenuItem.START_STOP_RECORDING,
 			"Stop Recording"
 		)
-	if new_state_name == "obs_recording_stopped":
+	if new_state_name == "obs_recording_stopping":
 		$PopupMenu.set_item_text(
 			MenuItem.START_STOP_RECORDING,
 			"Start Recording"
