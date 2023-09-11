@@ -27,7 +27,7 @@ var config_paths : Dictionary = {
 	"profile": obs_root.path_join("config/obs-studio/basic/profiles/Default/basic.ini"),
 	"scene": obs_root.path_join("config/obs-studio/basic/scenes/Unreal_Engine.json"),
 }
-var output_state : String = ""
+var last_known_record_state
 var obs_process_id : int
 
 
@@ -122,8 +122,6 @@ func _request_connection() -> void:
 
 
 func _on_obs_data_recieved(data):
-	print(data)
-	
 	if data is RequestResponse:
 		var request_type = data["request_type"]
 		var response_data = data["response_data"]
@@ -134,13 +132,13 @@ func _on_obs_data_recieved(data):
 	elif data is Event:
 		var event_type = data["event_type"]
 		var event_data = data["event_data"]
-
-		output_state = event_data.outputState
 		
 		# TODO cleanup - map obs states and dorkus states
 		match event_type:
 			"RecordStateChanged":
-				match event_data.outputState:
+				last_known_record_state = event_data.outputState
+
+				match last_known_record_state:
 					"OBS_WEBSOCKET_OUTPUT_STARTED":
 						SignalBus.state_updated.emit("obs_recording_started")
 					"OBS_WEBSOCKET_OUTPUT_STOPPING":
@@ -197,16 +195,18 @@ func _notification(what):
 		print("obs close requested")
 		# if app is running
 		if obs_process_id != -1:
-			if output_state == "OBS_WEBSOCKET_OUTPUT_STARTED":
-				recording_saved.connect(
-					func(_filepath):
-						OS.kill(obs_process_id)
+			send_command("GetRecordStatus")
 
-						get_tree().quit()
-				)
-				send_command("StopRecord")
-				print("stopping record")
-				return
+			if last_known_record_state == "OBS_WEBSOCKET_OUTPUT_STARTED":
+					recording_saved.connect(
+						func(_filepath):
+							OS.kill(obs_process_id)
+
+							get_tree().quit()
+					)
+					send_command("StopRecord")
+					print("stopping record")
+					return
 			else:
 				OS.kill(obs_process_id)
 
