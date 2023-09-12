@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="AssistState" load_steps=2 format=3 uid="uid://b70bukfty7cdu"]
+
+[ext_resource type="Script" path="res://src/assistant/assistant_state.gd" id="1_ptxd4"]
+
+[resource]
+script = ExtResource("1_ptxd4")
+message = "Replay saved!"
+timeout = 2.0
+frames = Array[Texture2D]([])
+delay = 0.5

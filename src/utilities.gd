@@ -14,16 +14,6 @@ static func write_json(filepath, obj : Dictionary) -> void:
 	file.store_string(JSON.stringify(obj))
 
 
-static func read_ini(filepath : String):
-	var config = ConfigFile.new()
-	var err = config.load(filepath)
-
-	if err != OK:
-		return
-
-	return config
-
-
 static func get_working_dir() -> String:
 	return ProjectSettings.globalize_path("res://build/win") if OS.has_feature("editor") else OS.get_executable_path().get_base_dir()
 
@@ -41,8 +31,8 @@ static func get_user_config(section : String, key : String) -> String:
 	var value = config.get_value(section, key)
 
 	# If the file didn't load, ignore it.
-	if value == null:
-		return ""
+	# if value == null:
+	# 	return ""
 
 	return value
 

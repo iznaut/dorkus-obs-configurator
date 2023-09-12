@@ -9,22 +9,11 @@
 
 [node name="Assistant" parent="." instance=ExtResource("2_ln7lj")]
 
-[node name="Button" type="Button" parent="."]
-visible = false
-offset_left = 151.0
-offset_top = 6.0
-offset_right = 169.0
-offset_bottom = 37.0
-scale = Vector2(1.34971, 0.787353)
-text = "X"
+[node name="OBSHelper" parent="." instance=ExtResource("4_1i3de")]
+unique_name_in_owner = true
 
-[node name="WebsocketHelpers" type="Node" parent="."]
-
-[node name="OBSHelper" parent="WebsocketHelpers" node_paths=PackedStringArray("helper_to_sync") instance=ExtResource("4_1i3de")]
-helper_to_sync = NodePath("../UnrealHelper")
-upload_on_recording_saved = true
-
-[node name="UnrealHelper" parent="WebsocketHelpers" instance=ExtResource("4_uo6k7")]
+[node name="UnrealHelper" parent="." instance=ExtResource("4_uo6k7")]
+unique_name_in_owner = true
 port = 30020
 log_level = 1
 

@@ -3,13 +3,18 @@ extends Control
 
 enum MenuItem {
 	START_STOP_RECORDING = 0,
+	SAVE_REPLAY = 1,
 	OPEN_RECORDING_FOLDER = 2,
-	CLOSE = 4,
+	FRAMEIO_UPLOAD = 4,
+	SYNC_WITH_GAME = 5,
+	CLOSE = 7,
 }
 
-signal notification_requested(new_state : AssistState)
-
 const STATE_DIR = "res://src/assistant/states/"
+const OBS_OPTION_BOOLS = {
+	MenuItem.FRAMEIO_UPLOAD: "upload_on_recording_saved",
+	MenuItem.SYNC_WITH_GAME: "sync_with_unreal",
+}
 
 @export var default_idle_frame : Texture2D
 @export var default_notification_frame : Texture2D
@@ -21,6 +26,7 @@ var record_state_change_requested : bool
 @onready var dorkus = $CharacterGroup/Dorkus
 @onready var notif_bubble = $CharacterGroup/SpeechBubble
 @onready var timer = $Timer
+@onready var menu = $PopupMenu
 
 
 func _ready():
@@ -33,6 +39,13 @@ func _ready():
 	SignalBus.state_updated.connect(_update_state)
 	SignalBus.state_updated.emit("starting_up")
 
+	# await SignalBus.obs_opened
+	# for id in OBS_OPTION_BOOLS.keys():
+	# 	var index = menu.get_item_index(id)
+	# 	print(index)
+	# 	print(OBS_OPTION_BOOLS[id])
+	# 	SignalBus.config_setting_updated.emit(OBS_OPTION_BOOLS[id], menu.is_item_checked(index))
+
 
 func _update_state(new_state_name : String):
 	if new_state_name == "idle":
@@ -40,15 +53,16 @@ func _update_state(new_state_name : String):
 		current_state_data = null
 		return
 	if new_state_name == "obs_connected":
-		$PopupMenu.set_item_disabled(MenuItem.START_STOP_RECORDING, false)
-		$PopupMenu.set_item_disabled(MenuItem.OPEN_RECORDING_FOLDER, false)
+		menu.set_item_disabled(MenuItem.START_STOP_RECORDING, false)
+		menu.set_item_disabled(MenuItem.SAVE_REPLAY, false)
+		menu.set_item_disabled(MenuItem.OPEN_RECORDING_FOLDER, false)
 	if new_state_name == "obs_recording_started":
-		$PopupMenu.set_item_text(
+		menu.set_item_text(
 			MenuItem.START_STOP_RECORDING,
 			"Stop Recording"
 		)
 	if new_state_name == "obs_recording_stopping":
-		$PopupMenu.set_item_text(
+		menu.set_item_text(
 			MenuItem.START_STOP_RECORDING,
 			"Start Recording"
 		)
@@ -96,14 +110,41 @@ func _on_timer_timeout():
 
 func _on_gui_input(event:InputEvent):
 	if event is InputEventMouseButton and event.button_index == 2 and event.pressed:
-		$PopupMenu.visible = !$PopupMenu.visible
+		# about_to_popup() signal doesn't seem to work?
+		_on_popup_menu_about_to_popup()
+		menu.visible = !menu.visible
 
 
 func _on_popup_menu_id_pressed(id:int):
 	match id:
 		MenuItem.START_STOP_RECORDING:
 			SignalBus.obs_command_requested.emit("ToggleRecord")
+		MenuItem.SAVE_REPLAY:
+			SignalBus.obs_command_requested.emit("SaveReplayBuffer")
 		MenuItem.OPEN_RECORDING_FOLDER:
 			SignalBus.obs_command_requested.emit("GetProfileParameter", {"parameterCategory": "AdvOut","parameterName": "RecFilePath"})
 		MenuItem.CLOSE:
 			get_window().propagate_notification(NOTIFICATION_WM_CLOSE_REQUEST)
+		_:
+			var index = menu.get_item_index(id)
+			if menu.is_item_checkable(index):
+				menu.toggle_item_checked(index)
+				SignalBus.config_setting_updated.emit(OBS_OPTION_BOOLS[index], menu.is_item_checked(index))
+
+
+func _on_popup_menu_about_to_popup():
+	var user_frameio_root_asset_id = Utility.get_user_config("Frameio", "RootAssetID")
+	var user_frameio_token = Utility.get_user_config("Frameio", "Token")
+
+	if user_frameio_root_asset_id != null:
+		# TODO would rather use signals probably? but hard ref is working
+		# SignalBus.config_setting_updated.emit("frameio_root_asset_id", user_frameio_root_asset_id)
+		%OBSHelper.frameio_root_asset_id = user_frameio_root_asset_id
+	if user_frameio_token != null:
+		# SignalBus.config_setting_updated.emit("frameio_token", user_frameio_token)
+		%OBSHelper.frameio_token = user_frameio_token
+
+	menu.set_item_disabled(
+		MenuItem.FRAMEIO_UPLOAD,
+		%OBSHelper.frameio_token == "" or %OBSHelper.frameio_root_asset_id == ""
+	)
