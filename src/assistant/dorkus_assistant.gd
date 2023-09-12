@@ -11,9 +11,17 @@ enum MenuItem {
 }
 
 const STATE_DIR = "res://src/assistant/states/"
-const OBS_OPTION_BOOLS = {
+const OBS_OPTIONS = {
 	MenuItem.FRAMEIO_UPLOAD: "upload_on_recording_saved",
 	MenuItem.SYNC_WITH_GAME: "sync_with_unreal",
+}
+const OBS_COMMANDS = {
+	MenuItem.START_STOP_RECORDING: "ToggleRecord",
+	MenuItem.SAVE_REPLAY: "SaveReplayBuffer",
+	MenuItem.OPEN_RECORDING_FOLDER: [
+		"GetProfileParameter",
+		{"parameterCategory": "AdvOut","parameterName": "RecFilePath"}
+	],
 }
 
 @export var default_idle_frame : Texture2D
@@ -38,13 +46,6 @@ func _ready():
 
 	SignalBus.state_updated.connect(_update_state)
 	SignalBus.state_updated.emit("starting_up")
-
-	# await SignalBus.obs_opened
-	# for id in OBS_OPTION_BOOLS.keys():
-	# 	var index = menu.get_item_index(id)
-	# 	print(index)
-	# 	print(OBS_OPTION_BOOLS[id])
-	# 	SignalBus.config_setting_updated.emit(OBS_OPTION_BOOLS[id], menu.is_item_checked(index))
 
 
 func _update_state(new_state_name : String):
@@ -116,20 +117,25 @@ func _on_gui_input(event:InputEvent):
 
 
 func _on_popup_menu_id_pressed(id:int):
-	match id:
-		MenuItem.START_STOP_RECORDING:
-			SignalBus.obs_command_requested.emit("ToggleRecord")
-		MenuItem.SAVE_REPLAY:
-			SignalBus.obs_command_requested.emit("SaveReplayBuffer")
-		MenuItem.OPEN_RECORDING_FOLDER:
-			SignalBus.obs_command_requested.emit("GetProfileParameter", {"parameterCategory": "AdvOut","parameterName": "RecFilePath"})
-		MenuItem.CLOSE:
+	if id in OBS_COMMANDS.keys():
+		var command = OBS_COMMANDS[id]
+		var params = null
+
+		if command is Array:
+			params = command[1]
+			command = command[0]
+
+		SignalBus.obs_command_requested.emit(command, params if params != null else {})
+
+	if id in OBS_OPTIONS.keys():
+		var index = menu.get_item_index(id)
+
+		if menu.is_item_checkable(index):
+			menu.toggle_item_checked(index)
+			SignalBus.config_setting_updated.emit(OBS_OPTIONS[index], menu.is_item_checked(index))
+	
+	if id == MenuItem.CLOSE:
 			get_window().propagate_notification(NOTIFICATION_WM_CLOSE_REQUEST)
-		_:
-			var index = menu.get_item_index(id)
-			if menu.is_item_checkable(index):
-				menu.toggle_item_checked(index)
-				SignalBus.config_setting_updated.emit(OBS_OPTION_BOOLS[index], menu.is_item_checked(index))
 
 
 func _on_popup_menu_about_to_popup():
@@ -144,7 +150,16 @@ func _on_popup_menu_about_to_popup():
 		# SignalBus.config_setting_updated.emit("frameio_token", user_frameio_token)
 		%OBSHelper.frameio_token = user_frameio_token
 
+	# disable frame.io upload if no token defined
 	menu.set_item_disabled(
 		MenuItem.FRAMEIO_UPLOAD,
 		%OBSHelper.frameio_token == ""
 	)
+
+	# refresh checkboxes to match obs bools
+	for id in OBS_OPTIONS.keys():
+		var index = menu.get_item_index(id)
+		menu.set_item_checked(
+			index,
+			%OBSHelper.get(OBS_OPTIONS[id])
+		)
