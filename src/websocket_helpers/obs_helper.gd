@@ -2,7 +2,6 @@ extends "res://addons/obs-websocket-gd/obs_websocket.gd"
 
 
 signal recording_saved(filepath)
-signal obs_opened(pid)
 
 const SOURCE_REMAPS = {
 		"image_source": {
@@ -15,11 +14,22 @@ const SOURCE_REMAPS = {
 	}
 
 @export_category("Auto-Record")
-@export var helper_to_sync : WebsocketHelper
-@export var close_on_recording_saved : bool
+@export var sync_with_unreal : bool:
+	set(new_value):
+		_bind_game_helper(!new_value)
+		sync_with_unreal = new_value
+var helper_to_sync : WebsocketHelper
+var start_record_func = func():
+	send_command("StartRecord")
+var stop_record_func = func():
+	send_command("StopRecord")
 
 @export_category("Frame.io Integration")
-@export var upload_on_recording_saved : bool
+@export var frameio_root_asset_id : String
+@export var frameio_token : String
+
+var close_on_recording_saved : bool
+var upload_on_recording_saved : bool
 
 var obs_root = Utility.get_working_dir().path_join("obs")
 var exe_filepath : String = obs_root.path_join("bin/64bit/obs64.exe")
@@ -69,6 +79,12 @@ func _ready():
 
 	# start OBS and connect to websocket server
 	assert(FileAccess.file_exists(exe_filepath), "Could not find OBS executable at expected path")
+
+	SignalBus.config_setting_updated.connect(
+		func(var_name, new_value):
+			set(var_name, new_value)
+	)
+	SignalBus.config_setting_requested.connect(get)
 	
 	_start_obs()
 	_request_connection()
@@ -101,24 +117,27 @@ func _request_connection() -> void:
 
 			# accept commands sent to signal bus
 			SignalBus.obs_command_requested.connect(send_command)
-
-			if helper_to_sync:
-				helper_to_sync.request_connection()
 	)
 	data_received.connect(_on_obs_data_recieved)
 
-	# bind sync'd helper for auto recording start/stop
-	helper_to_sync.connection_opened.connect(
-		func():
-			send_command("StartRecord")
-	)
-	helper_to_sync.connection_closed.connect(
-		func():
-			send_command("StopRecord")
-	)
-
 	set_process(true)
 	establish_connection()
+
+
+func _bind_game_helper(unbind = false):
+	if unbind:
+		helper_to_sync.connection_opened.disconnect(start_record_func)
+		helper_to_sync.connection_closed.disconnect(stop_record_func)
+
+		helper_to_sync = null
+	else:
+		helper_to_sync = %UnrealHelper
+
+		# bind sync'd helper for auto recording start/stop
+		helper_to_sync.connection_opened.connect(start_record_func)
+		helper_to_sync.connection_closed.connect(stop_record_func)
+
+		helper_to_sync.request_connection()
 
 
 func _on_obs_data_recieved(data):
@@ -160,14 +179,14 @@ func _on_obs_data_recieved(data):
 						recording_saved.emit(new_recording_filepath)
 			"ReplayBufferSaved":
 				var _new_buffer_filepath = event_data.savedReplayPath
-				SignalBus.state_updated.emit("obs_recording_saved")
+				SignalBus.state_updated.emit("obs_replay_saved")
 
 
 func _upload_file_to_frameio(filepath) -> bool:
 	var output = []
 	var params = [
-		Utility.get_user_config("Frameio", "Token"),
-		Utility.get_user_config("Frameio", "RootAssetID"),
+		frameio_token,
+		frameio_root_asset_id,
 		filepath,
 	]
 

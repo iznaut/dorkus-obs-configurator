@@ -81,24 +81,35 @@ autowrap_mode = 2
 autostart = true
 
 [node name="PopupMenu" type="PopupMenu" parent="."]
-size = Vector2i(213, 120)
+size = Vector2i(234, 178)
 allow_search = false
-item_count = 5
+item_count = 8
 item_0/text = "Start Recording"
 item_0/id = 0
 item_0/disabled = true
-item_1/text = ""
+item_1/text = "Save Replay"
 item_1/id = 1
-item_1/separator = true
+item_1/disabled = true
 item_2/text = "Open Recording Folder"
 item_2/id = 2
 item_2/disabled = true
 item_3/text = ""
 item_3/id = 3
 item_3/separator = true
-item_4/text = "Close Dorkus Assist"
+item_4/text = "Upload to frame.io"
+item_4/checkable = 1
 item_4/id = 4
+item_4/disabled = true
+item_5/text = "Sync with Unreal"
+item_5/checkable = 1
+item_5/id = 5
+item_6/text = ""
+item_6/id = 6
+item_6/separator = true
+item_7/text = "Close Dorkus Assist"
+item_7/id = 7
 
 [connection signal="gui_input" from="." to="." method="_on_gui_input"]
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[connection signal="about_to_popup" from="PopupMenu" to="." method="_on_popup_menu_about_to_popup"]
 [connection signal="id_pressed" from="PopupMenu" to="." method="_on_popup_menu_id_pressed"]
