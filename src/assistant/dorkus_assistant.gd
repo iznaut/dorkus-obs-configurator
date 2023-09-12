@@ -136,11 +136,11 @@ func _on_popup_menu_about_to_popup():
 	var user_frameio_root_asset_id = Utility.get_user_config("Frameio", "RootAssetID")
 	var user_frameio_token = Utility.get_user_config("Frameio", "Token")
 
-	if user_frameio_root_asset_id != null:
+	if user_frameio_root_asset_id != "":
 		# TODO would rather use signals probably? but hard ref is working
 		# SignalBus.config_setting_updated.emit("frameio_root_asset_id", user_frameio_root_asset_id)
 		%OBSHelper.frameio_root_asset_id = user_frameio_root_asset_id
-	if user_frameio_token != null:
+	if user_frameio_token != "":
 		# SignalBus.config_setting_updated.emit("frameio_token", user_frameio_token)
 		%OBSHelper.frameio_token = user_frameio_token
 
