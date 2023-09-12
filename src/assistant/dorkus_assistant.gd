@@ -146,5 +146,5 @@ func _on_popup_menu_about_to_popup():
 
 	menu.set_item_disabled(
 		MenuItem.FRAMEIO_UPLOAD,
-		%OBSHelper.frameio_token == "" or %OBSHelper.frameio_root_asset_id == ""
+		%OBSHelper.frameio_token == ""
 	)
