@@ -92,7 +92,7 @@ func _ready():
 func _start_obs() -> void:
 	var output = []
 	var params = [
-		"$process = Start-Process %s -WorkingDirectory %s -PassThru;" % [exe_filepath, exe_filepath.get_base_dir()],
+		"$process = Start-Process \'%s\' -WorkingDirectory \'%s\' -PassThru;" % [exe_filepath, exe_filepath.get_base_dir()],
 		"return $process.Id"
 	]
 

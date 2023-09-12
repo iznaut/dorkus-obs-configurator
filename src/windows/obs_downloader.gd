@@ -48,8 +48,8 @@ func _http_request_completed(result, _response_code, _headers, _body):
 	OS.execute(
 		"PowerShell.exe",
 		[
-			"Set-Location -Path %s;" % Utility.get_working_dir(),
-			"Expand-Archive -Path %s" % download_path,
+			"Set-Location -Path \'%s\';" % Utility.get_working_dir(),
+			"Expand-Archive -Path \'%s\'" % download_path,
 		],
 		output,
 		true, true
