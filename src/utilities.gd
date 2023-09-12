@@ -22,7 +22,7 @@ static func get_user_config_path() -> String:
 	return get_working_dir().path_join("config.ini")
 
 
-static func get_user_config(section : String, key : String) -> String:
+static func get_user_config(section : String, key : String) -> Variant:
 	var config = ConfigFile.new()
 
 	# Load data from a file.
