@@ -11,8 +11,9 @@
 
 [node name="OBSHelper" parent="." instance=ExtResource("4_1i3de")]
 unique_name_in_owner = true
+sync_with_unreal = true
 
-[node name="UnrealHelper" parent="." instance=ExtResource("4_uo6k7")]
+[node name="UnrealHelper" parent="OBSHelper" instance=ExtResource("4_uo6k7")]
 unique_name_in_owner = true
 port = 30020
 log_level = 1

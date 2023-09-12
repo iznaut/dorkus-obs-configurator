@@ -16,13 +16,12 @@ const SOURCE_REMAPS = {
 @export_category("Auto-Record")
 @export var sync_with_unreal : bool:
 	set(new_value):
+		if not is_inside_tree(): await ready
 		_bind_game_helper(!new_value)
 		sync_with_unreal = new_value
 var helper_to_sync : WebsocketHelper
-var start_record_func = func():
-	send_command("StartRecord")
-var stop_record_func = func():
-	send_command("StopRecord")
+var start_record_func = func(): send_command("StartRecord")
+var stop_record_func = func(): send_command("StopRecord")
 
 @export_category("Frame.io Integration")
 @export var frameio_root_asset_id : String
