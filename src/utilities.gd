@@ -18,6 +18,10 @@ static func get_working_dir() -> String:
 	return ProjectSettings.globalize_path("res://build/win") if OS.has_feature("editor") else OS.get_executable_path().get_base_dir()
 
 
+static func get_support_dir() -> String:
+	return ProjectSettings.globalize_path("res://support") if OS.has_feature("editor") else get_working_dir().path_join("support")
+
+
 static func get_user_config_path() -> String:
 	return get_working_dir().path_join("config.ini")
 
@@ -102,3 +106,24 @@ static func copy_directory_recursively(p_from : String, p_to : String) -> void:
 static func create_gdignore(dir_to_ignore : String):
 	var new_file = FileAccess.open(dir_to_ignore.path_join(".gdignore"), FileAccess.WRITE)
 	new_file.close()
+
+
+static func get_state_data_from_string(state_name : String) -> AssistState:
+	return load(
+		"res://src/assistant/states/".path_join("%s.tres" % state_name)
+	)
+
+
+static func execute_powershell(params : Array) -> Variant:
+	var output = []
+
+	var pwsh_thread = Thread.new()
+	pwsh_thread.start(
+		func():
+			OS.execute("PowerShell.exe", params, output)
+			print("pwsh output:")
+			print(output)
+			return output[0].replace("\\r\\n", "") as int
+	)
+
+	return pwsh_thread.wait_to_finish()

@@ -1,31 +1,159 @@
-[gd_scene load_steps=5 format=3 uid="uid://btdu0dq3jvvbx"]
+[gd_scene load_steps=11 format=3 uid="uid://btdu0dq3jvvbx"]
 
-[ext_resource type="PackedScene" uid="uid://shks817s0jup" path="res://src/assistant/dorkus_assistant.tscn" id="2_ln7lj"]
-[ext_resource type="PackedScene" path="res://src/websocket_helpers/obs_helper.tscn" id="4_1i3de"]
-[ext_resource type="PackedScene" path="res://src/websocket_helpers/unreal_helper.tscn" id="4_uo6k7"]
-[ext_resource type="Script" path="res://src/windows/obs_downloader.gd" id="5_kybdy"]
+[ext_resource type="Script" path="res://src/assistant/dorkus_assistant.gd" id="1_lwrdd"]
+[ext_resource type="Texture2D" uid="uid://d1ksgw06gjrd5" path="res://src/assistant/assets/T_Dorkus_Idle.png" id="2_6lals"]
+[ext_resource type="Script" path="res://src/obs_helper.gd" id="2_njfxi"]
+[ext_resource type="Script" path="res://src/game_sync_helpers/unreal_helper.gd" id="3_ajcxy"]
+[ext_resource type="Script" path="res://src/assistant/character.gd" id="3_gcqmr"]
+[ext_resource type="Texture2D" uid="uid://bgti5t7i22lgv" path="res://src/assistant/assets/T_Dorkus_Speaking.png" id="4_3uvqu"]
+[ext_resource type="Texture2D" uid="uid://bj1ej1it4g5mn" path="res://src/assistant/assets/T_TextBubble.png" id="5_ewien"]
+[ext_resource type="Script" path="res://src/assistant/notification.gd" id="6_xxih4"]
+[ext_resource type="Script" path="res://src/assistant/obs_downloader.gd" id="7_sdkr7"]
+[ext_resource type="Script" path="res://src/assistant/menu.gd" id="8_om5g8"]
 
 [node name="Main" type="Node"]
 
-[node name="Assistant" parent="." instance=ExtResource("2_ln7lj")]
-
-[node name="OBSHelper" parent="." instance=ExtResource("4_1i3de")]
+[node name="Assistant" type="Control" parent="."]
 unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+script = ExtResource("1_lwrdd")
+
+[node name="CharacterGroup" type="Control" parent="Assistant"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 1
+metadata/_edit_group_ = true
+
+[node name="Character" type="TextureRect" parent="Assistant/CharacterGroup"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -200.0
+offset_top = -200.0
+offset_right = 1848.0
+offset_bottom = 1848.0
+grow_horizontal = 0
+grow_vertical = 0
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("2_6lals")
+script = ExtResource("3_gcqmr")
+default_idle_frame = ExtResource("2_6lals")
+default_notification_frame = ExtResource("4_3uvqu")
+
+[node name="AnimationTimer" type="Timer" parent="Assistant/CharacterGroup/Character"]
+autostart = true
+
+[node name="Notification" type="TextureRect" parent="Assistant/CharacterGroup"]
+visible = false
+layout_mode = 0
+offset_left = -200.0
+offset_top = -200.0
+offset_right = 989.0
+offset_bottom = 866.0
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("5_ewien")
+stretch_mode = 2
+script = ExtResource("6_xxih4")
+
+[node name="Label" type="Label" parent="Assistant/CharacterGroup/Notification"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 220.0
+offset_top = 220.0
+offset_right = -179.0
+offset_bottom = -396.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 150
+text = "Setting up..."
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="Control" type="VBoxContainer" parent="Assistant"]
+visible = false
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 27.0
+grow_horizontal = 2
+
+[node name="ProgressBar" type="ProgressBar" parent="Assistant/Control"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("7_sdkr7")
+
+[node name="PopupMenu" type="PopupMenu" parent="."]
+unique_name_in_owner = true
+size = Vector2i(234, 205)
+allow_search = false
+item_count = 9
+item_0/text = "Start Recording"
+item_0/id = 0
+item_0/disabled = true
+item_1/text = "Save Replay"
+item_1/id = 1
+item_1/disabled = true
+item_2/text = "Take Screenshot"
+item_2/id = 8
+item_2/disabled = true
+item_3/text = "Open Recording Folder"
+item_3/id = 2
+item_3/disabled = true
+item_4/text = ""
+item_4/id = 3
+item_4/disabled = true
+item_4/separator = true
+item_5/text = "Upload to frame.io"
+item_5/checkable = 1
+item_5/id = 4
+item_5/disabled = true
+item_6/text = "Sync with Unreal"
+item_6/checkable = 1
+item_6/id = 5
+item_7/text = ""
+item_7/id = 6
+item_7/disabled = true
+item_7/separator = true
+item_8/text = "Close Dorkus Assist"
+item_8/id = 7
+script = ExtResource("8_om5g8")
+
+[node name="OBSHelper" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("2_njfxi")
 sync_with_unreal = true
+frameio_token = "ffff"
 
-[node name="UnrealHelper" parent="OBSHelper" instance=ExtResource("4_uo6k7")]
+[node name="UnrealHelper" type="Node" parent="OBSHelper"]
 unique_name_in_owner = true
+script = ExtResource("3_ajcxy")
 port = 30020
 log_level = 1
 
-[node name="Control" type="VBoxContainer" parent="."]
-offset_left = 8.0
-offset_top = 8.0
-offset_right = 160.0
-offset_bottom = 65.0
-
-[node name="ProgressBar" type="ProgressBar" parent="Control"]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-script = ExtResource("5_kybdy")
+[connection signal="gui_input" from="Assistant" to="Assistant" method="_on_gui_input" flags=18]
+[connection signal="state_updated" from="Assistant" to="Assistant/CharacterGroup/Character" method="_on_assistant_state_updated" flags=18]
+[connection signal="state_updated" from="Assistant" to="Assistant/CharacterGroup/Notification" method="_on_assistant_state_updated" flags=18]
+[connection signal="state_updated" from="Assistant" to="Assistant/Control/ProgressBar" method="_on_assistant_state_updated" flags=18]
+[connection signal="state_updated" from="Assistant" to="PopupMenu" method="_on_assistant_state_updated" flags=18]
+[connection signal="timeout" from="Assistant/CharacterGroup/Character/AnimationTimer" to="Assistant/CharacterGroup/Character" method="_on_animation_timer_timeout" flags=18]
+[connection signal="about_to_popup" from="PopupMenu" to="PopupMenu" method="_on_about_to_popup" flags=18]
+[connection signal="id_pressed" from="PopupMenu" to="PopupMenu" method="_on_id_pressed" flags=18]
+[connection signal="state_update_requested" from="OBSHelper" to="Assistant" method="_on_obs_helper_state_update_requested"]
