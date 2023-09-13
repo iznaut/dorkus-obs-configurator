@@ -18,10 +18,6 @@ boot_splash/fullsize=false
 boot_splash/use_filter=false
 config/icon="res://icon.png"
 
-[autoload]
-
-SignalBus="*res://src/assistant/signal_bus.tscn"
-
 [display]
 
 window/size/viewport_width=250

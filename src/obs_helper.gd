@@ -1,6 +1,13 @@
 extends "res://addons/obs-websocket-gd/obs_websocket.gd"
 
 
+signal state_update_requested(new_state_name)
+
+signal config_setting_requested(var_name)
+signal config_setting_updated(var_name, new_value)
+
+signal obs_command_requested(command, data)
+
 signal recording_saved(filepath)
 
 const SOURCE_REMAPS = {
@@ -58,6 +65,7 @@ func _ready():
 		Utility.copy_directory_recursively("res://support/obs/", obs_root)
 
 	# download obs if missing
+	# TODO make this a signal request
 	if not FileAccess.file_exists(exe_filepath):
 		%ProgressBar.start_download()
 
@@ -79,31 +87,20 @@ func _ready():
 	# start OBS and connect to websocket server
 	assert(FileAccess.file_exists(exe_filepath), "Could not find OBS executable at expected path")
 
-	SignalBus.config_setting_updated.connect(
+	config_setting_updated.connect(
 		func(var_name, new_value):
 			set(var_name, new_value)
 	)
-	SignalBus.config_setting_requested.connect(get)
+	config_setting_requested.connect(get)
 	
-	_start_obs()
-	_request_connection()
-
-
-func _start_obs() -> void:
-	var output = []
-	var params = [
-		"$process = Start-Process \'%s\' -WorkingDirectory \'%s\' -PassThru;" % [exe_filepath, exe_filepath.get_base_dir()],
-		"return $process.Id"
-	]
-
-	var obs_open_thread = Thread.new()
-	obs_open_thread.start(
-		func():
-			OS.execute("PowerShell.exe", params, output)
-			return output[0].replace("\\r\\n", "") as int
+	# start or attach to OBS process
+	obs_process_id = Utility.execute_powershell(
+		[
+			Utility.get_support_dir().path_join("start_process.ps1"),
+			exe_filepath
+		]
 	)
-
-	obs_process_id = obs_open_thread.wait_to_finish()
+	_request_connection()
 
 
 func _request_connection() -> void:
@@ -112,10 +109,10 @@ func _request_connection() -> void:
 			send_command("StartReplayBuffer")
 
 			# let other nodes know we've connected
-			SignalBus.state_updated.emit("obs_connected")
+			state_update_requested.emit("obs_connected")
 
 			# accept commands sent to signal bus
-			SignalBus.obs_command_requested.connect(send_command)
+			obs_command_requested.connect(send_command)
 	)
 	data_received.connect(_on_obs_data_recieved)
 
@@ -158,18 +155,18 @@ func _on_obs_data_recieved(data):
 
 				match last_known_record_state:
 					"OBS_WEBSOCKET_OUTPUT_STARTED":
-						SignalBus.state_updated.emit("obs_recording_started")
+						state_update_requested.emit("obs_recording_started")
 					"OBS_WEBSOCKET_OUTPUT_STOPPING":
-						SignalBus.state_updated.emit("obs_recording_stopping")
+						state_update_requested.emit("obs_recording_stopping")
 					"OBS_WEBSOCKET_OUTPUT_STOPPED":
 						var new_recording_filepath = event_data.outputPath
 						
-						SignalBus.state_updated.emit("obs_recording_saved")
+						state_update_requested.emit("obs_recording_saved")
 						await get_tree().create_timer(1).timeout
 
 						if upload_on_recording_saved:
 							var is_upload_successful = _upload_file_to_frameio(new_recording_filepath)
-							SignalBus.state_updated.emit("frameio_upload_%s" % ("succeeded" if is_upload_successful else "failed"))
+							state_update_requested.emit("frameio_upload_%s" % ("succeeded" if is_upload_successful else "failed"))
 							await get_tree().create_timer(1).timeout
 
 						if close_on_recording_saved:
@@ -178,7 +175,7 @@ func _on_obs_data_recieved(data):
 						recording_saved.emit(new_recording_filepath)
 			"ReplayBufferSaved":
 				var _new_buffer_filepath = event_data.savedReplayPath
-				SignalBus.state_updated.emit("obs_replay_saved")
+				state_update_requested.emit("obs_replay_saved")
 
 
 func _upload_file_to_frameio(filepath) -> bool:
