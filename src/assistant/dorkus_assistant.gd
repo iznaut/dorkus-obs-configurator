@@ -14,8 +14,9 @@ func _ready():
 	state_updated.emit("starting_up")
 
 
-func _on_gui_input(event:InputEvent):
-	if event is InputEventMouseButton and event.button_index == 2 and event.pressed:
+func _unhandled_input(event):
+	print(event)
+	if event is InputEventMouseButton and event.button_index == 2:
 		%PopupMenu.popup()
 
 
