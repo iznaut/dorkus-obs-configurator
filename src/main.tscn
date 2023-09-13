@@ -21,8 +21,45 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 1
 script = ExtResource("1_lwrdd")
+
+[node name="PopupMenu" type="PopupMenu" parent="Assistant"]
+unique_name_in_owner = true
+size = Vector2i(234, 205)
+visible = true
+always_on_top = true
+allow_search = false
+item_count = 9
+item_0/text = "Start Recording"
+item_0/id = 0
+item_0/disabled = true
+item_1/text = "Save Replay"
+item_1/id = 1
+item_1/disabled = true
+item_2/text = "Take Screenshot"
+item_2/id = 8
+item_2/disabled = true
+item_3/text = "Open Recording Folder"
+item_3/id = 2
+item_3/disabled = true
+item_4/text = ""
+item_4/id = 3
+item_4/disabled = true
+item_4/separator = true
+item_5/text = "Upload to frame.io"
+item_5/checkable = 1
+item_5/id = 4
+item_5/disabled = true
+item_6/text = "Sync with Unreal"
+item_6/checkable = 1
+item_6/id = 5
+item_7/text = ""
+item_7/id = 6
+item_7/disabled = true
+item_7/separator = true
+item_8/text = "Close Dorkus Assist"
+item_8/id = 7
+script = ExtResource("8_om5g8")
 
 [node name="CharacterGroup" type="Control" parent="Assistant"]
 layout_mode = 1
@@ -31,6 +68,8 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = -250.0
+offset_top = -250.0
 grow_horizontal = 0
 grow_vertical = 0
 mouse_filter = 1
@@ -100,42 +139,6 @@ unique_name_in_owner = true
 layout_mode = 2
 script = ExtResource("7_sdkr7")
 
-[node name="PopupMenu" type="PopupMenu" parent="."]
-unique_name_in_owner = true
-size = Vector2i(234, 205)
-allow_search = false
-item_count = 9
-item_0/text = "Start Recording"
-item_0/id = 0
-item_0/disabled = true
-item_1/text = "Save Replay"
-item_1/id = 1
-item_1/disabled = true
-item_2/text = "Take Screenshot"
-item_2/id = 8
-item_2/disabled = true
-item_3/text = "Open Recording Folder"
-item_3/id = 2
-item_3/disabled = true
-item_4/text = ""
-item_4/id = 3
-item_4/disabled = true
-item_4/separator = true
-item_5/text = "Upload to frame.io"
-item_5/checkable = 1
-item_5/id = 4
-item_5/disabled = true
-item_6/text = "Sync with Unreal"
-item_6/checkable = 1
-item_6/id = 5
-item_7/text = ""
-item_7/id = 6
-item_7/disabled = true
-item_7/separator = true
-item_8/text = "Close Dorkus Assist"
-item_8/id = 7
-script = ExtResource("8_om5g8")
-
 [node name="OBSHelper" type="Node" parent="."]
 unique_name_in_owner = true
 script = ExtResource("2_njfxi")
@@ -148,12 +151,11 @@ script = ExtResource("3_ajcxy")
 port = 30020
 log_level = 1
 
-[connection signal="gui_input" from="Assistant" to="Assistant" method="_on_gui_input" flags=18]
-[connection signal="state_updated" from="Assistant" to="Assistant/CharacterGroup/Character" method="_on_assistant_state_updated" flags=18]
-[connection signal="state_updated" from="Assistant" to="Assistant/CharacterGroup/Notification" method="_on_assistant_state_updated" flags=18]
-[connection signal="state_updated" from="Assistant" to="Assistant/Control/ProgressBar" method="_on_assistant_state_updated" flags=18]
-[connection signal="state_updated" from="Assistant" to="PopupMenu" method="_on_assistant_state_updated" flags=18]
-[connection signal="timeout" from="Assistant/CharacterGroup/Character/AnimationTimer" to="Assistant/CharacterGroup/Character" method="_on_animation_timer_timeout" flags=18]
-[connection signal="about_to_popup" from="PopupMenu" to="PopupMenu" method="_on_about_to_popup" flags=18]
-[connection signal="id_pressed" from="PopupMenu" to="PopupMenu" method="_on_id_pressed" flags=18]
+[connection signal="state_updated" from="Assistant" to="Assistant/CharacterGroup/Character" method="_on_assistant_state_updated"]
+[connection signal="state_updated" from="Assistant" to="Assistant/CharacterGroup/Notification" method="_on_assistant_state_updated"]
+[connection signal="state_updated" from="Assistant" to="Assistant/Control/ProgressBar" method="_on_assistant_state_updated"]
+[connection signal="state_updated" from="Assistant" to="Assistant/PopupMenu" method="_on_assistant_state_updated"]
+[connection signal="about_to_popup" from="Assistant/PopupMenu" to="Assistant/PopupMenu" method="_on_about_to_popup"]
+[connection signal="id_pressed" from="Assistant/PopupMenu" to="Assistant/PopupMenu" method="_on_id_pressed"]
+[connection signal="timeout" from="Assistant/CharacterGroup/Character/AnimationTimer" to="Assistant/CharacterGroup/Character" method="_on_animation_timer_timeout"]
 [connection signal="state_update_requested" from="OBSHelper" to="Assistant" method="_on_obs_helper_state_update_requested"]

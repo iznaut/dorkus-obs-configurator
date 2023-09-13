@@ -77,6 +77,8 @@ func _on_id_pressed(id:int):
 
 
 func _on_about_to_popup():
+	position = get_parent().get_window().position
+
 	var user_frameio_root_asset_id = Utility.get_user_config("Frameio", "RootAssetID")
 	var user_frameio_token = Utility.get_user_config("Frameio", "Token")
 
