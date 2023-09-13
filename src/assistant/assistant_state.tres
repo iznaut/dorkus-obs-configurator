@@ -1,8 +1,0 @@
-[gd_resource type="Resource" script_class="AssistState" load_steps=2 format=3 uid="uid://ddsrqs8lbve81"]
-
-[ext_resource type="Script" path="res://src/assistant/assistant_state.gd" id="1_ln1o5"]
-
-[resource]
-script = ExtResource("1_ln1o5")
-message = ""
-frames = Array[Texture2D]([])
