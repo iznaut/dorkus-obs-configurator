@@ -13,70 +13,13 @@
     "sources": [
         {
             "prev_ver": 486604803,
-            "name": "Input Overlay",
-            "uuid": "b496581e-ffb2-4cc1-8897-3794c01e143e",
-            "id": "input-overlay",
-            "versioned_id": "input-overlay",
-            "settings": {
-                "io.controller_id": "Generic Xinput gamepad 0",
-                "io.input_source": "This computer",
-                "io.layout_file": "C:/Repos/dorkus-obs-configurator/obs/config/assets/game-pad.json",
-                "io.overlay_image": "C:/Repos/dorkus-obs-configurator/obs/config/assets/game-pad.png"
-            },
-            "mixers": 0,
-            "sync": 0,
-            "flags": 0,
-            "volume": 1,
-            "balance": 0.5,
-            "enabled": true,
-            "muted": false,
-            "push-to-mute": false,
-            "push-to-mute-delay": 0,
-            "push-to-talk": false,
-            "push-to-talk-delay": 0,
-            "hotkeys": {},
-            "deinterlace_mode": 0,
-            "deinterlace_field_order": 0,
-            "monitoring_type": 0,
-            "private_settings": {},
-            "filters": [
-                {
-                    "prev_ver": 486604803,
-                    "name": "Color Correction",
-                    "uuid": "9d8ba855-c7f6-4948-b1ae-c3db0707442f",
-                    "id": "color_filter",
-                    "versioned_id": "color_filter_v2",
-                    "settings": {
-                        "opacity": 0.5
-                    },
-                    "mixers": 0,
-                    "sync": 0,
-                    "flags": 0,
-                    "volume": 1,
-                    "balance": 0.5,
-                    "enabled": true,
-                    "muted": false,
-                    "push-to-mute": false,
-                    "push-to-mute-delay": 0,
-                    "push-to-talk": false,
-                    "push-to-talk-delay": 0,
-                    "hotkeys": {},
-                    "deinterlace_mode": 0,
-                    "deinterlace_field_order": 0,
-                    "monitoring_type": 0,
-                    "private_settings": {}
-                }
-            ]
-        },
-        {
-            "prev_ver": 486604803,
             "name": "Playtest",
             "uuid": "98f71403-5619-4f81-8dbd-6a9539f1974f",
             "id": "scene",
             "versioned_id": "scene",
             "settings": {
                 "custom_size": false,
-                "id_counter": 7,
+                "id_counter": 10,
                 "items": [
                     {
                         "name": "Placeholder Image",
@@ -155,7 +98,123 @@
                         "private_settings": {}
                     },
                     {
-                        "name": "Input Overlay",
+                        "name": "Input Overlay (Keyboard)",
+                        "source_uuid": "ae947e9d-37e6-4625-848f-09e65d4c00fb",
+                        "visible": true,
+                        "locked": true,
+                        "rot": 0,
+                        "pos": {
+                            "x": 1330,
+                            "y": 872.5098876953125
+                        },
+                        "scale": {
+                            "x": 0.44499313831329346,
+                            "y": 0.44534170627593994
+                        },
+                        "align": 5,
+                        "bounds_type": 0,
+                        "bounds_align": 0,
+                        "bounds": {
+                            "x": 0,
+                            "y": 0
+                        },
+                        "crop_left": 0,
+                        "crop_top": 0,
+                        "crop_right": 0,
+                        "crop_bottom": 0,
+                        "id": 8,
+                        "group_item_backup": true,
+                        "scale_filter": "disable",
+                        "blend_method": "default",
+                        "blend_type": "normal",
+                        "show_transition": {
+                            "duration": 0
+                        },
+                        "hide_transition": {
+                            "duration": 0
+                        },
+                        "private_settings": {}
+                    },
+                    {
+                        "name": "Input Overlay (Mouse)",
+                        "source_uuid": "f0a06cd0-c744-47af-9f63-bb9611fcb9a6",
+                        "visible": true,
+                        "locked": true,
+                        "rot": 0,
+                        "pos": {
+                            "x": 1735.123779296875,
+                            "y": 898.1074829101562
+                        },
+                        "scale": {
+                            "x": 0.5236994028091431,
+                            "y": 0.5240240097045898
+                        },
+                        "align": 5,
+                        "bounds_type": 0,
+                        "bounds_align": 0,
+                        "bounds": {
+                            "x": 0,
+                            "y": 0
+                        },
+                        "crop_left": 0,
+                        "crop_top": 0,
+                        "crop_right": 0,
+                        "crop_bottom": 0,
+                        "id": 9,
+                        "group_item_backup": true,
+                        "scale_filter": "disable",
+                        "blend_method": "default",
+                        "blend_type": "normal",
+                        "show_transition": {
+                            "duration": 0
+                        },
+                        "hide_transition": {
+                            "duration": 0
+                        },
+                        "private_settings": {}
+                    },
+                    {
+                        "name": "Input Overlay (Keyboard/Mouse)",
+                        "source_uuid": "d488eaaf-3a25-4ac8-bb1d-7d5f0c70c863",
+                        "visible": false,
+                        "locked": true,
+                        "rot": 0,
+                        "pos": {
+                            "x": 1330,
+                            "y": 872.5098876953125
+                        },
+                        "scale": {
+                            "x": 0.5236994028091431,
+                            "y": 0.5240240097045898
+                        },
+                        "align": 5,
+                        "bounds_type": 0,
+                        "bounds_align": 0,
+                        "bounds": {
+                            "x": 0,
+                            "y": 0
+                        },
+                        "crop_left": 0,
+                        "crop_top": 0,
+                        "crop_right": 0,
+                        "crop_bottom": 0,
+                        "id": 10,
+                        "group_item_backup": false,
+                        "scale_filter": "disable",
+                        "blend_method": "default",
+                        "blend_type": "normal",
+                        "show_transition": {
+                            "duration": 0
+                        },
+                        "hide_transition": {
+                            "duration": 0
+                        },
+                        "private_settings": {
+                            "collapsed": true
+                        }
+                    },
+                    {
+                        "name": "Input Overlay (Gamepad)",
                         "source_uuid": "b496581e-ffb2-4cc1-8897-3794c01e143e",
                         "visible": true,
                         "locked": true,
@@ -343,7 +402,7 @@
                             "duration": 0
                         },
                         "private_settings": {
-                            "collapsed": false
+                            "collapsed": true
                         }
                     }
                 ]
@@ -365,8 +424,10 @@
                 "libobs.hide_scene_item.Placeholder Image": [],
                 "libobs.show_scene_item.Game Capture": [],
                 "libobs.hide_scene_item.Game Capture": [],
-                "libobs.show_scene_item.Input Overlay": [],
-                "libobs.hide_scene_item.Input Overlay": [],
+                "libobs.show_scene_item.Input Overlay (Keyboard/Mouse)": [],
+                "libobs.hide_scene_item.Input Overlay (Keyboard/Mouse)": [],
+                "libobs.show_scene_item.Input Overlay (Gamepad)": [],
+                "libobs.hide_scene_item.Input Overlay (Gamepad)": [],
                 "libobs.show_scene_item.Audio": [],
                 "libobs.hide_scene_item.Audio": []
             },
@@ -443,7 +504,7 @@
             "id": "image_source",
             "versioned_id": "image_source",
             "settings": {
-                "file": "C:/Repos/dorkus-obs-configurator/obs/config/assets/dorkus-white.png",
+                "file": "C:/Repos/dorkus-obs-configurator/build/win/obs/config/assets/dorkus-white.png",
                 "unload": false,
                 "linear_alpha": false
             },
@@ -624,6 +685,120 @@
             "deinterlace_field_order": 0,
             "monitoring_type": 0,
             "private_settings": {}
+        },
+        {
+            "prev_ver": 486604803,
+            "name": "Input Overlay (Gamepad)",
+            "uuid": "b496581e-ffb2-4cc1-8897-3794c01e143e",
+            "id": "input-overlay",
+            "versioned_id": "input-overlay",
+            "settings": {
+                "io.controller_id": "Generic Xinput gamepad 0",
+                "io.input_source": "This computer",
+                "io.layout_file": "C:/Repos/dorkus-obs-configurator/build/win/obs/config/assets/game-pad.json",
+                "io.overlay_image": "C:/Repos/dorkus-obs-configurator/build/win/obs/config/assets/game-pad.png",
+                "undo_sname": "Input Overlay"
+            },
+            "mixers": 0,
+            "sync": 0,
+            "flags": 0,
+            "volume": 1,
+            "balance": 0.5,
+            "enabled": true,
+            "muted": false,
+            "push-to-mute": false,
+            "push-to-mute-delay": 0,
+            "push-to-talk": false,
+            "push-to-talk-delay": 0,
+            "hotkeys": {},
+            "deinterlace_mode": 0,
+            "deinterlace_field_order": 0,
+            "monitoring_type": 0,
+            "private_settings": {},
+            "filters": [
+                {
+                    "prev_ver": 486604803,
+                    "name": "Color Correction",
+                    "uuid": "9d8ba855-c7f6-4948-b1ae-c3db0707442f",
+                    "id": "color_filter",
+                    "versioned_id": "color_filter_v2",
+                    "settings": {
+                        "opacity": 0.5
+                    },
+                    "mixers": 0,
+                    "sync": 0,
+                    "flags": 0,
+                    "volume": 1,
+                    "balance": 0.5,
+                    "enabled": true,
+                    "muted": false,
+                    "push-to-mute": false,
+                    "push-to-mute-delay": 0,
+                    "push-to-talk": false,
+                    "push-to-talk-delay": 0,
+                    "hotkeys": {},
+                    "deinterlace_mode": 0,
+                    "deinterlace_field_order": 0,
+                    "monitoring_type": 0,
+                    "private_settings": {}
+                }
+            ]
+        },
+        {
+            "prev_ver": 486604803,
+            "name": "Input Overlay (Keyboard)",
+            "uuid": "ae947e9d-37e6-4625-848f-09e65d4c00fb",
+            "id": "input-overlay",
+            "versioned_id": "input-overlay",
+            "settings": {
+                "io.input_source": "This computer",
+                "io.layout_file": "C:/Repos/dorkus-obs-configurator/build/win/obs/config/assets/wasd-extended-numeric.json",
+                "io.overlay_image": "C:/Repos/dorkus-obs-configurator/build/win/obs/config/assets/wasd-extended-numeric.png"
+            },
+            "mixers": 0,
+            "sync": 0,
+            "flags": 0,
+            "volume": 1,
+            "balance": 0.5,
+            "enabled": true,
+            "muted": false,
+            "push-to-mute": false,
+            "push-to-mute-delay": 0,
+            "push-to-talk": false,
+            "push-to-talk-delay": 0,
+            "hotkeys": {},
+            "deinterlace_mode": 0,
+            "deinterlace_field_order": 0,
+            "monitoring_type": 0,
+            "private_settings": {}
+        },
+        {
+            "prev_ver": 486604803,
+            "name": "Input Overlay (Mouse)",
+            "uuid": "f0a06cd0-c744-47af-9f63-bb9611fcb9a6",
+            "id": "input-overlay",
+            "versioned_id": "input-overlay",
+            "settings": {
+                "io.input_source": "This computer",
+                "io.layout_file": "C:/Repos/dorkus-obs-configurator/build/win/obs/config/assets/mouse-dot.json",
+                "io.overlay_image": "C:/Repos/dorkus-obs-configurator/build/win/obs/config/assets/mouse.png"
+            },
+            "mixers": 0,
+            "sync": 0,
+            "flags": 0,
+            "volume": 1,
+            "balance": 0.5,
+            "enabled": true,
+            "muted": false,
+            "push-to-mute": false,
+            "push-to-mute-delay": 0,
+            "push-to-talk": false,
+            "push-to-talk-delay": 0,
+            "hotkeys": {},
+            "deinterlace_mode": 0,
+            "deinterlace_field_order": 0,
+            "monitoring_type": 0,
+            "private_settings": {}
         }
     ],
     "groups": [
@@ -773,6 +948,118 @@
                 "libobs.hide_scene_item.Local Mic": [],
                 "libobs.show_scene_item.Game": [],
                 "libobs.hide_scene_item.Game": []
+            },
+            "deinterlace_mode": 0,
+            "deinterlace_field_order": 0,
+            "monitoring_type": 0,
+            "private_settings": {}
+        },
+        {
+            "prev_ver": 486604803,
+            "name": "Input Overlay (Keyboard/Mouse)",
+            "uuid": "d488eaaf-3a25-4ac8-bb1d-7d5f0c70c863",
+            "id": "group",
+            "versioned_id": "group",
+            "settings": {
+                "custom_size": true,
+                "cx": 1059,
+                "cy": 566,
+                "id_counter": 0,
+                "items": [
+                    {
+                        "name": "Input Overlay (Keyboard)",
+                        "source_uuid": "ae947e9d-37e6-4625-848f-09e65d4c00fb",
+                        "visible": true,
+                        "locked": true,
+                        "rot": 0,
+                        "pos": {
+                            "x": 0,
+                            "y": 0
+                        },
+                        "scale": {
+                            "x": 0.849711000919342,
+                            "y": 0.8498498201370239
+                        },
+                        "align": 5,
+                        "bounds_type": 0,
+                        "bounds_align": 0,
+                        "bounds": {
+                            "x": 0,
+                            "y": 0
+                        },
+                        "crop_left": 0,
+                        "crop_top": 0,
+                        "crop_right": 0,
+                        "crop_bottom": 0,
+                        "id": 8,
+                        "group_item_backup": false,
+                        "scale_filter": "disable",
+                        "blend_method": "default",
+                        "blend_type": "normal",
+                        "show_transition": {
+                            "duration": 0
+                        },
+                        "hide_transition": {
+                            "duration": 0
+                        },
+                        "private_settings": {}
+                    },
+                    {
+                        "name": "Input Overlay (Mouse)",
+                        "source_uuid": "f0a06cd0-c744-47af-9f63-bb9611fcb9a6",
+                        "visible": true,
+                        "locked": true,
+                        "rot": 0,
+                        "pos": {
+                            "x": 773.5808715820312,
+                            "y": 48.84815979003906
+                        },
+                        "scale": {
+                            "x": 1,
+                            "y": 1
+                        },
+                        "align": 5,
+                        "bounds_type": 0,
+                        "bounds_align": 0,
+                        "bounds": {
+                            "x": 0,
+                            "y": 0
+                        },
+                        "crop_left": 0,
+                        "crop_top": 0,
+                        "crop_right": 0,
+                        "crop_bottom": 0,
+                        "id": 9,
+                        "group_item_backup": false,
+                        "scale_filter": "disable",
+                        "blend_method": "default",
+                        "blend_type": "normal",
+                        "show_transition": {
+                            "duration": 0
+                        },
+                        "hide_transition": {
+                            "duration": 0
+                        },
+                        "private_settings": {}
+                    }
+                ]
+            },
+            "mixers": 0,
+            "sync": 0,
+            "flags": 0,
+            "volume": 1,
+            "balance": 0.5,
+            "enabled": true,
+            "muted": false,
+            "push-to-mute": false,
+            "push-to-mute-delay": 0,
+            "push-to-talk": false,
+            "push-to-talk-delay": 0,
+            "hotkeys": {
+                "libobs.show_scene_item.Input Overlay (Keyboard)": [],
+                "libobs.hide_scene_item.Input Overlay (Keyboard)": [],
+                "libobs.show_scene_item.Input Overlay (Mouse)": [],
+                "libobs.hide_scene_item.Input Overlay (Mouse)": []
             },
             "deinterlace_mode": 0,
             "deinterlace_field_order": 0,
