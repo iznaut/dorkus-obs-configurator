@@ -155,7 +155,7 @@ func _on_obs_data_recieved(data):
 
 				match last_known_record_state:
 					"OBS_WEBSOCKET_OUTPUT_STARTED":
-						state_update_requested.emit("obs_recording_started")
+						state_update_requested.emit("obs_recording")
 					"OBS_WEBSOCKET_OUTPUT_STOPPING":
 						state_update_requested.emit("obs_recording_stopping")
 					"OBS_WEBSOCKET_OUTPUT_STOPPED":

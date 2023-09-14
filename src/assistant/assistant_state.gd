@@ -9,6 +9,7 @@ class_name AssistState
 @export_category("Animation")
 @export var frames : Array[Texture2D]
 @export var delay : float = 0.5
+@export var continuous : bool
 
 
 func has_frames() -> bool:
