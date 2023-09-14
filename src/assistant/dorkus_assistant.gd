@@ -3,6 +3,10 @@ extends Control
 
 signal state_updated(new_state_name)
 
+const POPUP_MENU = preload("res://src/assistant/popup_menu.tscn")
+
+@onready var menu = $PopupMenu
+var cooldown = true
 
 func _ready():
 	var parent_window = get_window()
@@ -17,7 +21,7 @@ func _ready():
 func _unhandled_input(event):
 	print(event)
 	if event is InputEventMouseButton and event.button_index == 2:
-		%PopupMenu.popup()
+		%MenuButton.show_popup()
 
 
 func _on_obs_helper_state_update_requested(new_state_name : String):

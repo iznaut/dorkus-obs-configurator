@@ -10,3 +10,4 @@ message = "Stopping..."
 timeout = 0.0
 frames = Array[Texture2D]([ExtResource("1_e0n12"), ExtResource("2_cprsx")])
 delay = 0.5
+continuous = true

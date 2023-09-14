@@ -35,6 +35,13 @@ const OBS_OPTIONS = {
 	SYNC_WITH_GAME: "sync_with_unreal",
 }
 
+var obs_helper
+
+
+func _init():
+	id_pressed.connect(_on_id_pressed)
+	about_to_popup.connect(_on_about_to_popup)
+
 
 func _on_assistant_state_updated(new_state_name : String):
 	match new_state_name:
@@ -42,7 +49,7 @@ func _on_assistant_state_updated(new_state_name : String):
 			set_item_disabled(START_STOP_RECORDING, false)
 			set_item_disabled(SAVE_REPLAY, false)
 			set_item_disabled(OPEN_RECORDING_FOLDER, false)
-		"obs_recording_started":
+		"obs_recording":
 			set_item_text(
 				START_STOP_RECORDING,
 				"Stop Recording"
@@ -63,21 +70,22 @@ func _on_id_pressed(id:int):
 			params = command[1]
 			command = command[0]
 
-		%OBSHelper.obs_command_requested.emit(command, params if params != null else {})
+		obs_helper.obs_command_requested.emit(command, params if params != null else {})
 
 	if id in OBS_OPTIONS.keys():
 		var index = get_item_index(id)
 
 		if is_item_checkable(index):
 			toggle_item_checked(index)
-			%OBSHelper.config_setting_updated.emit(OBS_OPTIONS[id], is_item_checked(index))
+			obs_helper.config_setting_updated.emit(OBS_OPTIONS[id], is_item_checked(index))
 	
 	if id == CLOSE:
 			get_tree().get_root().propagate_notification(NOTIFICATION_WM_CLOSE_REQUEST)
 
 
 func _on_about_to_popup():
-	position = get_parent().get_window().position
+	# always_on_top = true
+	# position = get_parent().get_window().position
 
 	var user_frameio_root_asset_id = Utility.get_user_config("Frameio", "RootAssetID")
 	var user_frameio_token = Utility.get_user_config("Frameio", "Token")
@@ -85,15 +93,15 @@ func _on_about_to_popup():
 	if user_frameio_root_asset_id != "":
 		# TODO would rather use signals probably? but hard ref is working
 		# SignalBus.config_setting_updated.emit("frameio_root_asset_id", user_frameio_root_asset_id)
-		%OBSHelper.frameio_root_asset_id = user_frameio_root_asset_id
+		obs_helper.frameio_root_asset_id = user_frameio_root_asset_id
 	if user_frameio_token != "":
 		# SignalBus.config_setting_updated.emit("frameio_token", user_frameio_token)
-		%OBSHelper.frameio_token = user_frameio_token
+		obs_helper.frameio_token = user_frameio_token
 
 	# disable frame.io upload if no token defined
 	set_item_disabled(
 		FRAMEIO_UPLOAD,
-		%OBSHelper.frameio_token == ""
+		obs_helper.frameio_token == ""
 	)
 
 	# refresh checkboxes to match obs bools
@@ -101,5 +109,9 @@ func _on_about_to_popup():
 		var index = get_item_index(id)
 		set_item_checked(
 			index,
-			%OBSHelper.get(OBS_OPTIONS[id])
+			obs_helper.get(OBS_OPTIONS[id])
 		)
+
+
+func _on_close_requested():
+	queue_free()

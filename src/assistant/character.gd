@@ -3,6 +3,7 @@ extends TextureRect
 
 var active_state_data : AssistState
 var current_frame_index : int
+var last_state_name : String
 
 @export var default_idle_frame : Texture2D
 @export var default_notification_frame : Texture2D
@@ -14,6 +15,7 @@ func _on_assistant_state_updated(new_state_name : String):
 	if new_state_name == "idle":
 		texture = default_idle_frame
 		active_state_data = null
+		last_state_name = "idle"
 		return
 
 	print(new_state_name)
@@ -32,8 +34,15 @@ func _on_assistant_state_updated(new_state_name : String):
 	if active_state_data.is_animated():
 		anim_timer.wait_time = active_state_data.delay
 
+	if active_state_data.continuous and new_state_name != last_state_name:
+		last_state_name = new_state_name
+
 	# wait a bit before clearing notification
-	if active_state_data.timeout > 0:
+	if active_state_data.timeout > 0 and not active_state_data.continuous:
+		if last_state_name:
+			await get_tree().create_timer(active_state_data.timeout).timeout
+			_on_assistant_state_updated(last_state_name)
+			return
 		# if not a repeating animation, return to idle
 		# TODO these are non-blocking so there can be conflicts with timers going off
 		if active_state_data == null or not active_state_data.is_animated():

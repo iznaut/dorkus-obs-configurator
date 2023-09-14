@@ -21,7 +21,7 @@ func _process(_delta):
 func start_download():
 	download(obs_download_url, download_path)
 	%Assistant.state_updated.emit("obs_downloading")
-	show()
+	get_parent().show()
 
 
 func download(link, path):
@@ -41,7 +41,7 @@ func _http_request_completed(result, _response_code, _headers, _body):
 		return
 	remove_child(http)
 
-	hide()
+	get_parent().hide()
 
 	var output = []
 
@@ -65,7 +65,3 @@ func _http_request_completed(result, _response_code, _headers, _body):
 	
 	download_complete.emit()
 	%Assistant.state_updated.emit("obs_downloaded")
-
-
-func _on_assistant_state_updated(new_state_name):
-	pass # Replace with function body.

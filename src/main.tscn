@@ -9,57 +9,20 @@
 [ext_resource type="Texture2D" uid="uid://bj1ej1it4g5mn" path="res://src/assistant/assets/T_TextBubble.png" id="5_ewien"]
 [ext_resource type="Script" path="res://src/assistant/notification.gd" id="6_xxih4"]
 [ext_resource type="Script" path="res://src/assistant/obs_downloader.gd" id="7_sdkr7"]
-[ext_resource type="Script" path="res://src/assistant/menu.gd" id="8_om5g8"]
+[ext_resource type="Script" path="res://menu_button.gd" id="10_ijw8m"]
 
 [node name="Main" type="Node"]
 
 [node name="Assistant" type="Control" parent="."]
 unique_name_in_owner = true
 layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+anchors_preset = 0
+offset_left = 250.0
+offset_top = 245.0
+offset_right = 250.0
+offset_bottom = 245.0
+mouse_filter = 1
 script = ExtResource("1_lwrdd")
-
-[node name="PopupMenu" type="PopupMenu" parent="Assistant"]
-unique_name_in_owner = true
-size = Vector2i(234, 205)
-visible = true
-always_on_top = true
-allow_search = false
-item_count = 9
-item_0/text = "Start Recording"
-item_0/id = 0
-item_0/disabled = true
-item_1/text = "Save Replay"
-item_1/id = 1
-item_1/disabled = true
-item_2/text = "Take Screenshot"
-item_2/id = 8
-item_2/disabled = true
-item_3/text = "Open Recording Folder"
-item_3/id = 2
-item_3/disabled = true
-item_4/text = ""
-item_4/id = 3
-item_4/disabled = true
-item_4/separator = true
-item_5/text = "Upload to frame.io"
-item_5/checkable = 1
-item_5/id = 4
-item_5/disabled = true
-item_6/text = "Sync with Unreal"
-item_6/checkable = 1
-item_6/id = 5
-item_7/text = ""
-item_7/id = 6
-item_7/disabled = true
-item_7/separator = true
-item_8/text = "Close Dorkus Assist"
-item_8/id = 7
-script = ExtResource("8_om5g8")
 
 [node name="CharacterGroup" type="Control" parent="Assistant"]
 layout_mode = 1
@@ -98,12 +61,11 @@ default_notification_frame = ExtResource("4_3uvqu")
 autostart = true
 
 [node name="Notification" type="TextureRect" parent="Assistant/CharacterGroup"]
-visible = false
 layout_mode = 0
-offset_left = -200.0
-offset_top = -200.0
-offset_right = 989.0
-offset_bottom = 866.0
+offset_left = 36.0
+offset_top = 28.0
+offset_right = 1225.0
+offset_bottom = 1094.0
 scale = Vector2(0.1, 0.1)
 texture = ExtResource("5_ewien")
 stretch_mode = 2
@@ -151,11 +113,47 @@ script = ExtResource("3_ajcxy")
 port = 30020
 log_level = 1
 
+[node name="MenuButton" type="MenuButton" parent="."]
+unique_name_in_owner = true
+offset_left = 107.0
+offset_top = -221.0
+offset_right = 160.0
+offset_bottom = -190.0
+text = "menu"
+item_count = 9
+popup/item_0/text = "Start Recording"
+popup/item_0/id = 0
+popup/item_0/disabled = true
+popup/item_1/text = "Save Replay"
+popup/item_1/id = 1
+popup/item_1/disabled = true
+popup/item_2/text = "Take Screenshot"
+popup/item_2/id = 8
+popup/item_2/disabled = true
+popup/item_3/text = "Open Recording Folder"
+popup/item_3/id = 2
+popup/item_3/disabled = true
+popup/item_4/text = ""
+popup/item_4/id = 3
+popup/item_4/disabled = true
+popup/item_4/separator = true
+popup/item_5/text = "Upload to frame.io"
+popup/item_5/checkable = 1
+popup/item_5/id = 4
+popup/item_5/disabled = true
+popup/item_6/text = "Sync with Unreal"
+popup/item_6/checkable = 1
+popup/item_6/id = 5
+popup/item_7/text = ""
+popup/item_7/id = 6
+popup/item_7/disabled = true
+popup/item_7/separator = true
+popup/item_8/text = "Close Dorkus Assist"
+popup/item_8/id = 7
+script = ExtResource("10_ijw8m")
+
 [connection signal="state_updated" from="Assistant" to="Assistant/CharacterGroup/Character" method="_on_assistant_state_updated"]
 [connection signal="state_updated" from="Assistant" to="Assistant/CharacterGroup/Notification" method="_on_assistant_state_updated"]
-[connection signal="state_updated" from="Assistant" to="Assistant/Control/ProgressBar" method="_on_assistant_state_updated"]
-[connection signal="state_updated" from="Assistant" to="Assistant/PopupMenu" method="_on_assistant_state_updated"]
-[connection signal="about_to_popup" from="Assistant/PopupMenu" to="Assistant/PopupMenu" method="_on_about_to_popup"]
-[connection signal="id_pressed" from="Assistant/PopupMenu" to="Assistant/PopupMenu" method="_on_id_pressed"]
 [connection signal="timeout" from="Assistant/CharacterGroup/Character/AnimationTimer" to="Assistant/CharacterGroup/Character" method="_on_animation_timer_timeout"]
 [connection signal="state_update_requested" from="OBSHelper" to="Assistant" method="_on_obs_helper_state_update_requested"]
+[connection signal="about_to_popup" from="MenuButton" to="MenuButton" method="_on_about_to_popup"]

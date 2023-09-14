@@ -7,4 +7,7 @@
 [resource]
 script = ExtResource("3_rd4f1")
 message = "Downloading OBS..."
+timeout = 0.0
 frames = Array[Texture2D]([ExtResource("1_p3nyi"), ExtResource("2_ccm3g")])
+delay = 0.5
+continuous = true

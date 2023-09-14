@@ -7,4 +7,7 @@
 [resource]
 script = ExtResource("1_x4ai5")
 message = "Setting up..."
+timeout = 2.0
 frames = Array[Texture2D]([ExtResource("1_cwwbc"), ExtResource("2_gq5vx")])
+delay = 0.5
+continuous = true
