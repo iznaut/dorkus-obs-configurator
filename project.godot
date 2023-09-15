@@ -18,9 +18,9 @@ boot_splash/fullsize=false
 boot_splash/use_filter=false
 config/icon="res://icon.png"
 
-[autoload]
+[debug]
 
-SignalBus="*res://src/assistant/signal_bus.tscn"
+file_logging/enable_file_logging=true
 
 [display]
 

@@ -6,7 +6,7 @@ signal download_complete
 @export var obs_download_url : String = "https://github.com/obsproject/obs-studio/releases/download/29.1.3/OBS-Studio-29.1.3.zip"
 
 var http
-var download_path : String = Utility.get_working_dir().path_join("obs.zip")
+var download_path : String = Utility.globalize_subpath().path_join("obs.zip")
 
 
 func _process(_delta):
@@ -20,8 +20,8 @@ func _process(_delta):
 
 func start_download():
 	download(obs_download_url, download_path)
-	SignalBus.state_updated.emit("obs_downloading")
-	show()
+	%Assistant.state_updated.emit("obs_downloading")
+	get_parent().show()
 
 
 func download(link, path):
@@ -41,14 +41,14 @@ func _http_request_completed(result, _response_code, _headers, _body):
 		return
 	remove_child(http)
 
-	hide()
+	get_parent().hide()
 
 	var output = []
 
 	OS.execute(
 		"PowerShell.exe",
 		[
-			"Set-Location -Path \'%s\';" % Utility.get_working_dir(),
+			"Set-Location -Path \'%s\';" % Utility.globalize_subpath(),
 			"Expand-Archive -Path \'%s\'" % download_path,
 		],
 		output,
@@ -61,7 +61,7 @@ func _http_request_completed(result, _response_code, _headers, _body):
 	DirAccess.remove_absolute(download_path)
 
 	# tell godot to ignore this folder to reduce version control mess
-	Utility.create_gdignore(Utility.get_working_dir().path_join("obs"))
+	Utility.create_gdignore(%OBSHelper.obs_root)
 	
 	download_complete.emit()
-	SignalBus.state_updated.emit("obs_downloaded")
+	%Assistant.state_updated.emit("obs_downloaded")
