@@ -37,7 +37,7 @@ var stop_record_func = func(): send_command("StopRecord")
 var close_on_recording_saved : bool
 var upload_on_recording_saved : bool
 
-var obs_root = Utility.get_working_dir().path_join("obs")
+var obs_root = Utility.globalize_subpath("obs")
 var exe_filepath : String = obs_root.path_join("bin/64bit/obs64.exe")
 var config_paths : Dictionary = {
 	"profile": obs_root.path_join("config/obs-studio/basic/profiles/Default/basic.ini"),
@@ -56,7 +56,10 @@ func _ready():
 	# create user config file if missing
 	if not FileAccess.file_exists(Utility.get_user_config_path()):
 		var content = FileAccess.get_file_as_string("res://support/config_template.ini")
-		var new_file = FileAccess.open(Utility.get_working_dir().path_join("config.ini"), FileAccess.WRITE)
+		var new_file = FileAccess.open(
+			Utility.globalize_subpath("config.ini"),
+			FileAccess.WRITE
+		)
 		new_file.store_string(content)
 		new_file.close()
 
@@ -96,7 +99,7 @@ func _ready():
 	# start or attach to OBS process
 	obs_process_id = Utility.execute_powershell(
 		[
-			Utility.get_support_dir().path_join("start_process.ps1"),
+			obs_root.path_join("start_process.ps1"),
 			exe_filepath
 		]
 	)
@@ -187,15 +190,18 @@ func _upload_file_to_frameio(filepath) -> bool:
 	]
 
 	# use precompiled script exe if shipping build
-	var upload_script = Utility.get_working_dir().path_join("obs/dist/windows/frameio_upload.exe")
+	var upload_script = obs_root.path_join("dist/windows/frameio_upload.exe")
 
-	# use python script if in editor
-	if not OS.has_feature("template"):
+	# if exe doesn't exist assume development and use original script
+	if not FileAccess.file_exists(upload_script):
 		upload_script = "python"
-		params.push_front(ProjectSettings.globalize_path("res://support/obs/frameio_upload.py"))
+		params.push_front(
+			Utility.globalize_subpath("obs/frameio_upload.py") if OS.has_feature("template") else ProjectSettings.globalize_path("res://support/obs/frameio_upload.py")
+		)
 
 	print("running %s" % upload_script)
 
+	# TODO use utility call, is blocking
 	OS.execute(upload_script, params, output, true, false)
 
 	var result = JSON.parse_string(output[0])

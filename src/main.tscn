@@ -9,7 +9,31 @@
 [ext_resource type="Texture2D" uid="uid://bj1ej1it4g5mn" path="res://src/assistant/assets/T_TextBubble.png" id="5_ewien"]
 [ext_resource type="Script" path="res://src/assistant/notification.gd" id="6_xxih4"]
 [ext_resource type="Script" path="res://src/assistant/obs_downloader.gd" id="7_sdkr7"]
-[ext_resource type="Script" path="res://menu_button.gd" id="10_ijw8m"]
+
+[sub_resource type="GDScript" id="GDScript_6afxs"]
+script/source = "extends MenuButton
+
+
+var initialized : bool
+
+const POPUP_MENU_SCRIPT = preload(\"res://src/assistant/menu.gd\")
+
+
+func _ready():
+	if not initialized:
+		var popup = get_popup()
+		popup.set_script(POPUP_MENU_SCRIPT)
+
+		popup.assistant = %Assistant
+		popup.obs_helper = %OBSHelper
+
+		popup.hide_on_checkable_item_selection = false
+
+		initialized = true
+
+
+func _on_menu_initialized():
+	%Assistant.state_updated.connect(get_popup()._on_assistant_state_updated)"
 
 [node name="Main" type="Node"]
 
@@ -150,10 +174,9 @@ popup/item_7/disabled = true
 popup/item_7/separator = true
 popup/item_8/text = "Close Dorkus Assist"
 popup/item_8/id = 7
-script = ExtResource("10_ijw8m")
+script = SubResource("GDScript_6afxs")
 
 [connection signal="state_updated" from="Assistant" to="Assistant/CharacterGroup/Character" method="_on_assistant_state_updated"]
 [connection signal="state_updated" from="Assistant" to="Assistant/CharacterGroup/Notification" method="_on_assistant_state_updated"]
 [connection signal="timeout" from="Assistant/CharacterGroup/Character/AnimationTimer" to="Assistant/CharacterGroup/Character" method="_on_animation_timer_timeout"]
 [connection signal="state_update_requested" from="OBSHelper" to="Assistant" method="_on_obs_helper_state_update_requested"]
-[connection signal="about_to_popup" from="MenuButton" to="MenuButton" method="_on_about_to_popup"]

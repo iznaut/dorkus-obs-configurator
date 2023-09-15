@@ -12,13 +12,14 @@ var last_state_name : String
 
 
 func _on_assistant_state_updated(new_state_name : String):
+	print("anim state changed: %s " % new_state_name)
+
 	if new_state_name == "idle":
 		texture = default_idle_frame
 		active_state_data = null
 		last_state_name = "idle"
 		return
 
-	print(new_state_name)
 	active_state_data = Utility.get_state_data_from_string(new_state_name)
 
 	if active_state_data == null:
