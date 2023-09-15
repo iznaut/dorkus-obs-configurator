@@ -14,12 +14,25 @@ static func write_json(filepath, obj : Dictionary) -> void:
 	file.store_string(JSON.stringify(obj))
 
 
-static func get_working_dir() -> String:
-	return ProjectSettings.globalize_path("res://build/win") if OS.has_feature("editor") else OS.get_executable_path().get_base_dir()
+# convert relative path to absolute (respecting dev/prod working directory difference)
+static func globalize_subpath(relative_path : String = "") -> String:
+	var path : String
+
+	if OS.has_feature("template"):
+		path = OS.get_executable_path().get_base_dir().path_join(relative_path)
+	else:
+		path = ProjectSettings.globalize_path("res://build/win").path_join(relative_path)
+	
+	assert(
+		DirAccess.dir_exists_absolute(path.get_base_dir()),
+		"Directory does not exist (%s)" % path
+	)
+
+	return path
 
 
 static func get_user_config_path() -> String:
-	return get_working_dir().path_join("config.ini")
+	return globalize_subpath("config.ini")
 
 
 static func get_user_config(section : String, key : String) -> Variant:
@@ -102,3 +115,24 @@ static func copy_directory_recursively(p_from : String, p_to : String) -> void:
 static func create_gdignore(dir_to_ignore : String):
 	var new_file = FileAccess.open(dir_to_ignore.path_join(".gdignore"), FileAccess.WRITE)
 	new_file.close()
+
+
+static func get_state_data_from_string(state_name : String) -> AssistState:
+	return load(
+		"res://src/assistant/states/".path_join("%s.tres" % state_name)
+	)
+
+
+static func execute_powershell(params : Array) -> Variant:
+	var output = []
+
+	var pwsh_thread = Thread.new()
+	pwsh_thread.start(
+		func():
+			OS.execute("PowerShell.exe", params, output)
+			print("pwsh output:")
+			print(output)
+			return output[0].replace("\\r\\n", "") as int
+	)
+
+	return pwsh_thread.wait_to_finish()

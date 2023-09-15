@@ -1,10 +1,13 @@
 [gd_resource type="Resource" script_class="AssistState" load_steps=4 format=3 uid="uid://bxe2p566e45ac"]
 
-[ext_resource type="Texture2D" uid="uid://bhrrpj522xcyj" path="res://src/assistant/T_Dorkus_WritingDown1.png" id="1_p3nyi"]
-[ext_resource type="Texture2D" uid="uid://chwck4g268iwu" path="res://src/assistant/T_Dorkus_WritingDown2.png" id="2_ccm3g"]
+[ext_resource type="Texture2D" uid="uid://bhrrpj522xcyj" path="res://src/assistant/assets/T_Dorkus_WritingDown1.png" id="1_p3nyi"]
+[ext_resource type="Texture2D" uid="uid://chwck4g268iwu" path="res://src/assistant/assets/T_Dorkus_WritingDown2.png" id="2_ccm3g"]
 [ext_resource type="Script" path="res://src/assistant/assistant_state.gd" id="3_rd4f1"]
 
 [resource]
 script = ExtResource("3_rd4f1")
 message = "Downloading OBS..."
+timeout = 0.0
 frames = Array[Texture2D]([ExtResource("1_p3nyi"), ExtResource("2_ccm3g")])
+delay = 0.5
+continuous = true
