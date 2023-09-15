@@ -117,6 +117,15 @@ func _on_about_to_popup():
 			index,
 			obs_helper.get(OBS_OPTIONS[id])
 		)
+	
+	# TODO look into dynamic resolution setting - must happen with record/replay buffer off
+	# obs_helper.obs_command_requested.emit(
+	# 	"SetVideoSettings",
+	# 	{
+	# 		"baseWidth": DisplayServer.screen_get_size().x,
+	# 		"baseHeight": DisplayServer.screen_get_size().y
+	# 	}
+	# )
 
 
 func _on_close_requested():
