@@ -137,6 +137,9 @@ script = ExtResource("3_ajcxy")
 port = 30020
 log_level = 1
 
+[node name="Timer" type="Timer" parent="OBSHelper/UnrealHelper"]
+wait_time = 5.0
+
 [node name="MenuButton" type="MenuButton" parent="."]
 unique_name_in_owner = true
 offset_left = 107.0
@@ -180,3 +183,5 @@ script = SubResource("GDScript_6afxs")
 [connection signal="state_updated" from="Assistant" to="Assistant/CharacterGroup/Notification" method="_on_assistant_state_updated"]
 [connection signal="timeout" from="Assistant/CharacterGroup/Character/AnimationTimer" to="Assistant/CharacterGroup/Character" method="_on_animation_timer_timeout"]
 [connection signal="state_update_requested" from="OBSHelper" to="Assistant" method="_on_obs_helper_state_update_requested"]
+[connection signal="data_received" from="OBSHelper/UnrealHelper" to="OBSHelper/UnrealHelper" method="_on_data_received"]
+[connection signal="timeout" from="OBSHelper/UnrealHelper/Timer" to="OBSHelper/UnrealHelper" method="_on_timer_timeout"]

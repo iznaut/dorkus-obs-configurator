@@ -45,6 +45,7 @@ var config_paths : Dictionary = {
 }
 var last_known_record_state
 var obs_process_id : int
+var scene_item_list : Dictionary
 
 
 func _ready():
@@ -107,16 +108,7 @@ func _ready():
 
 
 func _request_connection() -> void:
-	connection_authenticated.connect(
-		func():
-			send_command("StartReplayBuffer")
-
-			# let other nodes know we've connected
-			state_update_requested.emit("obs_connected")
-
-			# accept commands sent to signal bus
-			obs_command_requested.connect(send_command)
-	)
+	connection_authenticated.connect(_on_connection_authenticated)
 	data_received.connect(_on_obs_data_recieved)
 
 	set_process(true)
@@ -139,7 +131,20 @@ func _bind_game_helper(unbind = false):
 		helper_to_sync.request_connection()
 
 
+
+func _on_connection_authenticated():
+	send_command("StartReplayBuffer")
+	send_command("GetSceneItemList", {"sceneName": "Playtest"})
+
+	# let other nodes know we've connected
+	state_update_requested.emit("obs_connected")
+
+	# accept commands sent to signal bus
+	obs_command_requested.connect(send_command)
+
+
 func _on_obs_data_recieved(data):
+	print(data)
 	if data is RequestResponse:
 		var request_type = data["request_type"]
 		var response_data = data["response_data"]
@@ -147,6 +152,9 @@ func _on_obs_data_recieved(data):
 		match request_type:
 			"GetProfileParameter":
 				OS.shell_open(response_data.parameterValue)
+			"GetSceneItemList":
+				for item in response_data.sceneItems:
+					scene_item_list[item.sourceName] = item.sceneItemId
 	elif data is Event:
 		var event_type = data["event_type"]
 		var event_data = data["event_data"]
