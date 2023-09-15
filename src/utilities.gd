@@ -14,16 +14,25 @@ static func write_json(filepath, obj : Dictionary) -> void:
 	file.store_string(JSON.stringify(obj))
 
 
-static func get_working_dir() -> String:
-	return ProjectSettings.globalize_path("res://build/win") if OS.has_feature("editor") else OS.get_executable_path().get_base_dir()
+# convert relative path to absolute (respecting dev/prod working directory difference)
+static func globalize_subpath(relative_path : String = "") -> String:
+	var path : String
 
+	if OS.has_feature("template"):
+		path = OS.get_executable_path().get_base_dir().path_join(relative_path)
+	else:
+		path = ProjectSettings.globalize_path("res://build/win").path_join(relative_path)
+	
+	assert(
+		DirAccess.dir_exists_absolute(path.get_base_dir()),
+		"Directory does not exist (%s)" % path
+	)
 
-static func get_support_dir() -> String:
-	return ProjectSettings.globalize_path("res://support") if OS.has_feature("editor") else get_working_dir().path_join("support")
+	return path
 
 
 static func get_user_config_path() -> String:
-	return get_working_dir().path_join("config.ini")
+	return globalize_subpath("config.ini")
 
 
 static func get_user_config(section : String, key : String) -> Variant:
