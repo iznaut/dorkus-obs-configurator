@@ -1,41 +1,19 @@
-[gd_scene load_steps=11 format=3 uid="uid://btdu0dq3jvvbx"]
+[gd_scene load_steps=10 format=3 uid="uid://btdu0dq3jvvbx"]
 
 [ext_resource type="Script" path="res://src/assistant/dorkus_assistant.gd" id="1_lwrdd"]
+[ext_resource type="Script" path="res://src/config.gd" id="1_rc23i"]
 [ext_resource type="Texture2D" uid="uid://d1ksgw06gjrd5" path="res://src/assistant/assets/T_Dorkus_Idle.png" id="2_6lals"]
-[ext_resource type="Script" path="res://src/obs_helper.gd" id="2_njfxi"]
-[ext_resource type="Script" path="res://src/game_sync_helpers/unreal_helper.gd" id="3_ajcxy"]
 [ext_resource type="Script" path="res://src/assistant/character.gd" id="3_gcqmr"]
 [ext_resource type="Texture2D" uid="uid://bgti5t7i22lgv" path="res://src/assistant/assets/T_Dorkus_Speaking.png" id="4_3uvqu"]
 [ext_resource type="Texture2D" uid="uid://bj1ej1it4g5mn" path="res://src/assistant/assets/T_TextBubble.png" id="5_ewien"]
 [ext_resource type="Script" path="res://src/assistant/notification.gd" id="6_xxih4"]
 [ext_resource type="Script" path="res://src/assistant/obs_downloader.gd" id="7_sdkr7"]
-
-[sub_resource type="GDScript" id="GDScript_6afxs"]
-script/source = "extends MenuButton
-
-
-var initialized : bool
-
-const POPUP_MENU_SCRIPT = preload(\"res://src/assistant/menu.gd\")
-
-
-func _ready():
-	if not initialized:
-		var popup = get_popup()
-		popup.set_script(POPUP_MENU_SCRIPT)
-
-		popup.assistant = %Assistant
-		popup.obs_helper = %OBSHelper
-
-		popup.hide_on_checkable_item_selection = false
-
-		initialized = true
-
-
-func _on_menu_initialized():
-	%Assistant.state_updated.connect(get_popup()._on_assistant_state_updated)"
+[ext_resource type="Script" path="res://src/assistant/menu_button.gd" id="9_pyyjb"]
 
 [node name="Main" type="Node"]
+script = ExtResource("1_rc23i")
+game_engine = 1
+enable_sync_by_default = true
 
 [node name="Assistant" type="Control" parent="."]
 unique_name_in_owner = true
@@ -125,21 +103,6 @@ unique_name_in_owner = true
 layout_mode = 2
 script = ExtResource("7_sdkr7")
 
-[node name="OBSHelper" type="Node" parent="."]
-unique_name_in_owner = true
-script = ExtResource("2_njfxi")
-sync_with_unreal = true
-frameio_token = "ffff"
-
-[node name="UnrealHelper" type="Node" parent="OBSHelper"]
-unique_name_in_owner = true
-script = ExtResource("3_ajcxy")
-port = 30020
-log_level = 1
-
-[node name="Timer" type="Timer" parent="OBSHelper/UnrealHelper"]
-wait_time = 5.0
-
 [node name="MenuButton" type="MenuButton" parent="."]
 unique_name_in_owner = true
 offset_left = 107.0
@@ -177,11 +140,6 @@ popup/item_7/disabled = true
 popup/item_7/separator = true
 popup/item_8/text = "Close Dorkus Assist"
 popup/item_8/id = 7
-script = SubResource("GDScript_6afxs")
+script = ExtResource("9_pyyjb")
 
-[connection signal="state_updated" from="Assistant" to="Assistant/CharacterGroup/Character" method="_on_assistant_state_updated"]
-[connection signal="state_updated" from="Assistant" to="Assistant/CharacterGroup/Notification" method="_on_assistant_state_updated"]
 [connection signal="timeout" from="Assistant/CharacterGroup/Character/AnimationTimer" to="Assistant/CharacterGroup/Character" method="_on_animation_timer_timeout"]
-[connection signal="state_update_requested" from="OBSHelper" to="Assistant" method="_on_obs_helper_state_update_requested"]
-[connection signal="data_received" from="OBSHelper/UnrealHelper" to="OBSHelper/UnrealHelper" method="_on_data_received"]
-[connection signal="timeout" from="OBSHelper/UnrealHelper/Timer" to="OBSHelper/UnrealHelper" method="_on_timer_timeout"]

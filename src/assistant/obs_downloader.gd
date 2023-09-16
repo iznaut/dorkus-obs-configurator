@@ -20,7 +20,7 @@ func _process(_delta):
 
 func start_download():
 	download(obs_download_url, download_path)
-	%Assistant.state_updated.emit("obs_downloading")
+	OBSHelper.state_updated.emit("obs_downloading")
 	get_parent().show()
 
 
@@ -61,7 +61,7 @@ func _http_request_completed(result, _response_code, _headers, _body):
 	DirAccess.remove_absolute(download_path)
 
 	# tell godot to ignore this folder to reduce version control mess
-	Utility.create_gdignore(%OBSHelper.obs_root)
+	Utility.create_gdignore(OBSHelper.obs_root)
 	
 	download_complete.emit()
-	%Assistant.state_updated.emit("obs_downloaded")
+	OBSHelper.state_updated.emit("obs_downloaded")

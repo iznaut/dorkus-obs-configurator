@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://dlvaaqwamnwk7"]
+
+[ext_resource type="Script" path="res://src/game_sync/unreal_engine_sync.gd" id="1_rvhty"]
+
+[node name="UnrealEngineSync" type="Node"]
+script = ExtResource("1_rvhty")
+port = 30020
+logging = true
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 5.0
+
+[connection signal="data_received" from="." to="." method="_on_data_received"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
