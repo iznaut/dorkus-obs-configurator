@@ -11,7 +11,11 @@ var last_state_name : String
 @onready var anim_timer = $AnimationTimer
 
 
-func _on_assistant_state_updated(new_state_name : String):
+func _ready():
+	OBSHelper.state_updated.connect(_on_obs_state_updated)
+
+
+func _on_obs_state_updated(new_state_name : String):
 	print("anim state changed: %s " % new_state_name)
 
 	if new_state_name == "idle":
@@ -42,12 +46,12 @@ func _on_assistant_state_updated(new_state_name : String):
 	if active_state_data.timeout > 0 and not active_state_data.continuous:
 		if last_state_name:
 			await get_tree().create_timer(active_state_data.timeout).timeout
-			_on_assistant_state_updated(last_state_name)
+			_on_obs_state_updated(last_state_name)
 			return
 		# if not a repeating animation, return to idle
 		# TODO these are non-blocking so there can be conflicts with timers going off
 		if active_state_data == null or not active_state_data.is_animated():
-			_on_assistant_state_updated("idle")
+			_on_obs_state_updated("idle")
 
 
 func _on_animation_timer_timeout():
