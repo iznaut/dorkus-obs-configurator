@@ -16,7 +16,6 @@ const SOURCE_REMAPS = {
 	}
 
 var close_on_recording_saved : bool
-var upload_enabled : bool
 var obs_root = Utility.globalize_subpath("obs")
 var exe_filepath : String = obs_root.path_join("bin/64bit/obs64.exe")
 var config_paths : Dictionary = {

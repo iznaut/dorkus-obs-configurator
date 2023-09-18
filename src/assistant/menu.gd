@@ -101,7 +101,7 @@ func _on_about_to_popup():
 	# disable frame.io upload if no token defined
 	set_item_disabled(
 		get_item_index(FRAMEIO_UPLOAD),
-		config.frameio_token == ""
+		not Utility.get_frameio_config() is Array
 	)
 	
 	# TODO look into dynamic resolution setting - must happen with record/replay buffer off

@@ -10,34 +10,33 @@ const SYNC_NODES = {
 	SyncEngine.UNREAL: preload("res://src/game_sync/unreal_engine_sync.tscn")
 }
 
+@export_category("Frame.io Integration")
+@export var upload_enabled : bool
+
 @export_category("Game Sync")
 @export var game_engine : SyncEngine
-@export var enable_sync_by_default : bool
-var active_sync_node : GameSync
-var game_sync_enabled : bool:
+@export var game_sync_enabled : bool:
 	set(new_value):
 		_enable_game_sync(new_value)
 		game_sync_enabled = new_value
-
-@export_category("Frame.io Integration")
-@export var enable_upload_by_default : bool
-@export var frameio_root_asset_id : String
-@export var frameio_token : String
-var upload_enabled : bool
+var active_sync_node : GameSync
 
 var start_record_func = func(): OBSHelper.send_command("StartRecord")
 var stop_record_func = func(): OBSHelper.send_command("StopRecord")
 
+
 func _ready():
 	OBSHelper.recording_saved.connect(_upload_file_to_frameio)
 
-	var user_root_asset_id = Utility.get_user_config("Frameio", "RootAssetID")
-	var user_token = Utility.get_user_config("Frameio", "Token")
+	# set defaults based on user preferences
+	var user_upload_enabled = Utility.get_config_value("Dorkus", "UploadEnabled")
+	var user_sync_enabled = Utility.get_config_value("Dorkus", "GameSyncEnabled")
+	print(user_sync_enabled)
 
-	if user_root_asset_id != "":
-		frameio_root_asset_id = user_root_asset_id
-	if user_token != "":
-		frameio_token = user_token
+	if user_upload_enabled != null:
+		upload_enabled = user_upload_enabled
+	if user_sync_enabled != null:
+		game_sync_enabled = user_sync_enabled
 
 
 func _enable_game_sync(enabled : bool):
@@ -57,13 +56,15 @@ func _enable_game_sync(enabled : bool):
 
 
 func _upload_file_to_frameio(filepath):
-	if not upload_enabled:
+	var frameio_config = Utility.get_frameio_config()
+
+	if not upload_enabled or not frameio_config is Array:
 		return
 	
 	var output = []
 	var params = [
-		frameio_token,
-		frameio_root_asset_id,
+		frameio_config[0],
+		frameio_config[1],
 		filepath,
 	]
 
