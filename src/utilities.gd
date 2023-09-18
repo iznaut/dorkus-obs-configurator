@@ -141,7 +141,7 @@ static func get_frameio_config():
 		token = Utility.get_config_value("Frameio", "RootAssetID", true)
 
 		# if baked value hasn't been set, return
-		if token == "#{FRAMEIO_BAKED_TOKEN}#":
+		if token == "#{FRAMEIO_BAKED_TOKEN}#" or token == "" or token == null:
 			return false
 	
 	return [token, root_asset_id]
