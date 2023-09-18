@@ -13,7 +13,6 @@
 [node name="Main" type="Node"]
 script = ExtResource("1_rc23i")
 game_engine = 1
-enable_sync_by_default = true
 
 [node name="Assistant" type="Control" parent="."]
 unique_name_in_owner = true

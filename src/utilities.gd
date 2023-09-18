@@ -35,19 +35,12 @@ static func get_user_config_path() -> String:
 	return globalize_subpath("config.ini")
 
 
-static func get_user_config(section : String, key : String) -> Variant:
+static func get_config_value(section : String, key : String, baked = false) -> Variant:
 	var config = ConfigFile.new()
-
-	# Load data from a file.
-	config.load(get_user_config_path())
-
-	var value = config.get_value(section, key)
-
-	# If the file didn't load, ignore it.
-	# if value == null:
-	# 	return ""
-
-	return value
+	config.load(
+		"res://config_baked.ini" if baked else get_user_config_path()
+	)
+	return config.get_value(section, key)
 
 
 static func get_json_index(source_id : String, json_contents : Dictionary) -> int:
@@ -136,3 +129,19 @@ static func execute_powershell(params : Array) -> Variant:
 	)
 
 	return pwsh_thread.wait_to_finish()
+
+
+static func get_frameio_config():
+	var root_asset_id = Utility.get_config_value("Frameio", "RootAssetID")
+	var token = Utility.get_config_value("Frameio", "Token")
+
+	if not token:
+		# get baked values if no user values set
+		root_asset_id = Utility.get_config_value("Frameio", "RootAssetID", true)
+		token = Utility.get_config_value("Frameio", "RootAssetID", true)
+
+		# if baked value hasn't been set, return
+		if token == "#{FRAMEIO_BAKED_TOKEN}#":
+			return false
+	
+	return [token, root_asset_id]
