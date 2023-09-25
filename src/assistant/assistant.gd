@@ -9,7 +9,7 @@ func _ready():
 	parent_window.transparent_bg = true
 
 	StateMachine.state_updated.emit(StateMachine.LOADING)
-	StateMachine.notification_updated.emit("Setting up, please wait...", StateMachine.DEFAULT_NOTIFICATION_TIME)
+	StateMachine.notification_updated.emit("Setting up, please wait...", 0)
 
 
 func _unhandled_input(event):
