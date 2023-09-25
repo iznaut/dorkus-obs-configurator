@@ -87,5 +87,6 @@ func _upload_file_to_frameio(filepath):
 
 	print(output)
 
-	OBSHelper.state_updated.emit("frameio_upload_%s" % ("succeeded" if result != null else "failed"))
+	StateMachine.state_updated.emit(StateMachine.NOTIFICATION)
+	StateMachine.notification_updated.emit("Download success!", StateMachine.DEFAULT_NOTIFICATION_TIME)
 	await get_tree().create_timer(1).timeout
