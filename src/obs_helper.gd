@@ -1,8 +1,9 @@
 extends "res://addons/obs-websocket-gd/obs_websocket.gd"
 
 
-signal state_updated(new_state_name)
+signal connected
 signal obs_command_requested(command, data)
+signal record_state_changed(is_recording)
 signal recording_saved(filepath)
 
 const SOURCE_REMAPS = {
@@ -14,6 +15,7 @@ const SOURCE_REMAPS = {
 			"io.layout_file": "game-pad.json",
 		},
 	}
+const DOWNLOADER_SCENE = preload("res://src/assistant/obs_downloader.tscn")
 
 var close_on_recording_saved : bool
 var obs_root = Utility.globalize_subpath("obs")
@@ -25,6 +27,10 @@ var config_paths : Dictionary = {
 var last_known_record_state
 var obs_process_id : int
 var scene_item_list : Dictionary
+var download_progress_bar : ProgressBar
+var is_recording : bool:
+	get:
+		return last_known_record_state == "OBS_WEBSOCKET_OUTPUT_STARTED"
 
 
 func _ready():
@@ -48,11 +54,13 @@ func _ready():
 		Utility.copy_directory_recursively("res://support/obs/", obs_root)
 
 	# download obs if missing
-	# TODO make this a signal request
 	if not FileAccess.file_exists(exe_filepath):
-		%ProgressBar.start_download()
+		var downloader = DOWNLOADER_SCENE.instantiate()
+		add_child(downloader)
 
-		await %ProgressBar.download_complete
+		downloader.start_download()
+
+		await downloader.download_complete
 	
 	# workaround for OBS not allowing relative source filepaths
 	var scene_json_filepath = config_paths["scene"]
@@ -93,7 +101,9 @@ func _on_connection_authenticated():
 	send_command("GetSceneItemList", {"sceneName": "Playtest"})
 
 	# let other nodes know we've connected
-	state_updated.emit("obs_connected")
+	StateMachine.notification_updated.emit("Ready!", StateMachine.DEFAULT_NOTIFICATION_TIME)
+	StateMachine.state_updated.emit(StateMachine.NOTIFICATION)
+	connected.emit()
 
 	# accept commands sent to signal bus
 	obs_command_requested.connect(send_command)
@@ -108,6 +118,7 @@ func _on_obs_data_recieved(data):
 		match request_type:
 			"GetProfileParameter":
 				OS.shell_open(response_data.parameterValue)
+				StateMachine.state_updated.emit(StateMachine.IDLE)
 			"GetSceneItemList":
 				for item in response_data.sceneItems:
 					scene_item_list[item.sourceName] = item.sceneItemId
@@ -122,19 +133,25 @@ func _on_obs_data_recieved(data):
 
 				match last_known_record_state:
 					"OBS_WEBSOCKET_OUTPUT_STARTED":
-						state_updated.emit("obs_recording")
+						StateMachine.notification_updated.emit("Recording started!", StateMachine.DEFAULT_NOTIFICATION_TIME)
+						StateMachine.state_updated.emit(StateMachine.RECORDING)
+						record_state_changed.emit(true)
 					"OBS_WEBSOCKET_OUTPUT_STOPPING":
-						state_updated.emit("obs_recording_stopping")
+						StateMachine.notification_updated.emit("Stopping...", 30)
+						StateMachine.state_updated.emit(StateMachine.LOADING)
+						record_state_changed.emit(false)
 					"OBS_WEBSOCKET_OUTPUT_STOPPED":
 						var new_recording_filepath = event_data.outputPath
 						
-						state_updated.emit("obs_recording_saved")
+						StateMachine.notification_updated.emit("Recording stopped!", StateMachine.DEFAULT_NOTIFICATION_TIME)
+						StateMachine.state_updated.emit(StateMachine.NOTIFICATION)
 						await get_tree().create_timer(1).timeout
 
 						recording_saved.emit(new_recording_filepath)
 			"ReplayBufferSaved":
 				var _new_buffer_filepath = event_data.savedReplayPath
-				state_updated.emit("obs_replay_saved")
+				StateMachine.notification_updated.emit("Replay saved!", StateMachine.DEFAULT_NOTIFICATION_TIME)
+				StateMachine.state_updated.emit(StateMachine.NOTIFICATION)
 
 
 func set_scene_item_enabled(item_name : String, enabled : bool):

@@ -43,28 +43,28 @@ var config : Node
 
 
 func _init():
-	OBSHelper.state_updated.connect(_on_obs_state_updated)
+	OBSHelper.connected.connect(_on_obs_connected)
+	OBSHelper.record_state_changed.connect(
+		func(is_recording : bool):
+			set_item_text(
+				get_item_index(START_STOP_RECORDING),
+				"%s Recording" % ("Stop" if is_recording else "Start")
+			)
+	)
 	id_pressed.connect(_on_id_pressed)
 	about_to_popup.connect(_on_about_to_popup)
 
+	popup_hide.connect(
+		func():
+			StateMachine.state_updated.emit(StateMachine.IDLE)
+	)
 
-func _on_obs_state_updated(new_state_name : String):
-	match new_state_name:
-		"obs_connected":
-			set_item_disabled(get_item_index(START_STOP_RECORDING), false)
-			set_item_disabled(get_item_index(SAVE_REPLAY), false)
-			set_item_disabled(get_item_index(TAKE_SCREENSHOT), false)
-			set_item_disabled(get_item_index(OPEN_RECORDING_FOLDER), false)
-		"obs_recording":
-			set_item_text(
-				get_item_index(START_STOP_RECORDING),
-				"Stop Recording"
-			)
-		"obs_recording_stopping":
-			set_item_text(
-				get_item_index(START_STOP_RECORDING),
-				"Start Recording"
-			)
+
+func _on_obs_connected():
+	set_item_disabled(get_item_index(START_STOP_RECORDING), false)
+	set_item_disabled(get_item_index(SAVE_REPLAY), false)
+	set_item_disabled(get_item_index(TAKE_SCREENSHOT), false)
+	set_item_disabled(get_item_index(OPEN_RECORDING_FOLDER), false)
 
 
 func _on_id_pressed(id:int):
@@ -76,6 +76,7 @@ func _on_id_pressed(id:int):
 			params = command[1]
 			command = command[0]
 
+		StateMachine.state_updated.emit(StateMachine.LOADING)
 		OBSHelper.send_command(command, params if params != null else {})
 
 	if id in CONFIG_OPTIONS.keys():
@@ -90,6 +91,8 @@ func _on_id_pressed(id:int):
 
 
 func _on_about_to_popup():
+	StateMachine.state_updated.emit(StateMachine.MENU_OPENED)
+
 	# refresh checkboxes to match config bools
 	for id in CONFIG_OPTIONS.keys():
 		var index = get_item_index(id)

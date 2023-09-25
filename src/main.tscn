@@ -1,14 +1,75 @@
-[gd_scene load_steps=10 format=3 uid="uid://btdu0dq3jvvbx"]
+[gd_scene load_steps=15 format=3 uid="uid://btdu0dq3jvvbx"]
 
-[ext_resource type="Script" path="res://src/assistant/dorkus_assistant.gd" id="1_lwrdd"]
 [ext_resource type="Script" path="res://src/config.gd" id="1_rc23i"]
+[ext_resource type="Script" path="res://src/assistant/assistant.gd" id="2_1r05f"]
 [ext_resource type="Texture2D" uid="uid://d1ksgw06gjrd5" path="res://src/assistant/assets/T_Dorkus_Idle.png" id="2_6lals"]
 [ext_resource type="Script" path="res://src/assistant/character.gd" id="3_gcqmr"]
 [ext_resource type="Texture2D" uid="uid://bgti5t7i22lgv" path="res://src/assistant/assets/T_Dorkus_Speaking.png" id="4_3uvqu"]
+[ext_resource type="Texture2D" uid="uid://dpmojrnup0oos" path="res://src/assistant/assets/T_Dorkus_Crouch.png" id="4_dw8gv"]
 [ext_resource type="Texture2D" uid="uid://bj1ej1it4g5mn" path="res://src/assistant/assets/T_TextBubble.png" id="5_ewien"]
-[ext_resource type="Script" path="res://src/assistant/notification.gd" id="6_xxih4"]
-[ext_resource type="Script" path="res://src/assistant/obs_downloader.gd" id="7_sdkr7"]
+[ext_resource type="Texture2D" uid="uid://d0app373et80y" path="res://src/assistant/assets/T_Dorkus_Recording_01.png" id="8_flh1p"]
+[ext_resource type="Texture2D" uid="uid://dt3r0nvgw5nuh" path="res://src/assistant/assets/T_Dorkus_Recording_02.png" id="9_5adkj"]
 [ext_resource type="Script" path="res://src/assistant/menu_button.gd" id="9_pyyjb"]
+[ext_resource type="Texture2D" uid="uid://bhrrpj522xcyj" path="res://src/assistant/assets/T_Dorkus_WritingDown1.png" id="10_d2kxq"]
+[ext_resource type="Texture2D" uid="uid://chwck4g268iwu" path="res://src/assistant/assets/T_Dorkus_WritingDown2.png" id="11_citt3"]
+[ext_resource type="Texture2D" uid="uid://7o1iohkadxtp" path="res://src/assistant/assets/T_Dorkus_Writing.png" id="12_1njwe"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_wxxu1"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_dw8gv")
+}],
+"loop": true,
+"name": &"crouch",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_6lals")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_flh1p")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_5adkj")
+}],
+"loop": true,
+"name": &"recording",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_3uvqu")
+}],
+"loop": true,
+"name": &"speaking",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("10_d2kxq")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_citt3")
+}],
+"loop": true,
+"name": &"writing",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("12_1njwe")
+}],
+"loop": true,
+"name": &"writing_idle",
+"speed": 5.0
+}]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_rc23i")
@@ -17,51 +78,42 @@ game_engine = 1
 [node name="Assistant" type="Control" parent="."]
 unique_name_in_owner = true
 layout_mode = 3
-anchors_preset = 0
-offset_left = 250.0
-offset_top = 245.0
-offset_right = 250.0
-offset_bottom = 245.0
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 0
 mouse_filter = 1
-script = ExtResource("1_lwrdd")
+script = ExtResource("2_1r05f")
 
-[node name="CharacterGroup" type="Control" parent="Assistant"]
+[node name="Character" type="Control" parent="Assistant"]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -250.0
-offset_top = -250.0
+offset_left = -248.0
+offset_top = -247.0
+offset_right = 2.0
+offset_bottom = 3.0
 grow_horizontal = 0
 grow_vertical = 0
 mouse_filter = 1
+script = ExtResource("3_gcqmr")
 metadata/_edit_group_ = true
 
-[node name="Character" type="TextureRect" parent="Assistant/CharacterGroup"]
-layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -200.0
-offset_top = -200.0
-offset_right = 1848.0
-offset_bottom = 1848.0
-grow_horizontal = 0
-grow_vertical = 0
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Assistant/Character"]
 scale = Vector2(0.1, 0.1)
-texture = ExtResource("2_6lals")
-script = ExtResource("3_gcqmr")
-default_idle_frame = ExtResource("2_6lals")
-default_notification_frame = ExtResource("4_3uvqu")
+sprite_frames = SubResource("SpriteFrames_wxxu1")
+animation = &"idle"
+autoplay = "idle"
+centered = false
+offset = Vector2(475, 475)
 
-[node name="AnimationTimer" type="Timer" parent="Assistant/CharacterGroup/Character"]
-autostart = true
-
-[node name="Notification" type="TextureRect" parent="Assistant/CharacterGroup"]
+[node name="NotificationBubble" type="TextureRect" parent="Assistant/Character"]
 layout_mode = 0
 offset_left = 36.0
 offset_top = 28.0
@@ -70,9 +122,8 @@ offset_bottom = 1094.0
 scale = Vector2(0.1, 0.1)
 texture = ExtResource("5_ewien")
 stretch_mode = 2
-script = ExtResource("6_xxih4")
 
-[node name="Label" type="Label" parent="Assistant/CharacterGroup/Notification"]
+[node name="Label" type="Label" parent="Assistant/Character/NotificationBubble"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -89,25 +140,15 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="Control" type="VBoxContainer" parent="Assistant"]
-visible = false
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_bottom = 27.0
-grow_horizontal = 2
-
-[node name="ProgressBar" type="ProgressBar" parent="Assistant/Control"]
-unique_name_in_owner = true
-layout_mode = 2
-script = ExtResource("7_sdkr7")
+[node name="Timer" type="Timer" parent="Assistant/Character/NotificationBubble"]
+one_shot = true
 
 [node name="MenuButton" type="MenuButton" parent="."]
 unique_name_in_owner = true
-offset_left = 107.0
-offset_top = -221.0
-offset_right = 160.0
-offset_bottom = -190.0
+offset_left = 108.0
+offset_top = -218.0
+offset_right = 161.0
+offset_bottom = -187.0
 text = "menu"
 item_count = 9
 popup/item_0/text = "Start Recording"
@@ -141,4 +182,4 @@ popup/item_8/text = "Close Dorkus Assist"
 popup/item_8/id = 7
 script = ExtResource("9_pyyjb")
 
-[connection signal="timeout" from="Assistant/CharacterGroup/Character/AnimationTimer" to="Assistant/CharacterGroup/Character" method="_on_animation_timer_timeout"]
+[connection signal="timeout" from="Assistant/Character/NotificationBubble/Timer" to="Assistant/Character" method="_on_timer_timeout"]

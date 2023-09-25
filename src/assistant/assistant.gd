@@ -8,7 +8,8 @@ func _ready():
 	parent_window.position = DisplayServer.screen_get_usable_rect().end - parent_window.size
 	parent_window.transparent_bg = true
 
-	OBSHelper.state_updated.emit("starting_up")
+	StateMachine.state_updated.emit(StateMachine.LOADING)
+	StateMachine.notification_updated.emit("Setting up, please wait...", StateMachine.DEFAULT_NOTIFICATION_TIME)
 
 
 func _unhandled_input(event):
