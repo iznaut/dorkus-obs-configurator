@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://b808jk3cqcirl"]
+
+[ext_resource type="Script" path="res://src/assistant/obs_downloader.gd" id="1_86gbr"]
+
+[node name="OBSDownloader" type="VBoxContainer"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 27.0
+grow_horizontal = 2
+script = ExtResource("1_86gbr")
+
+[node name="ProgressBar" type="ProgressBar" parent="."]
+layout_mode = 2
