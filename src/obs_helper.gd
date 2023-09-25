@@ -137,7 +137,7 @@ func _on_obs_data_recieved(data):
 						StateMachine.state_updated.emit(StateMachine.RECORDING)
 						record_state_changed.emit(true)
 					"OBS_WEBSOCKET_OUTPUT_STOPPING":
-						StateMachine.notification_updated.emit("Stopping...", 30)
+						StateMachine.notification_updated.emit("Stopping...", 0)
 						StateMachine.state_updated.emit(StateMachine.LOADING)
 						record_state_changed.emit(false)
 					"OBS_WEBSOCKET_OUTPUT_STOPPED":
