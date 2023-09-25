@@ -34,40 +34,37 @@ const OBS_COMMANDS = {
 		}
 	],
 }
-const OBS_OPTIONS = {
-	FRAMEIO_UPLOAD: "upload_on_recording_saved",
-	SYNC_WITH_GAME: "sync_with_unreal",
+const CONFIG_OPTIONS = {
+	FRAMEIO_UPLOAD: "upload_enabled",
+	SYNC_WITH_GAME: "game_sync_enabled",
 }
 
-var assistant
-var obs_helper
-var initialized : bool
+var config : Node
 
 
 func _init():
+	OBSHelper.connected.connect(_on_obs_connected)
+	OBSHelper.record_state_changed.connect(
+		func(is_recording : bool):
+			set_item_text(
+				get_item_index(START_STOP_RECORDING),
+				"%s Recording" % ("Stop" if is_recording else "Start")
+			)
+	)
 	id_pressed.connect(_on_id_pressed)
 	about_to_popup.connect(_on_about_to_popup)
-	menu_initialized.connect(get_parent()._on_menu_initialized)
-	call_deferred("emit_signal", "menu_initialized")
+
+	popup_hide.connect(
+		func():
+			StateMachine.state_updated.emit(StateMachine.IDLE)
+	)
 
 
-func _on_assistant_state_updated(new_state_name : String):
-	match new_state_name:
-		"obs_connected":
-			set_item_disabled(get_item_index(START_STOP_RECORDING), false)
-			set_item_disabled(get_item_index(SAVE_REPLAY), false)
-			set_item_disabled(get_item_index(TAKE_SCREENSHOT), false)
-			set_item_disabled(get_item_index(OPEN_RECORDING_FOLDER), false)
-		"obs_recording":
-			set_item_text(
-				get_item_index(START_STOP_RECORDING),
-				"Stop Recording"
-			)
-		"obs_recording_stopping":
-			set_item_text(
-				get_item_index(START_STOP_RECORDING),
-				"Start Recording"
-			)
+func _on_obs_connected():
+	set_item_disabled(get_item_index(START_STOP_RECORDING), false)
+	set_item_disabled(get_item_index(SAVE_REPLAY), false)
+	set_item_disabled(get_item_index(TAKE_SCREENSHOT), false)
+	set_item_disabled(get_item_index(OPEN_RECORDING_FOLDER), false)
 
 
 func _on_id_pressed(id:int):
@@ -79,54 +76,42 @@ func _on_id_pressed(id:int):
 			params = command[1]
 			command = command[0]
 
-		obs_helper.obs_command_requested.emit(command, params if params != null else {})
+		StateMachine.state_updated.emit(StateMachine.LOADING)
+		OBSHelper.send_command(command, params if params != null else {})
 
-	if id in OBS_OPTIONS.keys():
+	if id in CONFIG_OPTIONS.keys():
 		var index = get_item_index(id)
 
 		if is_item_checkable(index):
 			toggle_item_checked(index)
-			obs_helper.config_setting_updated.emit(OBS_OPTIONS[id], is_item_checked(index))
+			config.set(CONFIG_OPTIONS[id], is_item_checked(index))
 	
 	if id == CLOSE:
 			get_tree().get_root().propagate_notification(NOTIFICATION_WM_CLOSE_REQUEST)
 
 
 func _on_about_to_popup():
-	var user_frameio_root_asset_id = Utility.get_user_config("Frameio", "RootAssetID")
-	var user_frameio_token = Utility.get_user_config("Frameio", "Token")
+	StateMachine.state_updated.emit(StateMachine.MENU_OPENED)
 
-	if user_frameio_root_asset_id != "":
-		# TODO would rather use signals probably? but hard ref is working
-		# SignalBus.config_setting_updated.emit("frameio_root_asset_id", user_frameio_root_asset_id)
-		obs_helper.frameio_root_asset_id = user_frameio_root_asset_id
-	if user_frameio_token != "":
-		# SignalBus.config_setting_updated.emit("frameio_token", user_frameio_token)
-		obs_helper.frameio_token = user_frameio_token
-
-	# disable frame.io upload if no token defined
-	set_item_disabled(
-		get_item_index(FRAMEIO_UPLOAD),
-		obs_helper.frameio_token == ""
-	)
-
-	# refresh checkboxes to match obs bools
-	for id in OBS_OPTIONS.keys():
+	# refresh checkboxes to match config bools
+	for id in CONFIG_OPTIONS.keys():
 		var index = get_item_index(id)
 		set_item_checked(
 			index,
-			obs_helper.get(OBS_OPTIONS[id])
+			config.get(CONFIG_OPTIONS[id])
 		)
 	
+	# disable frame.io upload if no token defined
+	set_item_disabled(
+		get_item_index(FRAMEIO_UPLOAD),
+		not Utility.get_frameio_config() is Array
+	)
+	
 	# TODO look into dynamic resolution setting - must happen with record/replay buffer off
-	# obs_helper.obs_command_requested.emit(
+	# OBSHelper.send_command(
 	# 	"SetVideoSettings",
 	# 	{
 	# 		"baseWidth": DisplayServer.screen_get_size().x,
 	# 		"baseHeight": DisplayServer.screen_get_size().y
 	# 	}
 	# )
-
-
-func _on_close_requested():
-	queue_free()

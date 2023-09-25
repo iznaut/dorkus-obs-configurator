@@ -1,9 +1,6 @@
 extends Control
 
 
-signal state_updated(new_state_name)
-
-
 func _ready():
 	var parent_window = get_window()
 	
@@ -11,13 +8,10 @@ func _ready():
 	parent_window.position = DisplayServer.screen_get_usable_rect().end - parent_window.size
 	parent_window.transparent_bg = true
 
-	state_updated.emit("starting_up")
+	StateMachine.state_updated.emit(StateMachine.LOADING)
+	StateMachine.notification_updated.emit("Setting up, please wait...", StateMachine.DEFAULT_NOTIFICATION_TIME)
 
 
 func _unhandled_input(event):
 	if event is InputEventMouseButton and event.button_index == 2:
 		%MenuButton.show_popup()
-
-
-func _on_obs_helper_state_update_requested(new_state_name : String):
-	state_updated.emit(new_state_name)
