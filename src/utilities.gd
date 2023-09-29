@@ -40,7 +40,7 @@ static func get_config_value(section : String, key : String, baked = false) -> V
 	config.load(
 		"res://config_baked.ini" if baked else get_user_config_path()
 	)
-	return config.get_value(section, key)
+	return config.get_value(section, key, -1)
 
 
 static func get_json_index(source_id : String, json_contents : Dictionary) -> int:
@@ -110,25 +110,24 @@ static func create_gdignore(dir_to_ignore : String):
 	new_file.close()
 
 
-static func get_state_data_from_string(state_name : String) -> AssistState:
-	return load(
-		"res://src/assistant/states/".path_join("%s.tres" % state_name)
-	)
-
-
-static func execute_powershell(params : Array) -> Variant:
+static func os_execute_async(app_path : String, params : Array) -> Variant:
 	var output = []
 
-	var pwsh_thread = Thread.new()
-	pwsh_thread.start(
+	var thread = Thread.new()
+	thread.start(
 		func():
-			OS.execute("PowerShell.exe", params, output)
-			print("pwsh output:")
+			OS.execute(app_path, params, output)
+
+			if app_path == "Powershell.exe":
+				output = output[0].replace("\\r\\n", "") as int
+
+			print("execute output:")
 			print(output)
-			return output[0].replace("\\r\\n", "") as int
+
+			return output
 	)
 
-	return pwsh_thread.wait_to_finish()
+	return thread.wait_to_finish()
 
 
 static func get_frameio_config():

@@ -2,7 +2,6 @@ extends "res://addons/obs-websocket-gd/obs_websocket.gd"
 
 
 signal connected
-signal obs_command_requested(command, data)
 signal record_state_changed(is_recording)
 signal recording_saved(filepath)
 
@@ -24,13 +23,11 @@ var config_paths : Dictionary = {
 	"profile": obs_root.path_join("config/obs-studio/basic/profiles/Default/basic.ini"),
 	"scene": obs_root.path_join("config/obs-studio/basic/scenes/Unreal_Engine.json"),
 }
-var last_known_record_state
 var obs_process_id : int
 var scene_item_list : Dictionary
 var download_progress_bar : ProgressBar
-var is_recording : bool:
-	get:
-		return last_known_record_state == "OBS_WEBSOCKET_OUTPUT_STARTED"
+var is_connected : bool
+var is_recording : bool
 
 
 func _ready():
@@ -79,7 +76,8 @@ func _ready():
 	assert(FileAccess.file_exists(exe_filepath), "Could not find OBS executable at expected path")
 	
 	# start or attach to OBS process
-	obs_process_id = Utility.execute_powershell(
+	obs_process_id = Utility.os_execute_async(
+		"Powershell.exe",
 		[
 			obs_root.path_join("start_process.ps1"),
 			exe_filepath
@@ -91,6 +89,11 @@ func _ready():
 func _request_connection() -> void:
 	connection_authenticated.connect(_on_connection_authenticated)
 	data_received.connect(_on_obs_data_recieved)
+	record_state_changed.connect(
+		func(output_active):
+			is_recording = output_active
+			StateMachine.state_updated.emit(StateMachine.IDLE) # is_recording checked in character.gd
+	)
 
 	set_process(true)
 	establish_connection()
@@ -103,10 +106,11 @@ func _on_connection_authenticated():
 	# let other nodes know we've connected
 	StateMachine.notification_updated.emit("Ready!", StateMachine.DEFAULT_NOTIFICATION_TIME)
 	StateMachine.state_updated.emit(StateMachine.NOTIFICATION)
+	await get_tree().create_timer(StateMachine.DEFAULT_NOTIFICATION_TIME).timeout
 	connected.emit()
+	is_connected = true
 
-	# accept commands sent to signal bus
-	obs_command_requested.connect(send_command)
+	send_command("GetRecordStatus")
 
 
 func _on_obs_data_recieved(data):
@@ -122,6 +126,8 @@ func _on_obs_data_recieved(data):
 			"GetSceneItemList":
 				for item in response_data.sceneItems:
 					scene_item_list[item.sourceName] = item.sceneItemId
+			"GetRecordStatus":
+				record_state_changed.emit(response_data.outputActive)
 	elif data is Event:
 		var event_type = data["event_type"]
 		var event_data = data["event_data"]
@@ -129,12 +135,9 @@ func _on_obs_data_recieved(data):
 		# TODO cleanup - map obs states and dorkus states
 		match event_type:
 			"RecordStateChanged":
-				last_known_record_state = event_data.outputState
-
-				match last_known_record_state:
+				match event_data.outputState:
 					"OBS_WEBSOCKET_OUTPUT_STARTED":
 						StateMachine.notification_updated.emit("Recording started!", StateMachine.DEFAULT_NOTIFICATION_TIME)
-						StateMachine.state_updated.emit(StateMachine.RECORDING)
 						record_state_changed.emit(true)
 					"OBS_WEBSOCKET_OUTPUT_STOPPING":
 						StateMachine.notification_updated.emit("Stopping...", 0)
@@ -171,8 +174,9 @@ func _notification(what):
 		# if app is running
 		if obs_process_id != -1:
 			send_command("GetRecordStatus")
+			await record_state_changed
 
-			if last_known_record_state == "OBS_WEBSOCKET_OUTPUT_STARTED":
+			if is_recording:
 					recording_saved.connect(
 						func(_filepath):
 							OS.kill(obs_process_id)

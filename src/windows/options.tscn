@@ -1,0 +1,117 @@
+[gd_scene load_steps=8 format=3 uid="uid://1tqhio8co8ms"]
+
+[ext_resource type="Script" path="res://src/windows/options.gd" id="1_truh6"]
+[ext_resource type="Script" path="res://src/windows/obs_scene_toggle.gd" id="2_wy30a"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wfrjb"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iy3xa"]
+bg_color = Color(0.639216, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b03lk"]
+bg_color = Color(1, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3tgnk"]
+bg_color = Color(0, 0.32549, 0.513726, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kdq0w"]
+bg_color = Color(0, 0.478431, 0.745098, 1)
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_truh6")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="MarginContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_wfrjb")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="MarginContainer/Panel/VBoxContainer"]
+layout_mode = 2
+text = "Upload on Save:"
+
+[node name="SelectUploadService" type="OptionButton" parent="MarginContainer/Panel/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+item_count = 2
+selected = 0
+popup/item_0/text = "Disabled"
+popup/item_0/id = 0
+popup/item_1/text = "Frame.io"
+popup/item_1/id = 1
+
+[node name="Label2" type="Label" parent="MarginContainer/Panel/VBoxContainer"]
+layout_mode = 2
+text = "Sync to Game Engine:"
+
+[node name="SelectGameSync" type="OptionButton" parent="MarginContainer/Panel/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+item_count = 2
+selected = 0
+popup/item_0/text = "Disabled"
+popup/item_0/id = 0
+popup/item_1/text = "Unreal Engine"
+popup/item_1/id = 1
+
+[node name="OBSSceneToggle" type="CheckButton" parent="MarginContainer/Panel/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Record Discord Audio"
+script = ExtResource("2_wy30a")
+obs_scene_name = "Discord Audio"
+
+[node name="CloseButton" type="Button" parent="MarginContainer/Panel"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -31.0
+offset_right = 150.0
+grow_vertical = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_iy3xa")
+theme_override_styles/hover = SubResource("StyleBoxFlat_b03lk")
+text = " Close Dorkus Assist "
+
+[node name="SaveButton" type="Button" parent="MarginContainer/Panel"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -31.0
+offset_top = -31.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_3tgnk")
+theme_override_styles/hover = SubResource("StyleBoxFlat_kdq0w")
+text = " Save "
+
+[connection signal="pressed" from="MarginContainer/Panel/CloseButton" to="." method="_on_close_button_pressed"]
+[connection signal="pressed" from="MarginContainer/Panel/SaveButton" to="." method="_on_save_button_pressed"]

@@ -62,7 +62,7 @@ func _process(_delta):
 			print("WebSocket closed with code: %d, reason %s. Clean: %s" % [code, reason, code != -1])
 			set_process(false) # Stop processing.
 
-			if last_state == WebSocketPeer.STATE_CLOSING:
+			if last_state in [WebSocketPeer.STATE_OPEN, WebSocketPeer.STATE_CLOSING]:
 				game_disconnected.emit()
 
 			# wait a bit before trying again

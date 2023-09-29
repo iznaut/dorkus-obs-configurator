@@ -1,4 +1,7 @@
-extends Control
+extends Node
+
+
+var menu_enabled : bool
 
 
 func _ready():
@@ -8,10 +11,17 @@ func _ready():
 	parent_window.position = DisplayServer.screen_get_usable_rect().end - parent_window.size
 	parent_window.transparent_bg = true
 
+	StateMachine.state_updated.connect(
+		func(new_state_id):
+			menu_enabled = new_state_id in [StateMachine.IDLE, StateMachine.RECORDING]
+	)
+
 	StateMachine.state_updated.emit(StateMachine.LOADING)
 	StateMachine.notification_updated.emit("Setting up, please wait...", 0)
 
+	$Assistant.show()
+
 
 func _unhandled_input(event):
-	if event is InputEventMouseButton and event.button_index == 2:
-		%MenuButton.show_popup()
+	if event is InputEventMouseButton and event.button_index == 2 and menu_enabled:
+		%PopupMenu.popup()

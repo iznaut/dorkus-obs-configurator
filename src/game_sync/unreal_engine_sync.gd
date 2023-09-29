@@ -30,7 +30,7 @@ func _update_input_overlay(input_type):
 
 func _on_data_received(data):
 	# only looking at responses for now
-	if not data.has("ResponseBody"):
+	if not data.has("ResponseBody") or data.ResponseCode == 404:
 		return
 
 	var unreal_data = data.ResponseBody

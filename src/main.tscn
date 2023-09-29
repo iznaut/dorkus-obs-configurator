@@ -1,18 +1,26 @@
-[gd_scene load_steps=15 format=3 uid="uid://btdu0dq3jvvbx"]
+[gd_scene load_steps=16 format=3 uid="uid://btdu0dq3jvvbx"]
 
-[ext_resource type="Script" path="res://src/config.gd" id="1_rc23i"]
-[ext_resource type="Script" path="res://src/assistant/assistant.gd" id="2_1r05f"]
 [ext_resource type="Texture2D" uid="uid://d1ksgw06gjrd5" path="res://src/assistant/assets/T_Dorkus_Idle.png" id="2_6lals"]
+[ext_resource type="Script" path="res://src/windows/main_window.gd" id="2_ra5e1"]
 [ext_resource type="Script" path="res://src/assistant/character.gd" id="3_gcqmr"]
 [ext_resource type="Texture2D" uid="uid://bgti5t7i22lgv" path="res://src/assistant/assets/T_Dorkus_Speaking.png" id="4_3uvqu"]
 [ext_resource type="Texture2D" uid="uid://dpmojrnup0oos" path="res://src/assistant/assets/T_Dorkus_Crouch.png" id="4_dw8gv"]
-[ext_resource type="Texture2D" uid="uid://bj1ej1it4g5mn" path="res://src/assistant/assets/T_TextBubble.png" id="5_ewien"]
 [ext_resource type="Texture2D" uid="uid://d0app373et80y" path="res://src/assistant/assets/T_Dorkus_Recording_01.png" id="8_flh1p"]
 [ext_resource type="Texture2D" uid="uid://dt3r0nvgw5nuh" path="res://src/assistant/assets/T_Dorkus_Recording_02.png" id="9_5adkj"]
-[ext_resource type="Script" path="res://src/assistant/menu_button.gd" id="9_pyyjb"]
 [ext_resource type="Texture2D" uid="uid://bhrrpj522xcyj" path="res://src/assistant/assets/T_Dorkus_WritingDown1.png" id="10_d2kxq"]
 [ext_resource type="Texture2D" uid="uid://chwck4g268iwu" path="res://src/assistant/assets/T_Dorkus_WritingDown2.png" id="11_citt3"]
 [ext_resource type="Texture2D" uid="uid://7o1iohkadxtp" path="res://src/assistant/assets/T_Dorkus_Writing.png" id="12_1njwe"]
+[ext_resource type="Script" path="res://src/windows/window_positioner.gd" id="12_vxmsm"]
+[ext_resource type="PackedScene" uid="uid://dxyqcr5sbdg0p" path="res://src/assistant/notification.tscn" id="13_gs78w"]
+[ext_resource type="Script" path="res://src/assistant/menu.gd" id="14_ashtm"]
+
+[sub_resource type="GDScript" id="GDScript_bq01f"]
+script/source = "extends Control
+
+
+func _init():
+	hide()
+"
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_wxxu1"]
 animations = [{
@@ -72,21 +80,17 @@ animations = [{
 }]
 
 [node name="Main" type="Node"]
-script = ExtResource("1_rc23i")
-game_engine = 1
+script = ExtResource("2_ra5e1")
 
 [node name="Assistant" type="Control" parent="."]
-unique_name_in_owner = true
 layout_mode = 3
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-grow_horizontal = 0
-grow_vertical = 0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 1
-script = ExtResource("2_1r05f")
+script = SubResource("GDScript_bq01f")
 
 [node name="Character" type="Control" parent="Assistant"]
 layout_mode = 1
@@ -95,91 +99,63 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -248.0
-offset_top = -247.0
-offset_right = 2.0
-offset_bottom = 3.0
 grow_horizontal = 0
 grow_vertical = 0
-mouse_filter = 1
 script = ExtResource("3_gcqmr")
-metadata/_edit_group_ = true
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Assistant/Character"]
+position = Vector2(-100, -100)
 scale = Vector2(0.1, 0.1)
 sprite_frames = SubResource("SpriteFrames_wxxu1")
 animation = &"idle"
 autoplay = "idle"
-centered = false
-offset = Vector2(475, 475)
 
-[node name="NotificationBubble" type="TextureRect" parent="Assistant/Character"]
-layout_mode = 0
-offset_left = 36.0
-offset_top = 28.0
-offset_right = 1225.0
-offset_bottom = 1094.0
-scale = Vector2(0.1, 0.1)
-texture = ExtResource("5_ewien")
-stretch_mode = 2
+[node name="NotificationPositioner" type="Marker2D" parent="Assistant"]
+position = Vector2(-12, -16)
+script = ExtResource("12_vxmsm")
+metadata/_edit_group_ = true
 
-[node name="Label" type="Label" parent="Assistant/Character/NotificationBubble"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 220.0
-offset_top = 220.0
-offset_right = -179.0
-offset_bottom = -396.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_font_sizes/font_size = 150
-text = "Setting up..."
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 2
+[node name="Window" type="Window" parent="Assistant/NotificationPositioner"]
+transparent_bg = true
+position = Vector2i(-12, -16)
+size = Vector2i(125, 110)
+unresizable = true
+borderless = true
+always_on_top = true
+transparent = true
+unfocusable = true
+mouse_passthrough = true
 
-[node name="Timer" type="Timer" parent="Assistant/Character/NotificationBubble"]
-one_shot = true
+[node name="NotificationBubble" parent="Assistant/NotificationPositioner/Window" instance=ExtResource("13_gs78w")]
 
-[node name="MenuButton" type="MenuButton" parent="."]
+[node name="MenuPositioner" type="Marker2D" parent="Assistant"]
+position = Vector2(-52, -52)
+script = ExtResource("12_vxmsm")
+
+[node name="PopupMenu" type="PopupMenu" parent="Assistant/MenuPositioner"]
 unique_name_in_owner = true
-offset_left = 108.0
-offset_top = -218.0
-offset_right = 161.0
-offset_bottom = -187.0
-text = "menu"
-item_count = 9
-popup/item_0/text = "Start Recording"
-popup/item_0/id = 0
-popup/item_0/disabled = true
-popup/item_1/text = "Save Replay"
-popup/item_1/id = 1
-popup/item_1/disabled = true
-popup/item_2/text = "Take Screenshot"
-popup/item_2/id = 8
-popup/item_2/disabled = true
-popup/item_3/text = "Open Recording Folder"
-popup/item_3/id = 2
-popup/item_3/disabled = true
-popup/item_4/text = ""
-popup/item_4/id = 3
-popup/item_4/disabled = true
-popup/item_4/separator = true
-popup/item_5/text = "Upload to frame.io"
-popup/item_5/checkable = 1
-popup/item_5/id = 4
-popup/item_5/disabled = true
-popup/item_6/text = "Sync with Unreal"
-popup/item_6/checkable = 1
-popup/item_6/id = 5
-popup/item_7/text = ""
-popup/item_7/id = 6
-popup/item_7/disabled = true
-popup/item_7/separator = true
-popup/item_8/text = "Close Dorkus Assist"
-popup/item_8/id = 7
-script = ExtResource("9_pyyjb")
+position = Vector2i(-52, -52)
+size = Vector2i(225, 151)
+visible = true
+allow_search = false
+item_count = 7
+item_0/text = "Start Recording"
+item_0/id = 0
+item_1/text = "Save Replay"
+item_1/id = 1
+item_2/text = ""
+item_2/id = 8
+item_2/separator = true
+item_3/text = "Take Screenshot"
+item_3/id = 8
+item_4/text = "Open Recording Folder"
+item_4/id = 2
+item_5/text = ""
+item_5/id = 3
+item_5/disabled = true
+item_5/separator = true
+item_6/text = "Options..."
+item_6/id = 4
+script = ExtResource("14_ashtm")
 
-[connection signal="timeout" from="Assistant/Character/NotificationBubble/Timer" to="Assistant/Character" method="_on_timer_timeout"]
+[connection signal="id_pressed" from="Assistant/MenuPositioner/PopupMenu" to="Assistant/MenuPositioner/PopupMenu" method="_on_id_pressed"]
