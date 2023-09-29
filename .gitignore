@@ -11,7 +11,7 @@ frameio_upload.exe
 build
 !build/.gdignore
 config.ini
-config.ini.bak
+*.bak
 
 .vscode
 .favorites.json

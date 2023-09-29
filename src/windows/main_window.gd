@@ -1,7 +1,9 @@
 extends Node
 
 
-var menu_enabled : bool
+@onready var menu_enabled : bool:
+	get:
+		return menu_enabled and Config.get_value("Assistant", "MenuAccess")
 
 
 func _ready():

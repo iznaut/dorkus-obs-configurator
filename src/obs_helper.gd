@@ -6,14 +6,14 @@ signal record_state_changed(is_recording)
 signal recording_saved(filepath)
 
 const SOURCE_REMAPS = {
-		"image_source": {
-			"file": "dorkus-white.png"
-		},
-		"input-overlay": {
-			"io.overlay_image": "game-pad.png",
-			"io.layout_file": "game-pad.json",
-		},
-	}
+	"image_source": {
+		"file": "dorkus-white.png"
+	},
+	"input-overlay": {
+		"io.overlay_image": "game-pad.png",
+		"io.layout_file": "game-pad.json",
+	},
+}
 const DOWNLOADER_SCENE = preload("res://src/assistant/obs_downloader.tscn")
 
 var close_on_recording_saved : bool
@@ -35,16 +35,6 @@ func _ready():
 
 	# disable normal quit behavior so we can safely handle app close first
 	get_tree().set_auto_accept_quit(false)
-
-	# create user config file if missing
-	if not FileAccess.file_exists(Utility.get_user_config_path()):
-		var content = FileAccess.get_file_as_string("res://support/config_template.ini")
-		var new_file = FileAccess.open(
-			Utility.globalize_subpath("config.ini"),
-			FileAccess.WRITE
-		)
-		new_file.store_string(content)
-		new_file.close()
 
 	# copy default obs config if missing
 	if not DirAccess.dir_exists_absolute(obs_root):
@@ -100,23 +90,18 @@ func _request_connection() -> void:
 
 
 func _on_connection_authenticated():
-	send_command("StartReplayBuffer")
+	send_command("GetRecordStatus")
 	send_command("GetSceneItemList", {"sceneName": "Playtest"})
 
-	# let other nodes know we've connected
 	StateMachine.notification_updated.emit("Ready!", StateMachine.DEFAULT_NOTIFICATION_TIME)
 	StateMachine.state_updated.emit(StateMachine.NOTIFICATION)
-	await get_tree().create_timer(StateMachine.DEFAULT_NOTIFICATION_TIME).timeout
-	connected.emit()
-	is_connected = true
-
-	send_command("GetRecordStatus")
 
 
 func _on_obs_data_recieved(data):
 	print(data)
 	if data is RequestResponse:
 		var request_type = data["request_type"]
+		var request_status = data["request_status"]
 		var response_data = data["response_data"]
 		
 		match request_type:
@@ -126,8 +111,16 @@ func _on_obs_data_recieved(data):
 			"GetSceneItemList":
 				for item in response_data.sceneItems:
 					scene_item_list[item.sourceName] = item.sceneItemId
+				
+				# make sure we have the scene list before reporting connected
+				connected.emit()
+				is_connected = true
 			"GetRecordStatus":
 				record_state_changed.emit(response_data.outputActive)
+			"SaveSourceScreenshot":
+				var msg = "No game output detected!" if request_status.code == 702 else "Screenshot saved!"
+				StateMachine.notification_updated.emit(msg, 2)
+				StateMachine.state_updated.emit(StateMachine.NOTIFICATION)
 	elif data is Event:
 		var event_type = data["event_type"]
 		var event_data = data["event_data"]

@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://1tqhio8co8ms"]
 
 [ext_resource type="Script" path="res://src/windows/options.gd" id="1_truh6"]
-[ext_resource type="Script" path="res://src/windows/obs_scene_toggle.gd" id="2_wy30a"]
+[ext_resource type="Script" path="res://src/windows/config_button.gd" id="2_0kc6g"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wfrjb"]
 bg_color = Color(0, 0, 0, 1)
@@ -23,6 +23,8 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_right = 300.0
+offset_bottom = 200.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_truh6")
@@ -56,7 +58,6 @@ layout_mode = 2
 text = "Upload on Save:"
 
 [node name="SelectUploadService" type="OptionButton" parent="MarginContainer/Panel/VBoxContainer"]
-unique_name_in_owner = true
 layout_mode = 2
 item_count = 2
 selected = 0
@@ -64,13 +65,15 @@ popup/item_0/text = "Disabled"
 popup/item_0/id = 0
 popup/item_1/text = "Frame.io"
 popup/item_1/id = 1
+script = ExtResource("2_0kc6g")
+section = "Integrations"
+key = "UploadService"
 
 [node name="Label2" type="Label" parent="MarginContainer/Panel/VBoxContainer"]
 layout_mode = 2
 text = "Sync to Game Engine:"
 
 [node name="SelectGameSync" type="OptionButton" parent="MarginContainer/Panel/VBoxContainer"]
-unique_name_in_owner = true
 layout_mode = 2
 item_count = 2
 selected = 0
@@ -78,13 +81,54 @@ popup/item_0/text = "Disabled"
 popup/item_0/id = 0
 popup/item_1/text = "Unreal Engine"
 popup/item_1/id = 1
+script = ExtResource("2_0kc6g")
+section = "Integrations"
+key = "SyncEngine"
 
-[node name="OBSSceneToggle" type="CheckButton" parent="MarginContainer/Panel/VBoxContainer"]
-unique_name_in_owner = true
+[node name="Label3" type="Label" parent="MarginContainer/Panel/VBoxContainer"]
 layout_mode = 2
-text = "Record Discord Audio"
-script = ExtResource("2_wy30a")
-obs_scene_name = "Discord Audio"
+text = "Record Audio from Chat App:"
+
+[node name="SelectChatApp" type="OptionButton" parent="MarginContainer/Panel/VBoxContainer"]
+layout_mode = 2
+item_count = 4
+selected = 0
+popup/item_0/text = "Disabled"
+popup/item_0/id = 0
+popup/item_1/text = "Discord"
+popup/item_1/id = 1
+popup/item_2/text = "Slack"
+popup/item_2/id = 2
+popup/item_3/text = "Zoom"
+popup/item_3/id = 3
+script = ExtResource("2_0kc6g")
+section = "OBS"
+key = "ChatAudio"
+
+[node name="Label4" type="Label" parent="MarginContainer/Panel/VBoxContainer"]
+layout_mode = 2
+text = "Show Input Overlay:"
+
+[node name="SelectInputOverlay" type="OptionButton" parent="MarginContainer/Panel/VBoxContainer"]
+layout_mode = 2
+item_count = 3
+selected = 0
+popup/item_0/text = "Disabled"
+popup/item_0/id = 0
+popup/item_1/text = "Keyboard/Mouse"
+popup/item_1/id = 1
+popup/item_2/text = "Gamepad"
+popup/item_2/id = 2
+script = ExtResource("2_0kc6g")
+section = "OBS"
+key = "InputOverlay"
+
+[node name="ToggleReplayBuffer" type="CheckButton" parent="MarginContainer/Panel/VBoxContainer"]
+layout_mode = 2
+text = "Enable Replay Buffer"
+script = ExtResource("2_0kc6g")
+section = "OBS"
+key = "ReplayBuffer"
 
 [node name="CloseButton" type="Button" parent="MarginContainer/Panel"]
 layout_mode = 1

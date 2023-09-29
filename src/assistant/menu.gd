@@ -34,8 +34,6 @@ const OBS_COMMANDS = {
 	],
 }
 
-var config : Node
-
 
 func _ready():
 	OBSHelper.record_state_changed.connect(
@@ -46,9 +44,16 @@ func _ready():
 			)
 	)
 
+	if not Config.get_value("Assistant", "OptionsAccess"):
+		var options_index = get_item_index(OPTIONS)
+		remove_item(options_index)
+		remove_item(options_index - 1)
+		reset_size()
+
 	# change anim on show/hide popup
 	about_to_popup.connect(
 		func():
+			set_item_disabled(SAVE_REPLAY, not Config.get_value("OBS", "ReplayBuffer"))
 			StateMachine.state_updated.emit(StateMachine.MENU_OPENED)
 	)
 	popup_hide.connect(
@@ -69,33 +74,11 @@ func _on_id_pressed(id:int):
 		StateMachine.state_updated.emit(StateMachine.LOADING)
 		OBSHelper.send_command(command, params if params != null else {})
 		return
-
-	# if id in CONFIG_OPTIONS.keys():
-	# 	var index = get_item_index(id)
-
-	# 	if is_item_checkable(index):
-	# 		toggle_item_checked(index)
-	# 		config.set(CONFIG_OPTIONS[id], is_item_checked(index))
 	
 	if id == OPTIONS:
 		get_tree().get_root().add_child(OPTIONS_WINDOW.instantiate())
 		StateMachine.state_updated.emit(StateMachine.WAITING)
 
-
-# func _on_about_to_popup():
-	# refresh checkboxes to match config bools
-	# for id in CONFIG_OPTIONS.keys():
-	# 	var index = get_item_index(id)
-	# 	set_item_checked(
-	# 		index,
-	# 		config.get(CONFIG_OPTIONS[id])
-	# 	)
-	
-	# disable frame.io upload if no token defined
-	# set_item_disabled(
-	# 	get_item_index(FRAMEIO_UPLOAD),
-	# 	not Utility.get_frameio_config() is Array
-	# )
 	
 	# TODO look into dynamic resolution setting - must happen with record/replay buffer off
 	# OBSHelper.send_command(

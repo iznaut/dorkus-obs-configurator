@@ -1,13 +1,17 @@
 [gd_scene load_steps=2 format=3 uid="uid://dadmluc01ive6"]
 
-[ext_resource type="PackedScene" uid="uid://1tqhio8co8ms" path="res://src/menus/options.tscn" id="1_qybcf"]
+[ext_resource type="PackedScene" uid="uid://1tqhio8co8ms" path="res://src/windows/options.tscn" id="1_qybcf"]
 
 [node name="OptionsWindow" type="Window"]
 transparent_bg = true
 title = "Dorkus Assist Options"
 initial_position = 1
-size = Vector2i(410, 250)
+size = Vector2i(500, 400)
 
 [node name="Control" parent="." instance=ExtResource("1_qybcf")]
+offset_right = 0.0
+offset_bottom = 0.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [connection signal="close_requested" from="." to="Control" method="_on_options_window_close_requested"]
