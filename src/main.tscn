@@ -135,7 +135,7 @@ script = ExtResource("12_vxmsm")
 [node name="PopupMenu" type="PopupMenu" parent="Assistant/MenuPositioner"]
 unique_name_in_owner = true
 position = Vector2i(-52, -52)
-size = Vector2i(225, 151)
+size = Vector2i(205, 151)
 visible = true
 allow_search = false
 item_count = 7

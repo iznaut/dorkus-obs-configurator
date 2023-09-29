@@ -1,6 +1,8 @@
 extends Node
 
 
+signal options_saved
+
 enum UploadService {
 	DISABLED,
 	FRAME_IO,
@@ -11,42 +13,115 @@ enum SyncEngine {
 	UNREAL,
 }
 
+enum ChatApp {
+	DISABLED,
+	DISCORD,
+	SLACK,
+	ZOOM,
+}
+
+enum InputType {
+	DISABLED,
+	KEYBOARD_MOUSE,
+	GAMEPAD,
+}
+
 const SYNC_NODES = {
 	SyncEngine.UNREAL: preload("res://src/game_sync/unreal_engine_sync.tscn")
 }
+const CHAT_APP_SCENES = {
+	ChatApp.DISCORD: "Discord",
+	ChatApp.SLACK: "Slack",
+	ChatApp.ZOOM: "Zoom",
+}
+const INPUT_OVERLAY_SCENES = {
+	InputType.KEYBOARD_MOUSE: "Keyboard/Mouse",
+	InputType.GAMEPAD: "Gamepad",
+}
 
-@export_category("Config Defaults")
-@export var upload_service : UploadService
-@export var sync_engine : SyncEngine:
-	set(new_value):
-		sync_engine = new_value
-		_toggle_game_sync(sync_engine != SyncEngine.DISABLED)
+@export var use_baked_config : bool = false
+@export var allow_user_config : bool = true
 
+var current : ConfigFile
 var active_sync_node : GameSync
 
 var start_record_func = func(): OBSHelper.send_command("StartRecord")
 var stop_record_func = func(): OBSHelper.send_command("StopRecord")
+var setter_funcs = {
+	"ReplayBuffer": func(enabled : bool):
+		OBSHelper.send_command(
+			"%sReplayBuffer" % (
+				"Start" if enabled else "Stop"
+			)
+		),
+	"ChatAudio": func(new_value : ChatApp):
+		for key in CHAT_APP_SCENES.keys():
+			OBSHelper.set_scene_item_enabled(
+				"%s Audio" % Config.CHAT_APP_SCENES[key],
+				key == new_value
+			),
+	"InputOverlay": func(new_value : InputType):
+		for key in INPUT_OVERLAY_SCENES.keys():
+			OBSHelper.set_scene_item_enabled(
+				"Input Overlay (%s)" % Config.INPUT_OVERLAY_SCENES[key],
+				key == new_value
+			),
+	"SyncEngine": func(new_value : SyncEngine):
+		_toggle_game_sync(new_value != SyncEngine.DISABLED),
+}
+
+var baked_config_path = "res://config_baked.ini"
+@onready var user_config_path = Utility.globalize_subpath("config.ini")
 
 
 func _ready():
+	# create user config file if missing
+	if not FileAccess.file_exists(user_config_path) and allow_user_config:
+		var content = FileAccess.get_file_as_string("res://support/config_template.ini")
+		var new_file = FileAccess.open(
+			user_config_path,
+			FileAccess.WRITE
+		)
+		new_file.store_string(content)
+		new_file.close()
+
+	current = ConfigFile.new()
+	current.load(
+		baked_config_path if use_baked_config else user_config_path
+	)
+
 	OBSHelper.recording_saved.connect(_upload_file_to_frameio)
 
-	# set defaults based on user preferences
-	var user_upload_service = Utility.get_config_value("Dorkus", "UploadService")
-	var user_sync_engine = Utility.get_config_value("Dorkus", "SyncEngine")
+	# run all setters after OBS connects
+	OBSHelper.connected.connect(
+		func():
+			for section in current.get_sections():
+				for key in current.get_section_keys(section):
+					if key in setter_funcs.keys():
+						setter_funcs[key].call(
+							get_value(section, key)
+						)
+	)
 
-	if user_upload_service != -1:
-		upload_service = user_upload_service
-	if user_sync_engine != -1:
-		sync_engine = user_sync_engine
+
+func get_value(section : String, key : String) -> Variant:
+	return current.get_value(section, key, -1)
+
+
+func set_value(section : String, key : String, new_value : Variant) -> void:
+	current.set_value(section, key, new_value)
+	current.save(user_config_path)
+
+	if key in setter_funcs.keys():
+		setter_funcs[key].call(new_value)
 
 
 func _toggle_game_sync(enabled : bool):
 	if enabled:
-		if not OBSHelper.is_connected:
-			await OBSHelper.connected
+		active_sync_node = SYNC_NODES[
+			get_value("Integrations", "SyncEngine")
+		].instantiate()
 
-		active_sync_node = SYNC_NODES[sync_engine].instantiate()
 		add_child(active_sync_node)
 
 		active_sync_node.game_connected.connect(start_record_func)
@@ -54,6 +129,9 @@ func _toggle_game_sync(enabled : bool):
 
 		active_sync_node.request_connection()
 	else:
+		if not active_sync_node:
+			return
+
 		active_sync_node.game_connected.disconnect(start_record_func)
 		active_sync_node.game_disconnected.disconnect(stop_record_func)
 
@@ -61,14 +139,15 @@ func _toggle_game_sync(enabled : bool):
 
 
 func _upload_file_to_frameio(filepath):
-	var frameio_config = Utility.get_frameio_config()
+	var root_asset_id = get_value("Frameio", "RootAssetID")
+	var token = get_value("Frameio", "Token")
 
-	if upload_service != UploadService.FRAME_IO or not frameio_config is Array:
+	if get_value("Integrations", "UploadService") != UploadService.FRAME_IO:
 		return
 	
 	var params = [
-		frameio_config[0],
-		frameio_config[1],
+		token,
+		root_asset_id,
 		filepath,
 	]
 

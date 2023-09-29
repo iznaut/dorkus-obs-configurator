@@ -31,18 +31,6 @@ static func globalize_subpath(relative_path : String = "") -> String:
 	return path
 
 
-static func get_user_config_path() -> String:
-	return globalize_subpath("config.ini")
-
-
-static func get_config_value(section : String, key : String, baked = false) -> Variant:
-	var config = ConfigFile.new()
-	config.load(
-		"res://config_baked.ini" if baked else get_user_config_path()
-	)
-	return config.get_value(section, key, -1)
-
-
 static func get_json_index(source_id : String, json_contents : Dictionary) -> int:
 	var index := 0
 
@@ -128,19 +116,3 @@ static func os_execute_async(app_path : String, params : Array) -> Variant:
 	)
 
 	return thread.wait_to_finish()
-
-
-static func get_frameio_config():
-	var root_asset_id = Utility.get_config_value("Frameio", "RootAssetID")
-	var token = Utility.get_config_value("Frameio", "Token")
-
-	if not token:
-		# get baked values if no user values set
-		root_asset_id = Utility.get_config_value("Frameio", "RootAssetID", true)
-		token = Utility.get_config_value("Frameio", "RootAssetID", true)
-
-		# if baked value hasn't been set, return
-		if token == "#{FRAMEIO_BAKED_TOKEN}#" or token == "" or token == null:
-			return false
-	
-	return [token, root_asset_id]
