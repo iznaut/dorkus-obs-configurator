@@ -5,6 +5,7 @@ enum {
 	IDLE,
 	RECORDING,
 	NOTIFICATION,
+	WAITING,
 	LOADING,
 	MENU_OPENED,
 }
@@ -13,6 +14,7 @@ const STATE_TO_ANIM := {
 	IDLE: "idle",
 	RECORDING: "recording",
 	NOTIFICATION: "speaking",
+	WAITING: "writing_idle",
 	LOADING: "writing",
 	MENU_OPENED: "crouch",
 }

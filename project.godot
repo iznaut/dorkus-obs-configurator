@@ -22,6 +22,7 @@ config/icon="res://icon.png"
 
 OBSHelper="*res://src/obs_helper.gd"
 StateMachine="*res://src/assistant/state_machine.gd"
+Config="*res://src/config.tscn"
 
 [debug]
 
@@ -29,13 +30,14 @@ file_logging/enable_file_logging=true
 
 [display]
 
-window/size/viewport_width=250
-window/size/viewport_height=300
+window/size/viewport_width=200
+window/size/viewport_height=200
 window/size/resizable=false
 window/size/borderless=true
 window/size/always_on_top=true
 window/size/transparent=true
 window/size/no_focus=true
+window/subwindows/embed_subwindows=false
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 window/per_pixel_transparency/allowed=true
