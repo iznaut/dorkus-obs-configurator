@@ -28,6 +28,7 @@ var scene_item_list : Dictionary
 var download_progress_bar : ProgressBar
 var is_connected : bool
 var is_recording : bool
+var recording_path : String
 
 
 func _ready():
@@ -92,6 +93,7 @@ func _request_connection() -> void:
 func _on_connection_authenticated():
 	send_command("GetRecordStatus")
 	send_command("GetSceneItemList", {"sceneName": "Playtest"})
+	update_recording_path()
 
 	StateMachine.notification_updated.emit("Ready!", StateMachine.DEFAULT_NOTIFICATION_TIME)
 	StateMachine.state_updated.emit(StateMachine.NOTIFICATION)
@@ -106,7 +108,7 @@ func _on_obs_data_recieved(data):
 		
 		match request_type:
 			"GetProfileParameter":
-				OS.shell_open(response_data.parameterValue)
+				recording_path = response_data.parameterValue
 				StateMachine.state_updated.emit(StateMachine.IDLE)
 			"GetSceneItemList":
 				for item in response_data.sceneItems:
@@ -157,6 +159,53 @@ func set_scene_item_enabled(item_name : String, enabled : bool):
 			"sceneName": "Playtest",
 			"sceneItemId": scene_item_list[item_name],
 			"sceneItemEnabled": enabled
+		}
+	)
+
+
+# TODO - this is ugly but hey it works
+func get_hotkey_string(hotkey_command : String):
+	var hotkey_prefix = hotkey_command.get_slice(".", 0)
+	var command = hotkey_command.get_slice(".", 1)
+
+	if hotkey_prefix == "OBSBasic":
+		hotkey_prefix = hotkey_command
+		command = "bindings"
+
+	print(hotkey_prefix)
+	print(command)
+
+	var config = FileAccess.get_file_as_string(config_paths.profile)
+	config = config.get_slice("[Hotkeys]",1).get_slice("\n\n", 0)
+	config = config.get_slice(hotkey_prefix + "=", 1).get_slice("\n", 0)
+
+	var hotkey_obj = JSON.parse_string(config)
+
+	if not hotkey_obj:
+		return null
+	
+	if command == "bindings":
+		hotkey_obj = hotkey_obj[command][0]
+	else:
+		if not hotkey_obj.has(hotkey_command):
+			return null
+
+		hotkey_obj = hotkey_obj[hotkey_command][0]
+
+	return (
+		("Ctrl+" if hotkey_obj.has("ctrl") else "") +
+		("Alt+" if hotkey_obj.has("alt") else "") +
+		("Shift+" if hotkey_obj.has("shift") else "") +
+		hotkey_obj.key.replace("OBS_KEY_", "")
+	)
+
+
+func update_recording_path():
+	OBSHelper.send_command(
+		"GetProfileParameter",
+		{
+			"parameterCategory": "AdvOut",
+			"parameterName": "RecFilePath"
 		}
 	)
 

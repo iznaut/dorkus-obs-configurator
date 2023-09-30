@@ -25,13 +25,10 @@ const OBS_COMMANDS = {
 			"imageFilePath": "D:/Screenshots/test/test.png"
 		}
 	],
-	OPEN_RECORDING_FOLDER: [
-		"GetProfileParameter",
-		{
-			"parameterCategory": "AdvOut",
-			"parameterName": "RecFilePath"
-		}
-	],
+}
+const OBS_HOTKEYS = {
+	START_STOP_RECORDING: "OBSBasic.StartRecording",
+	SAVE_REPLAY: "ReplayBuffer.Save",
 }
 
 
@@ -51,15 +48,27 @@ func _ready():
 		reset_size()
 
 	# change anim on show/hide popup
-	about_to_popup.connect(
-		func():
-			set_item_disabled(SAVE_REPLAY, not Config.get_value("OBS", "ReplayBuffer"))
-			StateMachine.state_updated.emit(StateMachine.MENU_OPENED)
-	)
+	about_to_popup.connect(_on_about_to_popup)
 	popup_hide.connect(
 		func():
 			StateMachine.state_updated.emit(StateMachine.IDLE)
 	)
+
+
+func _on_about_to_popup():
+	# update tooltips with keyboard shortcuts
+	for id in OBS_COMMANDS:
+		if id in OBS_HOTKEYS:
+			set_item_tooltip(
+				get_item_index(id),
+				OBSHelper.get_hotkey_string(OBS_HOTKEYS[id])
+			)
+	
+	# get current save location
+	OBSHelper.update_recording_path()
+
+	set_item_disabled(SAVE_REPLAY, not Config.get_value("OBS", "ReplayBuffer"))
+	StateMachine.state_updated.emit(StateMachine.MENU_OPENED)
 
 
 func _on_id_pressed(id:int):
@@ -75,9 +84,13 @@ func _on_id_pressed(id:int):
 		OBSHelper.send_command(command, params if params != null else {})
 		return
 	
-	if id == OPTIONS:
-		get_tree().get_root().add_child(OPTIONS_WINDOW.instantiate())
-		StateMachine.state_updated.emit(StateMachine.WAITING)
+
+	match id:
+		OPEN_RECORDING_FOLDER:
+			OS.shell_open(OBSHelper.recording_path)
+		OPTIONS:
+			get_tree().get_root().add_child(OPTIONS_WINDOW.instantiate())
+			StateMachine.state_updated.emit(StateMachine.WAITING)
 
 	
 	# TODO look into dynamic resolution setting - must happen with record/replay buffer off
