@@ -7,10 +7,12 @@ transparent_bg = true
 title = "Dorkus Assist Options"
 initial_position = 1
 size = Vector2i(500, 400)
+unresizable = true
 
 [node name="Control" parent="." instance=ExtResource("1_qybcf")]
-offset_right = 0.0
-offset_bottom = 0.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 

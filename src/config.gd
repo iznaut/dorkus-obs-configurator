@@ -105,7 +105,7 @@ func _ready():
 
 
 func get_value(section : String, key : String) -> Variant:
-	return current.get_value(section, key, -1)
+	return current.get_value(section, key, "")
 
 
 func set_value(section : String, key : String, new_value : Variant) -> void:

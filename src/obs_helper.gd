@@ -109,7 +109,6 @@ func _on_obs_data_recieved(data):
 		match request_type:
 			"GetProfileParameter":
 				recording_path = response_data.parameterValue
-				StateMachine.state_updated.emit(StateMachine.IDLE)
 			"GetSceneItemList":
 				for item in response_data.sceneItems:
 					scene_item_list[item.sourceName] = item.sceneItemId
@@ -171,9 +170,6 @@ func get_hotkey_string(hotkey_command : String):
 	if hotkey_prefix == "OBSBasic":
 		hotkey_prefix = hotkey_command
 		command = "bindings"
-
-	print(hotkey_prefix)
-	print(command)
 
 	var config = FileAccess.get_file_as_string(config_paths.profile)
 	config = config.get_slice("[Hotkeys]",1).get_slice("\n\n", 0)
