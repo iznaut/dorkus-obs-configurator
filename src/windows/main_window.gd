@@ -7,6 +7,10 @@ extends Node
 
 
 func _ready():
+	var steam_app_id = Config.get_value("Integrations", "SteamAppID") as int
+	if steam_app_id:
+		OS.shell_open("steam://rungameid/%s" % steam_app_id)
+
 	var parent_window = get_window()
 	
 	@warning_ignore("integer_division")

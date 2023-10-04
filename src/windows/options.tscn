@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://1tqhio8co8ms"]
+[gd_scene load_steps=9 format=3 uid="uid://1tqhio8co8ms"]
 
 [ext_resource type="Script" path="res://src/windows/options.gd" id="1_truh6"]
 [ext_resource type="Script" path="res://src/windows/config_button.gd" id="2_0kc6g"]
+[ext_resource type="Script" path="res://src/windows/config_input.gd" id="3_aiof8"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wfrjb"]
 bg_color = Color(0, 0, 0, 1)
@@ -20,14 +21,12 @@ bg_color = Color(0, 0.478431, 0.745098, 1)
 
 [node name="Control" type="Control"]
 layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_right = 300.0
-offset_bottom = 200.0
+anchor_right = 2.5
+anchor_bottom = 1.75
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_truh6")
+metadata/_edit_use_anchors_ = true
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -47,49 +46,32 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_wfrjb")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/Panel"]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = -1
 anchor_right = 1.0
-anchor_bottom = 1.0
+anchor_bottom = 0.889
+offset_bottom = 0.179993
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Label" type="Label" parent="MarginContainer/Panel/VBoxContainer"]
+[node name="TabBar" type="TabBar" parent="MarginContainer/Panel/VBoxContainer"]
 layout_mode = 2
-text = "Upload on Save:"
+tab_count = 2
+tab_0/title = "OBS"
+tab_1/title = "Integrations"
 
-[node name="SelectUploadService" type="OptionButton" parent="MarginContainer/Panel/VBoxContainer"]
+[node name="OptionPanels" type="PanelContainer" parent="MarginContainer/Panel/VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
-item_count = 2
-selected = 0
-popup/item_0/text = "Disabled"
-popup/item_0/id = 0
-popup/item_1/text = "Frame.io"
-popup/item_1/id = 1
-script = ExtResource("2_0kc6g")
-section = "Integrations"
-key = "UploadService"
+size_flags_vertical = 6
 
-[node name="Label2" type="Label" parent="MarginContainer/Panel/VBoxContainer"]
+[node name="OBS" type="VBoxContainer" parent="MarginContainer/Panel/VBoxContainer/OptionPanels"]
 layout_mode = 2
-text = "Sync to Game Engine:"
 
-[node name="SelectGameSync" type="OptionButton" parent="MarginContainer/Panel/VBoxContainer"]
-layout_mode = 2
-item_count = 2
-selected = 0
-popup/item_0/text = "Disabled"
-popup/item_0/id = 0
-popup/item_1/text = "Unreal Engine"
-popup/item_1/id = 1
-script = ExtResource("2_0kc6g")
-section = "Integrations"
-key = "SyncEngine"
-
-[node name="Label3" type="Label" parent="MarginContainer/Panel/VBoxContainer"]
+[node name="Label3" type="Label" parent="MarginContainer/Panel/VBoxContainer/OptionPanels/OBS"]
 layout_mode = 2
 text = "Record Audio from Chat App:"
 
-[node name="SelectChatApp" type="OptionButton" parent="MarginContainer/Panel/VBoxContainer"]
+[node name="SelectChatApp" type="OptionButton" parent="MarginContainer/Panel/VBoxContainer/OptionPanels/OBS"]
 layout_mode = 2
 item_count = 4
 selected = 0
@@ -105,11 +87,11 @@ script = ExtResource("2_0kc6g")
 section = "OBS"
 key = "ChatAudio"
 
-[node name="Label4" type="Label" parent="MarginContainer/Panel/VBoxContainer"]
+[node name="Label4" type="Label" parent="MarginContainer/Panel/VBoxContainer/OptionPanels/OBS"]
 layout_mode = 2
 text = "Show Input Overlay:"
 
-[node name="SelectInputOverlay" type="OptionButton" parent="MarginContainer/Panel/VBoxContainer"]
+[node name="SelectInputOverlay" type="OptionButton" parent="MarginContainer/Panel/VBoxContainer/OptionPanels/OBS"]
 layout_mode = 2
 item_count = 3
 selected = 0
@@ -123,39 +105,149 @@ script = ExtResource("2_0kc6g")
 section = "OBS"
 key = "InputOverlay"
 
-[node name="ToggleReplayBuffer" type="CheckButton" parent="MarginContainer/Panel/VBoxContainer"]
+[node name="ToggleReplayBuffer" type="CheckButton" parent="MarginContainer/Panel/VBoxContainer/OptionPanels/OBS"]
 layout_mode = 2
 text = "Enable Replay Buffer"
 script = ExtResource("2_0kc6g")
 section = "OBS"
 key = "ReplayBuffer"
 
-[node name="CloseButton" type="Button" parent="MarginContainer/Panel"]
+[node name="Integrations" type="VBoxContainer" parent="MarginContainer/Panel/VBoxContainer/OptionPanels"]
+visible = false
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/Panel/VBoxContainer/OptionPanels/Integrations"]
+layout_mode = 2
+text = "Upload on Save:"
+
+[node name="SelectUploadService" type="OptionButton" parent="MarginContainer/Panel/VBoxContainer/OptionPanels/Integrations"]
+unique_name_in_owner = true
+layout_mode = 2
+item_count = 2
+selected = 0
+popup/item_0/text = "Disabled"
+popup/item_0/id = 0
+popup/item_1/text = "Frame.io"
+popup/item_1/id = 1
+script = ExtResource("2_0kc6g")
+section = "Integrations"
+key = "UploadService"
+
+[node name="FrameioConfig" type="VBoxContainer" parent="MarginContainer/Panel/VBoxContainer/OptionPanels/Integrations"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/Panel/VBoxContainer/OptionPanels/Integrations/FrameioConfig"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="MarginContainer/Panel/VBoxContainer/OptionPanels/Integrations/FrameioConfig/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Frame.io Token:"
+
+[node name="LineEdit" type="LineEdit" parent="MarginContainer/Panel/VBoxContainer/OptionPanels/Integrations/FrameioConfig/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+secret = true
+script = ExtResource("3_aiof8")
+section = "Frameio"
+key = "Token"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/Panel/VBoxContainer/OptionPanels/Integrations/FrameioConfig"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="MarginContainer/Panel/VBoxContainer/OptionPanels/Integrations/FrameioConfig/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Frame.io Root Asset ID:"
+
+[node name="LineEdit" type="LineEdit" parent="MarginContainer/Panel/VBoxContainer/OptionPanels/Integrations/FrameioConfig/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("3_aiof8")
+section = "Frameio"
+key = "RootAssetID"
+
+[node name="Label2" type="Label" parent="MarginContainer/Panel/VBoxContainer/OptionPanels/Integrations"]
+layout_mode = 2
+text = "Sync to Game Engine:"
+
+[node name="SelectGameSync" type="OptionButton" parent="MarginContainer/Panel/VBoxContainer/OptionPanels/Integrations"]
+layout_mode = 2
+item_count = 2
+selected = 0
+popup/item_0/text = "Disabled"
+popup/item_0/id = 0
+popup/item_1/text = "Unreal Engine"
+popup/item_1/id = 1
+script = ExtResource("2_0kc6g")
+section = "Integrations"
+key = "SyncEngine"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/Panel/VBoxContainer/OptionPanels/Integrations"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="MarginContainer/Panel/VBoxContainer/OptionPanels/Integrations/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Open Steam App on Launch:"
+
+[node name="LineEdit" type="LineEdit" parent="MarginContainer/Panel/VBoxContainer/OptionPanels/Integrations/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "App ID"
+script = ExtResource("3_aiof8")
+section = "Integrations"
+key = "SteamAppID"
+
+[node name="SteamAutoClose" type="CheckButton" parent="MarginContainer/Panel/VBoxContainer/OptionPanels/Integrations"]
+visible = false
+layout_mode = 2
+text = "Auto-Close with Steam App"
+script = ExtResource("2_0kc6g")
+section = "Integrations"
+key = "SteamAutoClose"
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_wfrjb")
+metadata/_edit_use_anchors_ = true
+
+[node name="CloseButton" type="Button" parent="Panel"]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_top = -31.0
-offset_right = 150.0
+offset_top = -23.0
+offset_right = 159.0
 grow_vertical = 0
 theme_override_styles/normal = SubResource("StyleBoxFlat_iy3xa")
 theme_override_styles/hover = SubResource("StyleBoxFlat_b03lk")
 text = " Close Dorkus Assist "
 
-[node name="SaveButton" type="Button" parent="MarginContainer/Panel"]
+[node name="SaveButton" type="Button" parent="Panel"]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -31.0
-offset_top = -31.0
+offset_left = -45.0
+offset_top = -23.0
 grow_horizontal = 0
 grow_vertical = 0
 theme_override_styles/normal = SubResource("StyleBoxFlat_3tgnk")
 theme_override_styles/hover = SubResource("StyleBoxFlat_kdq0w")
 text = " Save "
 
-[connection signal="pressed" from="MarginContainer/Panel/CloseButton" to="." method="_on_close_button_pressed"]
-[connection signal="pressed" from="MarginContainer/Panel/SaveButton" to="." method="_on_save_button_pressed"]
+[connection signal="tab_changed" from="MarginContainer/Panel/VBoxContainer/TabBar" to="." method="_on_tab_bar_tab_changed"]
+[connection signal="item_selected" from="MarginContainer/Panel/VBoxContainer/OptionPanels/Integrations/SelectUploadService" to="." method="_on_select_upload_service_item_selected"]
+[connection signal="pressed" from="Panel/CloseButton" to="." method="_on_close_button_pressed"]
+[connection signal="pressed" from="Panel/SaveButton" to="." method="_on_save_button_pressed"]
