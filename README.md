@@ -1,17 +1,6 @@
 # Dorkus Playtest Assistant
 
-DPA is an app created with Godot Engine that acts as a user-friendly wrapper for OBS, allowing non-technical folks to record playtesting sessions quickly and easily.
-
-## Features
-
-### 👺 Dorkus Is Watching!
-A cute little guy appears in the bottom right corner of your screen to give you peace of mind that you _definitely_ didn't forget to hit record.
-
-### 🔗 Dorkus Is Connected!
-Start and stop recording automatically when your Unreal-based project opens and closes. Auto-upload saved recordings to [frame.io](https://frame.io) for future review.
-
-### 🎥 Dorkus Is Configured!
-Includes default scenes and profile settings for OBS, along with the Input Overlay plugin to capture input while recording.
+DPA is a user-friendly wrapper for OBS, allowing non-technical folks to record playtesting sessions quickly and easily. See the [itch.io page](https://nogoblin.itch.io/dorkus-playtest-assistant) to download and learn more.
 
 ## Usage
 
