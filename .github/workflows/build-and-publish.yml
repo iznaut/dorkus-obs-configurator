@@ -12,7 +12,7 @@ on:
 
 env:
   GODOT_VERSION: 4.1.1-stable
-  ITCH_USERNAME: iznaut
+  ITCH_USERNAME: nogoblin
   ITCH_GAME_ID: dorkus-playtest-assistant
 
 jobs:
